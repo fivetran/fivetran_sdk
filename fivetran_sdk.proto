@@ -100,6 +100,12 @@ message Column {
     string name = 1;
     DataType type = 2;
     bool primary_key = 3;
+    optional DecimalParams decimal = 4;
+}
+
+message DecimalParams {
+    uint32 precision = 1;
+    uint32 scale = 2;
 }
 
 enum DataType {
