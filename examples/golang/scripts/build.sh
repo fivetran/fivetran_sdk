@@ -1,0 +1,1 @@
+go build golang_connector/main.go
