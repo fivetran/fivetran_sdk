@@ -1,2 +1,6 @@
+**/.idea
 .DS_Store
-
+.gradle
+build
+**/golang/main
+bin/*
