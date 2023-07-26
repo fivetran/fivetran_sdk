@@ -207,8 +207,8 @@ func (s *server) ConfigurationForm(ctx context.Context, in *pb.ConfigurationForm
 				},
 			},
 			{
-				Name:     "hidden",
-				Label:    "my-hidden-value",
+				Name:  "hidden",
+				Label: "my-hidden-value",
 				Type: &pb.FormField_TextField{
 					TextField: pb.TextField_Hidden,
 				},
@@ -216,7 +216,7 @@ func (s *server) ConfigurationForm(ctx context.Context, in *pb.ConfigurationForm
 			{
 				Name:     "isPublic",
 				Label:    "Public?",
-				Required:	false,
+				Required: false,
 				Type: &pb.FormField_ToggleField{
 					ToggleField: &pb.ToggleField{
 						Description: &toggleDescription,
@@ -236,7 +236,7 @@ func (s *server) ConfigurationForm(ctx context.Context, in *pb.ConfigurationForm
 				},
 			},
 		},
-		Tests: []*pb.ConnectorTest{
+		Tests: []*pb.ConfigurationTest{
 			{
 				Name:  "connect",
 				Label: "Test connection",

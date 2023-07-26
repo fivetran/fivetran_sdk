@@ -1,3 +1,4 @@
+mkdir go
 protoc \
     --go_out=go \
     --go_opt=paths=source_relative \

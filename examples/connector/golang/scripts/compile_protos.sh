@@ -1,6 +1,8 @@
 protoc \
-    --go_out=. \
+    --proto_path=proto \
+    --go_out=proto \
     --go_opt=paths=source_relative \
-    --go-grpc_out=. \
+    --go-grpc_out=proto \
     --go-grpc_opt=paths=source_relative \
-    proto/fivetran_sdk.proto
+    common.proto \
+    connector_sdk.proto
