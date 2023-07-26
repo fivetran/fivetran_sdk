@@ -4,3 +4,4 @@
 **/build/
 **/golang/main
 bin/*
+go/*

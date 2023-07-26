@@ -1,4 +1,4 @@
-Houses the proto file and build scripts for Fivetran SDK gRPC interface
+Houses the proto files and build scripts for Fivetran SDK gRPC interface
 
 # How to build
 

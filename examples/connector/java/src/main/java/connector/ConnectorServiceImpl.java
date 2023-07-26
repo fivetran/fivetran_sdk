@@ -36,8 +36,8 @@ public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
                                         .build()
                         ))
                         .addAllTests(Arrays.asList(
-                                ConnectorTest.newBuilder().setName("connect").setLabel("Tests connection").build(),
-                                ConnectorTest.newBuilder().setName("select").setLabel("Tests selection").build()))
+                                ConfigurationTest.newBuilder().setName("connect").setLabel("Tests connection").build(),
+                                ConfigurationTest.newBuilder().setName("select").setLabel("Tests selection").build()))
                         .build());
 
         responseObserver.onCompleted();

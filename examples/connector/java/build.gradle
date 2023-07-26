@@ -21,7 +21,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 def grpcVersion = '1.51.3'
-def protobufVersion = '3.18.2'
+def protobufVersion = '3.21.12'
 def protocVersion = protobufVersion
 
 dependencies {
@@ -59,6 +59,12 @@ sourceSets {
 
 application {
     mainClass = 'connector.JavaConnector'
+}
+
+tasks.register('copyProtos', Copy) {
+    from file("$rootDir/../../..")
+    into file("src/main/proto/")
+    include "*.proto"
 }
 
 jar {

@@ -1,8 +1,8 @@
-mkdir go
 protoc \
-    --go_out=go \
+    --proto_path=proto \
+    --go_out=proto \
     --go_opt=paths=source_relative \
-    --go-grpc_out=go \
+    --go-grpc_out=proto \
     --go-grpc_opt=paths=source_relative \
     common.proto \
     connector_sdk.proto
