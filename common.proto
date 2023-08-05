@@ -19,10 +19,11 @@ message FormField {
   string name = 1;
   string label = 2;
   bool required = 3;
+  optional string description = 4;
   oneof type {
-    TextField text_field = 4;
-    DropdownField dropdown_field = 5;
-    ToggleField toggle_field = 6;
+    TextField text_field = 5;
+    DropdownField dropdown_field = 6;
+    ToggleField toggle_field = 7;
   }
 }
 
@@ -30,9 +31,7 @@ message DropdownField {
   repeated string dropdown_field = 1;
 }
 
-message ToggleField {
-  optional string description = 1;
-}
+message ToggleField {}
 
 enum TextField {
   PlainText = 0;
