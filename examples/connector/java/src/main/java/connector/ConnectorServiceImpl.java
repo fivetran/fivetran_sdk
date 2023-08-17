@@ -3,6 +3,7 @@ package connector;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fivetran_sdk.*;
+import fivetran_sdk.Record;
 import io.grpc.stub.StreamObserver;
 
 import java.util.*;
@@ -30,8 +31,8 @@ public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
                                 FormField.newBuilder()
                                         .setName("isPublic")
                                         .setLabel("Public?")
+                                        .setDescription("Is this public?")
                                         .setToggleField(ToggleField.newBuilder()
-                                                .setDescription("Is this public?")
                                                 .build())
                                         .build()
                         ))
