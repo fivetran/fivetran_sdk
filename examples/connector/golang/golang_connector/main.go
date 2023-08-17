@@ -216,11 +216,10 @@ func (s *server) ConfigurationForm(ctx context.Context, in *pb.ConfigurationForm
 			{
 				Name:     "isPublic",
 				Label:    "Public?",
+				Description: &toggleDescription,
 				Required: false,
 				Type: &pb.FormField_ToggleField{
-					ToggleField: &pb.ToggleField{
-						Description: &toggleDescription,
-					},
+					ToggleField: &pb.ToggleField{},
 				},
 			},
 			{
