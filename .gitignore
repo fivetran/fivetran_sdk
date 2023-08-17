@@ -5,4 +5,4 @@
 **/golang/main
 bin/*
 examples/**/*.proto
-
+examples/**/*.pb.go
