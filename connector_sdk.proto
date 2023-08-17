@@ -24,6 +24,7 @@ message SchemaResponse {
         SchemaList with_schema = 2;
         TableList without_schema = 3;
     }
+    optional bool selection_not_supported  = 4;
 }
 
 message UpdateRequest {
