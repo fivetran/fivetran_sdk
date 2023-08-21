@@ -11,52 +11,57 @@ import "common.proto";
 service Writer {
     rpc ConfigurationForm (ConfigurationFormRequest) returns (ConfigurationFormResponse) {}
     rpc Test (TestRequest) returns (TestResponse) {}
-    rpc FetchMetadata(MetadataRequest) returns (MetadataResponse) {}
-    rpc GetTable (TableRequest) returns (TableResponse) {}
-    rpc AssertTable(AssertTableRequest) returns (AssertTableResponse) {}
-    rpc TruncateTable(TruncateTableRequest) returns (TruncateTableResponse) {}
-    rpc WriteBatch (stream WriteBatchRequest) returns (WriteBatchResponse) {}
+    rpc DescribeTable (DescribeTableRequest) returns (DescribeTableResponse) {}
+    rpc CreateTable(CreateTableRequest) returns (CreateTableResponse) {}
+    rpc AlterTable(AlterTableRequest) returns (AlterTableResponse) {}
+    rpc Truncate(TruncateRequest) returns (TruncateResponse) {}
+    rpc WriteBatch (WriteBatchRequest) returns (WriteBatchResponse) {}
 }
 
-message MetadataRequest {}
-
-message MetadataResponse {
-    int32 max_identifier_length = 1;
-    string max_iso_timestamp = 2;
-    map<string, DataType> fivetranTypeMap = 3;
-}
-
-message TableRequest {
+message DescribeTableRequest {
     map<string, string> configuration = 1;
     string schema_name = 2;
     string table_name = 3;
 }
 
-message TableResponse {
+message DescribeTableResponse {
     oneof response {
-        bool not_supported = 1;
-        bool not_found = 2;
-        string failure = 3;
-        Table table = 4;
+        bool not_found = 1;
+        string failure = 2;
+        Table table = 3;
     }
 }
 
-message AssertTableRequest {
+message CreateTableRequest {
     map<string, string> configuration = 1;
     string schema_name = 2;
     Table table = 3;
 }
 
-message AssertTableResponse {
+message CreateTableResponse {
     oneof response {
         bool success = 1;
         string failure = 2;
     }
 }
 
-message TruncateTableRequest {
-    string schema_name = 1;
-    string table_name = 2;
+message AlterTableRequest {
+    map<string, string> configuration = 1;
+    string schema_name = 2;
+    Table table = 3;
+}
+
+message AlterTableResponse {
+    oneof response {
+        bool success = 1;
+        string failure = 2;
+    }
+}
+
+message TruncateRequest {
+    map<string, string> configuration = 1;
+    string schema_name = 2;
+    string table_name = 3;
     string synced_column = 4;
     google.protobuf.Timestamp utc_delete_before = 5;
     optional SoftTruncate soft = 6;
@@ -66,7 +71,7 @@ message SoftTruncate {
     string deleted_column = 3;
 }
 
-message TruncateTableResponse {
+message TruncateResponse {
     oneof response {
         bool success = 1;
         string failure = 2;
@@ -74,39 +79,19 @@ message TruncateTableResponse {
 }
 
 message WriteBatchRequest {
-    oneof request {
-        StartBatch init = 1;
-        Upsert upsert = 2;
-        Update update = 3;
-        Delete delete = 4;
-    }
-}
-
-message StartBatch {
-    string sync_id = 1;
-    string flush_id = 2;
-    map<string, string> configuration = 3;
+    map<string, string> configuration = 1;
+    string sync_id = 2;
+    string flush_id = 3;
     string schema_name = 4;
     string table_name = 5;
-    // repeated Column columns = 6;
-}
-
-message Upsert {
-    map<string, ValueType> record = 2;
-}
-
-message Update {
-    map<string, ValueType> record = 2;
-}
-
-message Delete {
-    map<string, ValueType> record = 2;
+    // Is it sufficient to stage it on the local file system or do we need to stage it to object storage?
+    repeated string file = 6;
+    string key = 7;
 }
 
 message WriteBatchResponse {
     oneof response {
-        bool batch_write_not_supported = 1;
-        bool success = 2;
-        string failure = 3;
+        bool success = 1;
+        string failure = 2;
     }
 }
