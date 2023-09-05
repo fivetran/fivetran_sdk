@@ -1,4 +1,4 @@
-package connector;
+package writer;
 
 import io.grpc.*;
 
