@@ -1,0 +1,96 @@
+syntax = "proto3";
+option optimize_for = SPEED;
+option java_multiple_files = true;
+option go_package = "fivetran.com/fivetran_sdk";
+package fivetran_sdk;
+
+import "google/protobuf/timestamp.proto";
+import "common.proto";
+
+// Fivetran (grpc client) <> Writer (grpc server)
+service Writer {
+    rpc ConfigurationForm (ConfigurationFormRequest) returns (ConfigurationFormResponse) {}
+    rpc Test (TestRequest) returns (TestResponse) {}
+    rpc DescribeTable (DescribeTableRequest) returns (DescribeTableResponse) {}
+    rpc CreateTable(CreateTableRequest) returns (CreateTableResponse) {}
+    rpc AlterTable(AlterTableRequest) returns (AlterTableResponse) {}
+    rpc Truncate(TruncateRequest) returns (TruncateResponse) {}
+    rpc WriteBatch (WriteBatchRequest) returns (WriteBatchResponse) {}
+}
+
+message DescribeTableRequest {
+    map<string, string> configuration = 1;
+    string schema_name = 2;
+    string table_name = 3;
+}
+
+message DescribeTableResponse {
+    oneof response {
+        bool not_found = 1;
+        string failure = 2;
+        Table table = 3;
+    }
+}
+
+message CreateTableRequest {
+    map<string, string> configuration = 1;
+    string schema_name = 2;
+    Table table = 3;
+}
+
+message CreateTableResponse {
+    oneof response {
+        bool success = 1;
+        string failure = 2;
+    }
+}
+
+message AlterTableRequest {
+    map<string, string> configuration = 1;
+    string schema_name = 2;
+    Table table = 3;
+}
+
+message AlterTableResponse {
+    oneof response {
+        bool success = 1;
+        string failure = 2;
+    }
+}
+
+message TruncateRequest {
+    map<string, string> configuration = 1;
+    string schema_name = 2;
+    string table_name = 3;
+    string synced_column = 4;
+    google.protobuf.Timestamp utc_delete_before = 5;
+    optional SoftTruncate soft = 6;
+}
+
+message SoftTruncate {
+    string deleted_column = 3;
+}
+
+message TruncateResponse {
+    oneof response {
+        bool success = 1;
+        string failure = 2;
+    }
+}
+
+message WriteBatchRequest {
+    map<string, string> configuration = 1;
+    string sync_id = 2;
+    string flush_id = 3;
+    string schema_name = 4;
+    string table_name = 5;
+    repeated string file = 6;
+    string key = 7;
+}
+
+message WriteBatchResponse {
+    oneof response {
+        bool success = 1;
+        string failure = 2;
+    }
+}
