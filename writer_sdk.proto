@@ -84,7 +84,6 @@ message WriteBatchRequest {
     string flush_id = 3;
     string schema_name = 4;
     string table_name = 5;
-    // Is it sufficient to stage it on the local file system or do we need to stage it to object storage?
     repeated string file = 6;
     string key = 7;
 }
