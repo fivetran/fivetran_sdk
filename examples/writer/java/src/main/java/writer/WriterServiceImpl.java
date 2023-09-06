@@ -29,9 +29,8 @@ public class WriterServiceImpl extends WriterGrpc.WriterImplBase {
                                 FormField.newBuilder()
                                         .setName("isPublic")
                                         .setLabel("Public?")
-                                        .setToggleField(ToggleField.newBuilder()
-                                                .setDescription("Is this public?")
-                                                .build())
+                                        .setDescription("Is this public?")
+                                        .setToggleField(ToggleField.newBuilder().build())
                                         .build()
                         ))
                         .addAllTests(Arrays.asList(
@@ -97,9 +96,15 @@ public class WriterServiceImpl extends WriterGrpc.WriterImplBase {
 
     @Override
     public void writeBatch(WriteBatchRequest request, StreamObserver<WriteBatchResponse> responseObserver) {
-        System.out.println("[WriteBatch]: " + request.getSchemaName() + " | " + request.getTableName());
-        for (String file : request.getFileList()) {
-            System.out.println("Batch file: " + file);
+        System.out.println("[WriteBatch]: " + request.getSchemaName() + " | " + request.getTable().getName());
+        for (String file : request.getReplaceList()) {
+            System.out.println("Replace files: " + file);
+        }
+        for (String file : request.getUpdateList()) {
+            System.out.println("Update files: " + file);
+        }
+        for (String file : request.getDeleteList()) {
+            System.out.println("Delete files: " + file);
         }
     }
 }
