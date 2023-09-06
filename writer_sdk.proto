@@ -83,12 +83,11 @@ message WriteBatchRequest {
     string sync_id = 2;
     string flush_id = 3;
     string schema_name = 4;
-    string table_name = 5;
-    repeated Column columns = 6;
-    map<string, bytes> keys = 7;
-    repeated string replace = 8;
-    repeated string update = 9;
-    repeated string delete = 10;
+    Table table = 5;
+    map<string, bytes> keys = 6;
+    repeated string replace = 7;
+    repeated string update = 8;
+    repeated string delete = 9;
 }
 
 message WriteBatchResponse {
