@@ -80,14 +80,12 @@ message TruncateResponse {
 
 message WriteBatchRequest {
     map<string, string> configuration = 1;
-    string sync_id = 2;
-    string flush_id = 3;
-    string schema_name = 4;
-    Table table = 5;
-    map<string, bytes> keys = 6;
-    repeated string replace = 7;
-    repeated string update = 8;
-    repeated string delete = 9;
+    string schema_name = 2;
+    Table table = 3;
+    map<string, bytes> keys = 4;
+    repeated string replace = 5;
+    repeated string update = 6;
+    repeated string delete = 7;
 }
 
 message WriteBatchResponse {
