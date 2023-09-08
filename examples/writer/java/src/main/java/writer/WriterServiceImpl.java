@@ -106,5 +106,7 @@ public class WriterServiceImpl extends WriterGrpc.WriterImplBase {
         for (String file : request.getDeleteList()) {
             System.out.println("Delete files: " + file);
         }
+        responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(true).build());
+        responseObserver.onCompleted();
     }
 }
