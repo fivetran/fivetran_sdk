@@ -7,8 +7,8 @@ package fivetran_sdk;
 import "google/protobuf/timestamp.proto";
 import "common.proto";
 
-// Fivetran (grpc client) <> Writer (grpc server)
-service Writer {
+// Fivetran (grpc client) <> Destination (grpc server)
+service Destination {
     rpc ConfigurationForm (ConfigurationFormRequest) returns (ConfigurationFormResponse) {}
     rpc Test (TestRequest) returns (TestResponse) {}
     rpc DescribeTable (DescribeTableRequest) returns (DescribeTableResponse) {}
@@ -83,9 +83,30 @@ message WriteBatchRequest {
     string schema_name = 2;
     Table table = 3;
     map<string, bytes> keys = 4;
-    repeated string replace = 5;
-    repeated string update = 6;
-    repeated string delete = 7;
+    repeated string replace_files = 5;
+    repeated string update_files = 6;
+    repeated string delete_files = 7;
+    oneof file_params {
+        CsvFileParams csv = 8;
+    }
+}
+
+message CsvFileParams {
+    Compression compression = 1;
+    Encryption encryption = 2;
+    string null_string = 3;
+    string unmodified_string = 4;
+}
+
+enum Encryption {
+    None = 0;
+    Aes = 1;
+}
+
+enum Compression {
+    Off = 0;
+    Zstd = 1;
+    Gzip = 2;
 }
 
 message WriteBatchResponse {
