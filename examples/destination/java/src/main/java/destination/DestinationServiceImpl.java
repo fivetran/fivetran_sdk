@@ -1,4 +1,4 @@
-package writer;
+package destination;
 
 import fivetran_sdk.*;
 import io.grpc.stub.StreamObserver;
@@ -6,7 +6,7 @@ import io.grpc.stub.StreamObserver;
 import java.util.Arrays;
 import java.util.Map;
 
-public class WriterServiceImpl extends WriterGrpc.WriterImplBase {
+public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase {
     @Override
     public void configurationForm(ConfigurationFormRequest request, StreamObserver<ConfigurationFormResponse> responseObserver) {
         responseObserver.onNext(
@@ -97,13 +97,13 @@ public class WriterServiceImpl extends WriterGrpc.WriterImplBase {
     @Override
     public void writeBatch(WriteBatchRequest request, StreamObserver<WriteBatchResponse> responseObserver) {
         System.out.println("[WriteBatch]: " + request.getSchemaName() + " | " + request.getTable().getName());
-        for (String file : request.getReplaceList()) {
+        for (String file : request.getReplaceFilesList()) {
             System.out.println("Replace files: " + file);
         }
-        for (String file : request.getUpdateList()) {
+        for (String file : request.getUpdateFilesList()) {
             System.out.println("Update files: " + file);
         }
-        for (String file : request.getDeleteList()) {
+        for (String file : request.getDeleteFilesList()) {
             System.out.println("Delete files: " + file);
         }
         responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(true).build());
