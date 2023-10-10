@@ -58,7 +58,7 @@ sourceSets {
 }
 
 application {
-    mainClass = 'connector.JavaWriter'
+    mainClass = 'connector.JavaDestination'
 }
 
 tasks.register('copyProtos', Copy) {
@@ -72,7 +72,7 @@ jar {
 
     manifest {
         attributes(
-            'Main-Class' : 'connector.JavaWriter'
+            'Main-Class' : 'connector.JavaDestination'
         )
     }
 

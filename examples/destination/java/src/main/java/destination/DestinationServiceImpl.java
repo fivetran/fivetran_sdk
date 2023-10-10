@@ -1,4 +1,4 @@
-package writer;
+package destination;
 
 import fivetran_sdk.*;
 import io.grpc.stub.StreamObserver;
@@ -6,7 +6,7 @@ import io.grpc.stub.StreamObserver;
 import java.util.Arrays;
 import java.util.Map;
 
-public class WriterServiceImpl extends WriterGrpc.WriterImplBase {
+public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase {
     @Override
     public void configurationForm(ConfigurationFormRequest request, StreamObserver<ConfigurationFormResponse> responseObserver) {
         responseObserver.onNext(
