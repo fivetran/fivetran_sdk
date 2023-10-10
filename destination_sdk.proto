@@ -99,14 +99,14 @@ message CsvFileParams {
 }
 
 enum Encryption {
-    None = 0;
-    Aes = 1;
+    NONE = 0;
+    AES = 1;
 }
 
 enum Compression {
-    Off = 0;
-    Zstd = 1;
-    Gzip = 2;
+    OFF = 0;
+    ZSTD = 1;
+    GZIP = 2;
 }
 
 message WriteBatchResponse {
