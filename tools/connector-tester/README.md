@@ -1,4 +1,4 @@
-How to use SDK Connector Tester:
+# How to use SDK Connector Tester:
 
 1. Download the latest docker image from [this link](https://drive.google.com/file/d/1thjfHNBqhCsKxH9JjyRlJdT16ShgkRng/view?usp=share_link).
 
