@@ -97,11 +97,17 @@ message SchemaChange {
     }
 }
 
+enum OperationTag {
+    HISTORICAL = 0;
+    INCREMENTAL = 1;
+}
+
 message Record {
     optional string schema_name = 1;
     string table_name = 2;
     OpType type = 3;
     map<string, ValueType> data = 4;
+    OperationTag tag = 5;
 }
 
 message Checkpoint {
