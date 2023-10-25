@@ -28,68 +28,93 @@ Destination tester simulates operations from a source by reading input files fro
 
 Here is an example input file named `batch_1.json`:
 
-```
+```json
 {
     "create_table" : {
         "transaction": {
-            "id": "INTEGER",
-            "amount" : "DOUBLE",
-            "desc": "STRING",
+            "columns": {
+                "id": "INTEGER",
+                "amount" : "DOUBLE",
+                "desc": "STRING"
+            },
             "primary_key": ["id"]
         },
         "campaign": {
-            "id": "INTEGER",
-            "name": "STRING",
+            "columns": {
+                "id": "INTEGER",
+                "name": "STRING"
+            },
             "primary_key": ["id"]
         }
     },
     "alter_table" : {
         "transaction": {
-            "id": "INTEGER",
-            "amount" : "FLOAT",
+            "columns": {
+                "id": "INTEGER",
+                "amount" : "FLOAT",
+                "desc": "STRING"
+            },
             "primary_key": ["id"]
         }
     },
     "describe_table" : [
         "transaction"
     ],
-
-    "ops" : {
-        "truncate": [
-            "transaction"
-        ],
-        "upsert": {
-            "transaction": [
-                {"id":1, "amount": 100.45, "desc": null},
-                {"id":2, "amount": 50.33, "desc": "two"}
+    "ops" : [
+        {
+            "truncate": [
+                "transaction"
             ]
         },
-        "update": {
-            "transaction": [
-                {"id":1, "amount": 200}
-            ]
+        {
+            "upsert": {
+                "transaction": [
+                    {"id":1, "amount": 100.45, "desc": null},
+                    {"id":2, "amount": 50.33, "desc": "two"}
+                ],
+                "campaign": [
+                    {"id":101, "name": "Christmas"},
+                    {"id":102, "name": "New Year"}
+                ]
+            }
         },
-        "upsert_2": {
-            "transaction": [
-                {"id":10, "amount": 100, "desc": "thee"},
-                {"id":20, "amount": 50, "desc": "mone"}
-            ],
-            "campaign": [
-                {"id":201, "name": "Christmas 2"},
-                {"id":202, "name": "New Year 2"}
-            ]
+        {
+            "update": {
+                "transaction": [
+                    {"id":1, "amount": 200}
+                ]
+            }
         },
-        "delete": {
-            "transaction": [
-                {"id":3},
-                {"id":4}
-            ],
-            "campaign": [
-                {"id":103},
-                {"id":104}
+        {
+            "upsert": {
+                "transaction": [
+                    {"id":10, "amount": 100, "desc": "thee"},
+                    {"id":20, "amount": 50, "desc": "mone"}
+                ],
+                "campaign": [
+                    {"id":201, "name": "Christmas 2"},
+                    {"id":202, "name": "New Year 2"}
+                ]
+            }
+        },
+        {
+            "delete": {
+                "transaction": [
+                    {"id":3},
+                    {"id":4}
+                ],
+                "campaign": [
+                    {"id":103},
+                    {"id":104}
+                ]
+            }
+        },
+        {
+            "truncate": [
+                "transaction"
             ]
         }
-    }
+    ]
 }
 
 ```
