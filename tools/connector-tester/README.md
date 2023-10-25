@@ -1,18 +1,18 @@
 # How to use SDK Connector Tester:
 
-1. Download the latest docker image from [this link]().
+1. Download the latest docker image from [this link](https://drive.google.com/file/d/18Ml1lHcgbY9TxbOjB-ePwPkVx9N8qk4M/view?usp=drive_link)(version: 2023.1025.1340).
 
 2. Unzip the file you downloaded to extract the tar file.
 
 3. Load the image to docker
 ```
-docker load --input connector-tester.tar
+docker load --input sdk-connector-tester.tar
 ```
 
-4. Run a container using the image with the following command. Make sure to map a local directory for storing files that the tool generates by replacing `<local-data-folder>` in the command. (Currently the image is built for `linux/arm64` only)
+4. Run a container using the image with the following command. Make sure to map a local directory for storing files that the tool generates by replacing `<local-data-folder>` in the command. Also replace `<your-service-id>` with your service ID.
 
 ```
-docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e GRPC_HOSTNAME=host.docker.internal --network=host connector-tester
+docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-connector-tester --service-id=<your-service-id>
 
 ```
 
