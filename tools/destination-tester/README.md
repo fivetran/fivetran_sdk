@@ -1,6 +1,6 @@
 # How to use SDK Destination Tester:
 
-1. Download the latest docker image from [this link](https://drive.google.com/file/d/1GmgfG87jdUP07HgwBOxoYmClz_8GVapH/view?usp=drive_link) (version: 2023.1024.2228)
+1. Download the latest docker image from [this link](https://drive.google.com/file/d/1xoDucwTcCnbNtUR5HXnYORFuXV__YpXg/view?usp=drive_link) (version: 2023.1025.1920)
 
 2. Unzip the file you downloaded to extract the tar file.
 
