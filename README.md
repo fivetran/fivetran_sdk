@@ -61,18 +61,17 @@ Your connector will appear on:
 ### I am sold! How do I get started?
 Reach out to us via this [intake form](https://forms.gle/KezLXRSn866r7D3J9) and we'll go from there.
 The process typically looks like this:
-1. Sign NDA
-2. Meet with us
-3. Sign Partnership Agreement
-4. Build the connector/destination
-5. Create product docs (overview and setup form)
-6. Test it locally
-7. Deploy to our platform
-8. Test the connector/destination on our platform
-9. Support Collaboration
+1. Meet with us
+2. Sign Partnership Agreement
+3. Build the connector/destination
+4. Create product docs (overview and setup form)
+5. Test it locally
+6. Deploy to our platform
+7. Test the connector/destination on our platform
+8. Support Collaboration
     * Share an email address we can send customer related issues to
     * Share a link on your SLAs
-10. Go-to-market with us
+9. Go-to-market with us
 
 ### How do I get help?
 Once you sign an NDA, we will create a shared slack channel where we can assist you.
