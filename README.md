@@ -74,4 +74,4 @@ The process typically looks like this:
 9. Go-to-market with us
 
 ### How do I get help?
-Once you sign an NDA, we will create a shared slack channel where we can assist you.
+After you meet with us, we will create a shared slack channel where we can assist you.
