@@ -12,9 +12,8 @@ You write your code in a [gRPC supported language](https://grpc.io/docs/language
 Right now we are employing manual processes before getting into automation. You put your code in a public github repo, we pull the code, inspect it and build the executable binary to deploy to our platform. 
 
 # How do we test?
-We expect testing to ensure your connector or destination is working as expected, either with test data or with a customer who is eager to adopt. 
+We expect testing to ensure your connector or destination is working as expected, either with test data or with a customer who is eager to adopt. We provide testers in this repo you can use locally without connecting to Fivetran platform. We also recommend you think through typical scenarios for testing:
 
-## Some recommended tests:
 * Handle all data type mappings (between  Fivetran data types and source/destination data types)
 * Big data loads
 * Big incremental updates
@@ -22,7 +21,7 @@ We expect testing to ensure your connector or destination is working as expected
 * Wide fact tables
 
 # How do we collaborate on support?
-The customer can reach out to either Fivetran or the partner via their support portal. Whoever receives a support ticket will triage it and either fix it and email the customer back or pass it to the other side for fixing, and let the other side notify the customer when the issue is fixed.
+Once we get customers using your connector or destination, they can reach out to either Fivetran or you via support portals. Whoever receives a support ticket triages it and either fixs the issue and emails the customer back or passes it to the other side for handling.
 
 Our response times are articulated in our Fivetran Support Policy doc. Bear in mind customers may expect your support response times to be similar. We recommend linking to your own SLAs/Support policies from the docs you create for Fivetran. 
 
@@ -38,10 +37,10 @@ Fivetran will market through multiple methods:
     * Connector release blogs
     * Monthly email updates
 
-## Your connector will appear on:
-* Our website in our connector directory
-* Our dashboard connector list/search
-* Our docs
+Your connector will appear on:
+    * Our website in our connector directory
+    * Our dashboard connector list/search
+    * Our docs
 
 # I am sold! How do I get started?
 Reach out to us via this [intake form](https://forms.gle/KezLXRSn866r7D3J9) and we'll go from there.
@@ -59,5 +58,11 @@ The process typically looks like this:
     * Share a link on your SLAs
 10. Go-to-market with us
 
-# Who can I ask questions to?
+# How do I get help?
 Once you sign an NDA, we will create a shared slack channel where we can assist you.
+
+# Do you have any partner-built connectors and destiantions?
+Yes, we have the following partners working with us, and more are signing up to become partners:
+* [PlanetScale](https://github.com/planetscale/fivetran-source)
+* [Convex](https://github.com/get-convex/convex-fivetran-source/)
+* Motherduck 
