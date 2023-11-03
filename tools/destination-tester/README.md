@@ -1,5 +1,10 @@
-# How to use SDK Destination Tester:
+# SDK Destination Tester
 
+## Pre-requisites
+- gRPC server is running for the particular example (see [example readme's](/examples/destination/))
+- Docker version > 4.23.0
+
+## Steps
 1. Download the latest docker image from [this link](https://drive.google.com/file/d/1xoDucwTcCnbNtUR5HXnYORFuXV__YpXg/view?usp=drive_link) (version: 2023.1025.1920)
 
 2. Unzip the file you downloaded to extract the tar file.
@@ -9,10 +14,10 @@
 docker load --input sdk-destination-tester.tar
 ```
 
-4. Run a container using the image with the following command. Make sure to map a local directory for storing files that the tool will read by replacing `<local-data-folder>` in the command. Also replace `<your-service-id>` with your service ID.
+4. Run a container using the image with the following command. Make sure to map a local directory for storing files that the tool will read by replacing `<local-data-folder>` in the command.
 
 ```
-docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-destination-tester --service-id=<your-service-id>
+docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-destination-tester
 
 ```
 
