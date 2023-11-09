@@ -13,9 +13,6 @@ The executable needs to accept a `--port` argument that takes an integer as port
 ## General Tips, Conventions, Guidelines
 
 - Don't push anything other than source data to the destination. State will be saved to production DB.
-- Initial sync/resync of a table should truncate it to set all existing rows in destination as `deleted`. Otherwise rows that no longer exist in the source will not update rows in the destination and destination rows might show incorrect `deleted` status.
-- Per table state info (for resyncs)
-- Logo size, proportions?
 - Don't forget to handle new schemas/tables/columns per the information and user choices in `UpdateRequest#selection`
 
 ## Security
