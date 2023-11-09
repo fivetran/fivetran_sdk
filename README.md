@@ -44,7 +44,7 @@ Once we get customers using your connector or destination, they can reach out to
 
 Our response times are articulated in our [Fivetran Support Policy](https://support.fivetran.com/hc/en-us/articles/5893119459223-Fivetran-Support-Policy) doc. Bear in mind customers may expect your support response times to be similar. We recommend linking to your own SLAs/Support policies from the docs you create for Fivetran. 
 
-### Create Product Docs
+### How do we create product docs?
 All Fivetran connectors have public docs. For the SDK, we will need you to produce the following:
 * Setup Form [example](https://fivetran.com/docs/databases/cosmos/setup-guide)
 * Overview Page [example](https://fivetran.com/docs/databases/cosmos)
