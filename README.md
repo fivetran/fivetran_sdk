@@ -7,7 +7,7 @@ This repo consists of example connectors and destinations along with a local tes
 * [Local Testing Tools](tools/)
 
 ## Development
-You can follow the [SDK Development Guide](development-guide.md) in this repo for details on how to develop your code. 
+You can follow the [SDK Development Guide](development-guide.md) for guidance on how to develop your code. 
 
 Once you have your code ready to run:
 1. Start up your connector running on port 50051 (for destination code, use port 50052)
