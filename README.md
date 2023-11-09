@@ -1,20 +1,23 @@
 # Fivetran Partner SDK
 A way for partners to create connectors and destinations that run on [Fivetran’s platform](https://www.fivetran.com/). Read more in our [product docs](https://fivetran.com/docs/partner-built-program). 
 
-## Structure
+## Repo Structure
 This repo consists of example connectors and destinations along with a local testing environment. Connectors and destinations are written in a [gRPC supported language](https://grpc.io/docs/languages/) that can generate a statically linked binary. We recommend java, golang or rust. 
 * [Examples](examples/)
-* [Local Testing](tools/)
+* [Local Testing Tools](tools/)
 
-## Setup & Run
-1. Start up the connector/destination gRPC server
+## Development
+You can follow the [SDK Development Guide](development-guide.md) in this repo for details on how to develop your code. 
+
+Once you have your code ready to run:
+1. Start up your connector running on port 50051 (for destination code, use port 50052)
 2. Run the local test environment
 
 Our Readme's for [connectors](tools/connector-tester/) and [destinations](tools/destination-tester/) will take you through setting up the local test environment. 
 
-To run a connector gRPC server from the examples directory, follow the Readme specific to that programming language. 
+> To run an example connector or destination from `examples` directory, follow the Readme specific to the example. 
 
-### Are there any partners with public examples?
+### Other Examples
 You can look at the following public connector repos to see how other partner's have built their connectors:
 * [PlanetScale](https://github.com/planetscale/fivetran-source)
 * [Convex](https://github.com/get-convex/convex-fivetran-source)
