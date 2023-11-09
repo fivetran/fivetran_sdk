@@ -1,20 +1,23 @@
 # Fivetran Partner SDK
 A way for partners to create connectors and destinations that run on [Fivetran’s platform](https://www.fivetran.com/). Read more in our [product docs](https://fivetran.com/docs/partner-built-program). 
 
-## Structure
+## Repo Structure
 This repo consists of example connectors and destinations along with a local testing environment. Connectors and destinations are written in a [gRPC supported language](https://grpc.io/docs/languages/) that can generate a statically linked binary. We recommend java, golang or rust. 
 * [Examples](examples/)
-* [Local Testing](tools/)
+* [Local Testing Tools](tools/)
 
-## Setup & Run
-1. Start up the connector/destination gRPC server
+## Development
+You can follow the [SDK Development Guide](development-guide.md) for guidance on how to develop your code. 
+
+Once you have your code ready to run:
+1. Start up your connector running on port 50051 (for destination code, use port 50052)
 2. Run the local test environment
 
 Our Readme's for [connectors](tools/connector-tester/) and [destinations](tools/destination-tester/) will take you through setting up the local test environment. 
 
-To run a connector gRPC server from the examples directory, follow the Readme specific to that programming language. 
+> To run an example connector or destination from `examples` directory, follow the Readme specific to the example. 
 
-### Are there any partners with public examples?
+### Other Examples
 You can look at the following public connector repos to see how other partner's have built their connectors:
 * [PlanetScale](https://github.com/planetscale/fivetran-source)
 * [Convex](https://github.com/get-convex/convex-fivetran-source)
@@ -41,7 +44,7 @@ Once we get customers using your connector or destination, they can reach out to
 
 Our response times are articulated in our [Fivetran Support Policy](https://support.fivetran.com/hc/en-us/articles/5893119459223-Fivetran-Support-Policy) doc. Bear in mind customers may expect your support response times to be similar. We recommend linking to your own SLAs/Support policies from the docs you create for Fivetran. 
 
-### Create Product Docs
+### How do we create product docs?
 All Fivetran connectors have public docs. For the SDK, we will need you to produce the following:
 * Setup Form [example](https://fivetran.com/docs/databases/cosmos/setup-guide)
 * Overview Page [example](https://fivetran.com/docs/databases/cosmos)
@@ -61,8 +64,8 @@ Your connector will appear on:
 ### I am sold! How do I get started?
 Reach out to us via this [intake form](https://forms.gle/KezLXRSn866r7D3J9) and we'll go from there.
 The process typically looks like this:
-1. Meet with us
-2. Sign Partnership Agreement
+1. Explore the [github repo](https://github.com/fivetran/fivetran_sdk)
+2. Meet with us to go over the Partnership Agreement
 3. Build the connector/destination
 4. Create product docs (overview and setup form)
 5. Test it locally
