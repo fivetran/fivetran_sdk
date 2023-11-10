@@ -6,7 +6,7 @@
 
 ## Steps
 
-1. Download the latest docker image from [this link](https://drive.google.com/file/d/18Ml1lHcgbY9TxbOjB-ePwPkVx9N8qk4M/view?usp=drive_link)(version: 2023.1025.1340).
+1. Download the latest docker image from [this link](https://drive.google.com/file/d/1JyhilrbTGW8uMBfDlxhvzTEMHma0V2nj/view?usp=drive_link) (version: 2023.1103.1640).
 
 2. Unzip the file you downloaded to extract the tar file.
 
