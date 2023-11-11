@@ -1,0 +1,8 @@
+common --enable_platform_specific_config
+build --define tag_name=dummy_tag
+build --define branch_name=dummy_branch
+build --java_language_version=17
+build --java_runtime_version=zulu_jdk_17
+build --tool_java_language_version=17
+build --tool_java_runtime_version=zulu_jdk_17
+test --jvmopt="--illegal-access=deny" # Becomes default behaviour since Java 17 (JEP 403)

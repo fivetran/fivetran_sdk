@@ -1,4 +1,7 @@
 **/.idea
+**/.ijwb
+*.iml
+bazel-*
 .DS_Store
 .gradle
 **/build/
@@ -6,3 +9,4 @@
 bin/*
 examples/**/*.proto
 examples/**/*.pb.go
+tools/**/*.proto
