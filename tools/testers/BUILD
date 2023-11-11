@@ -46,12 +46,12 @@ java_test(
 
 java_binary(
     name = "run_sdk_destination_tester",
-    main_class = "com.fivetran.fivetran_sdk.tools.SdkDestinationTester",
+    main_class = "testers.SdkDestinationTester",
     runtime_deps = [":main"],
 )
 
 java_binary(
     name = "run_sdk_connector_tester",
-    main_class = "com.fivetran.fivetran_sdk.tools.SdkConnectorTester",
+    main_class = "testers.SdkConnectorTester",
     runtime_deps = [":main"],
 )

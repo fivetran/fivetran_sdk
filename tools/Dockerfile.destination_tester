@@ -1,0 +1,9 @@
+FROM azul/zulu-openjdk-alpine:21.0.1-21.30.15
+
+COPY run_sdk_destination_tester_deploy.jar /app/SdkDestinationTester.jar
+
+# /data folder will get mapped externally when the image is run
+
+EXPOSE 50052
+
+ENTRYPOINT ["java", "-jar", "/app/SdkDestinationTester.jar", "--working-dir=/data"]
