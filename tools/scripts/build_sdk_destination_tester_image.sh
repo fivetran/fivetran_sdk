@@ -5,11 +5,10 @@ set -e
 cd "$(git rev-parse --show-toplevel)/tools"
 
 # Copy the latest proto files
-mkdir -p "protos"
-[ -f "protos/common.proto" ] && [ "protos/common.proto" -ot "../common.proto" ] && rm "protos/common.proto"
-[ -f "protos/connector_sdk.proto" ] && [ "protos/connector_sdk.proto" -ot "../connector_sdk.proto" ] && rm "protos/connector_sdk.proto"
-[ -f "protos/destination_sdk.proto" ] && [ "protos/destination_sdk.proto" -ot "../destination_sdk.proto" ] && rm "protos/destination_sdk.proto"
-cp -p ../*.proto ./protos/
+[ -f "common.proto" ] && [ "common.proto" -ot "../common.proto" ] && rm "common.proto"
+[ -f "connector_sdk.proto" ] && [ "connector_sdk.proto" -ot "../connector_sdk.proto" ] && rm "connector_sdk.proto"
+[ -f "destination_sdk.proto" ] && [ "destination_sdk.proto" -ot "../destination_sdk.proto" ] && rm "destination_sdk.proto"
+cp -p ../*.proto .
 
 bazel build //testers:run_sdk_destination_tester_deploy.jar
 

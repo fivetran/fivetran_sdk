@@ -28,9 +28,9 @@ java_test(
 proto_library(
     name = "fivetran_sdk_proto",
     srcs = [
-        "protos/common.proto",
-        "protos/connector_sdk.proto",
-        "protos/destination_sdk.proto",
+        "common.proto",
+        "connector_sdk.proto",
+        "destination_sdk.proto",
     ],
     visibility = ["//:__subpackages__"],
     deps = [
