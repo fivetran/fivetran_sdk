@@ -5,7 +5,7 @@
 - Docker version > 4.23.0
 
 ## Steps
-1. Download the latest docker image from [this link](https://drive.google.com/file/d/1xoDucwTcCnbNtUR5HXnYORFuXV__YpXg/view?usp=drive_link) (version: 2023.1103.1752)
+1. Download the latest docker image from [this link](https://drive.google.com/file/d/1JyhilrbTGW8uMBfDlxhvzTEMHma0V2nj/view?usp=drive_link) (version: 2023.1103.1752)
 
 2. Unzip the file you downloaded to extract the tar file.
 
