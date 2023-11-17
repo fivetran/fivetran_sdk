@@ -1,36 +1,60 @@
-# SDK Destination Tester
+# Pre-requisites
+- Mac OSX or Linux operating system
+- Bazel version >= 6.4.0
+- Docker version >= 4.23.0
 
-## Pre-requisites
-- gRPC server is running for the particular example (see [example readme's](/examples/destination/))
-- Docker version > 4.23.0
+# SDK Connector Tester
+Make sure the gRPC server is running for your connector or one of the [connector examples](/examples/connector/).
 
 ## Steps
-1. Download the latest docker image from [this link](https://drive.google.com/file/d/1QdumwIwo8C07czp4GiXAwzGY85CM2eDH/view?usp=drive_link) (version: 2023.1122.1625)
 
-4. Unzip the file you downloaded to extract the tar file.
-
-5. Load the image to docker
+1. Build the `sdk-connector-tester` docker image:
 ```
-docker load --input sdk-destination-tester.tar
+./tools/scripts/build_sdk_connector_tester_image.sh
 ```
 
-4. Run a container using the image with the following command. Make sure to map a local directory for the tool by replacing `<local-data-folder>` placeholders in the command.
+2. Run a container using the image with the following command. Make sure to map a local directory for storing files that the tool generates by replacing `<local-data-folder>` in the command:
+```
+docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-connector-tester
 
 ```
-docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e WORKING_DIR=<local-data-folder> -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-destination-tester
-```
 
-Note that it is possible to disable encryption and compression of batch files for debugging purposes by passing `--plain-text` CLI argument to the destination tester.
+3. Once the sync is done running, it will persist the records in a `warehouse.db` database file. This is an instance of [DuckDB](https://duckdb.org/) database. You can connect to it to validate the results of your sync using [DuckDB CLI](https://duckdb.org/docs/api/cli) or [DBeaver](https://duckdb.org/docs/guides/sql_editors/dbeaver).
 
-5. To rerun the container from step #4, use the following command:
+4. To rerun the container from step #2, use the following command:
 
 ```
 docker start -i <container-id>
 ```
 
-# Batch input format
+# SDK Destination Tester
 
-Destination tester simulates operations from a source by reading input files from the data folder. Each of these input files represent a batch of operations, encoded in JSON format. They will be read and executed in the alphabetical order they appear in the data folder. Data types in [common.proto](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73) file can be used as column data types.
+Make sure the gRPC server is running for your destination or one of the [destination examples](/examples/destination/).
+
+## Steps
+1. Build the `sdk-destination-tester` docker image:
+```
+./tools/scripts/build_sdk_destination_tester_image.sh
+```
+
+2. Prepare the batch files according to the format specified in the next section.
+
+3. Run a container using the image with the following command. Make sure to map a local directory for storing files that the tool will read by replacing `<local-data-folder>` in the command.
+
+```
+docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-destination-tester
+
+```
+
+4. To rerun the container from step #3, use the following command:
+
+```
+docker start -i <container-id>
+```
+
+## Batch input format
+
+Destination tester simulates operations from a source by reading input files from the data folder. Each of these input files represent a batch of operations, encoded in JSON format. They will be read and executed in the alphabetical order they appear in the data folder.
 
 Here is an example input file named `batch_1.json`:
 
