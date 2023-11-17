@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk-alpine:21.0.1-21.30.15
+FROM azul/zulu-openjdk-alpine:17
 
 COPY run_sdk_connector_tester_deploy.jar /app/SdkConnectorTester.jar
 
