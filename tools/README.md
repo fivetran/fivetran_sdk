@@ -39,10 +39,10 @@ Make sure the gRPC server is running for your destination or one of the [destina
 
 2. Prepare the batch files according to the format specified in the next section.
 
-3. Run a container using the image with the following command. Make sure to map a local directory for storing files that the tool will read by replacing `<local-data-folder>` in the command.
+3. Run a container using the image with the following command. Make sure to map a local directory for the tool by replacing placeholders `<local-data-folder>` in the command.
 
 ```
-docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-destination-tester
+docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e WORKING_DIR=<local-data-folder> -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-destination-tester
 
 ```
 

@@ -59,7 +59,7 @@ import picocli.CommandLine;
 public final class SdkDestinationTester {
     private static final Logger LOG = Logger.getLogger(SdkDestinationTester.class.getName());
 
-    private static final String VERSION = "2023.1116.1120";
+    private static final String VERSION = "2023.1117.1724";
 
     private static final CsvMapper CSV = createCsvMapper();
     private static final String DEFAULT_SCHEMA = "tester";
@@ -100,18 +100,21 @@ public final class SdkDestinationTester {
                         ? SdkConnectorClient.DEFAULT_GRPC_HOST
                         : System.getenv("GRPC_HOSTNAME");
 
-        new SdkDestinationTester().run(cliargs.workingDir, grpcHost, Integer.parseInt(cliargs.port), cliargs.plainText);
+        String grpcWorkingDir = (System.getenv("WORKING_DIR") == null) ?
+                cliargs.workingDir : System.getenv("WORKING_DIR");
+
+        new SdkDestinationTester().run(cliargs.workingDir, grpcWorkingDir, grpcHost, Integer.parseInt(cliargs.port), cliargs.plainText);
     }
 
-    public void run(String workingDir, String grpcHost, int grpcPort, boolean plainText) throws IOException {
+    public void run(String workingDir, String grpcWorkingDir, String grpcHost, int grpcPort, boolean plainText) throws IOException {
         LOG.info("Version: " + VERSION);
-        LOG.info("Directory: " + workingDir);
         LOG.info("GRPC_HOSTNAME: " + grpcHost);
         LOG.info("GRPC_PORT: " + grpcPort);
+        LOG.info("Working Directory: " + grpcWorkingDir);
         LOG.info("NULL string: " + DEFAULT_NULL_STRING);
         LOG.info("UNMODIFIED string: " + DEFAULT_UPDATE_UNMODIFIED);
         LOG.info("Compression: " + ((plainText) ? "NONE" : "ZSTD"));
-        LOG.info("Encryption: " + ((plainText) ? "NONE" : "AES"));
+        LOG.info("Encryption: " + ((plainText) ? "NONE" : "AES/CBC"));
 
         ManagedChannel channel = SdkWriterClient.createChannel(grpcHost, grpcPort);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> SdkWriterClient.closeChannel(channel)));
@@ -150,7 +153,7 @@ public final class SdkDestinationTester {
             if (file.isFile() && !file.getName().equals(CONFIG_FILE) && file.getName().endsWith(".json")) {
                 LinkedHashMap<String, Object> batch = mapper.readValue(file, new TypeReference<>() {});
                 String filename = file.getName().replaceFirst("[.][^.]+$", "");
-                writeBatch(filename, batch, client, workingDir, creds, plainText);
+                writeBatch(filename, batch, client, workingDir, grpcWorkingDir, creds, plainText);
             }
         }
 
@@ -162,7 +165,8 @@ public final class SdkDestinationTester {
             String batchName,
             Map<String, Object> batch,
             SdkWriterClient client,
-            String rootDir,
+            String workingDir,
+            String grpcWorkingDir,
             Map<String, String> config,
             boolean plainText)
             throws IOException {
@@ -265,16 +269,16 @@ public final class SdkDestinationTester {
 
                     SecretKey key = SdkCrypto.newEphemeralKey();
                     String extension = (plainText) ? "csv" : "csv.zst.aes";
-                    Path path = Paths.get(rootDir, String.format("%s_%s_%s.%s", table, batchName, opName, extension));
+                    String filename = String.format("%s_%s_%s.%s", table, batchName, opName, extension);
+                    Path path = Paths.get(workingDir, filename);
                     writeFile(path, key, csvSchema, opName, columns, rows, table, plainText);
                     keys.put(path.toString(), ByteString.copyFrom(key.getEncoded()));
 
-                    if (opName.equals("upsert")) {
-                        replaceList.add(path.toString());
-                    } else if (opName.equals("update")) {
-                        updateList.add(path.toString());
-                    } else if (opName.equals("delete")) {
-                        deleteList.add(path.toString());
+                    Path grpcPath = Paths.get(grpcWorkingDir, filename);
+                    switch (opName) {
+                        case "upsert" -> replaceList.add(grpcPath.toString());
+                        case "update" -> updateList.add(grpcPath.toString());
+                        case "delete" -> deleteList.add(grpcPath.toString());
                     }
                 }
 
@@ -438,17 +442,11 @@ public final class SdkDestinationTester {
     }
 
     private DataType strToDataType(String type) {
-        if (type.equals("INTEGER")) {
-            return DataType.INT;
-        } else if (type.equals("DOUBLE")) {
-            return DataType.DOUBLE;
-        } else if (type.equals("LONG")) {
-            return DataType.LONG;
-        } else if (type.equals("STRING")) {
-            return DataType.STRING;
+        try {
+            return DataType.valueOf(type);
+        } catch (Exception e) {
+            throw new RuntimeException("Unsupported data type: " + type);
         }
-
-        throw new RuntimeException("Unsupported data type: " + type);
     }
 
     private void separateOpsToTables(
