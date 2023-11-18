@@ -18,7 +18,6 @@ docker load --input sdk-destination-tester.tar
 
 ```
 docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e WORKING_DIR=<local-data-folder> -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-destination-tester
-
 ```
 
 5. To rerun the container from step #4, use the following command:
