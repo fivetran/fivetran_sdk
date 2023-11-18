@@ -5,7 +5,7 @@
 - Docker version > 4.23.0
 
 ## Steps
-1. Download the latest docker image from [this link](https://drive.google.com/file/d/1Vuseer4BoMgYzmKWpV2ky-gMxwA_bsLa/view?usp=drive_link) (version: 2023.1116.1120)
+1. Download the latest docker image from [this link](https://drive.google.com/file/d/1JWzpm3b6isNMgOm1A9bdQ0RuCDHYx5nh/view?usp=drive_link) (version: 2023.1117.1724)
 
 2. Unzip the file you downloaded to extract the tar file.
 
@@ -14,10 +14,10 @@
 docker load --input sdk-destination-tester.tar
 ```
 
-4. Run a container using the image with the following command. Make sure to map a local directory for storing files that the tool will read by replacing `<local-data-folder>` in the command.
+4. Run a container using the image with the following command. Make sure to map a local directory for the tool by replacing `<local-data-folder>` placeholders in the command.
 
 ```
-docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-destination-tester
+docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e WORKING_DIR=<local-data-folder> -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-destination-tester
 
 ```
 
