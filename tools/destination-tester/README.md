@@ -5,11 +5,11 @@
 - Docker version > 4.23.0
 
 ## Steps
-1. Download the latest docker image from [this link](https://drive.google.com/file/d/1JWzpm3b6isNMgOm1A9bdQ0RuCDHYx5nh/view?usp=drive_link) (version: 2023.1117.1724)
+1. Download the latest docker image from [this link](https://drive.google.com/file/d/1QdumwIwo8C07czp4GiXAwzGY85CM2eDH/view?usp=drive_link) (version: 2023.1122.1625)
 
-2. Unzip the file you downloaded to extract the tar file.
+4. Unzip the file you downloaded to extract the tar file.
 
-3. Load the image to docker
+5. Load the image to docker
 ```
 docker load --input sdk-destination-tester.tar
 ```
