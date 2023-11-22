@@ -59,7 +59,7 @@ import picocli.CommandLine;
 public final class SdkDestinationTester {
     private static final Logger LOG = Logger.getLogger(SdkDestinationTester.class.getName());
 
-    private static final String VERSION = "2023.1117.1724";
+    private static final String VERSION = "2023.1122.1625";
 
     private static final CsvMapper CSV = createCsvMapper();
     private static final String DEFAULT_SCHEMA = "tester";
@@ -272,9 +272,9 @@ public final class SdkDestinationTester {
                     String filename = String.format("%s_%s_%s.%s", table, batchName, opName, extension);
                     Path path = Paths.get(workingDir, filename);
                     writeFile(path, key, csvSchema, opName, columns, rows, table, plainText);
-                    keys.put(path.toString(), ByteString.copyFrom(key.getEncoded()));
 
                     Path grpcPath = Paths.get(grpcWorkingDir, filename);
+                    keys.put(grpcPath.toString(), ByteString.copyFrom(key.getEncoded()));
                     switch (opName) {
                         case "upsert" -> replaceList.add(grpcPath.toString());
                         case "update" -> updateList.add(grpcPath.toString());
