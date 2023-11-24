@@ -20,6 +20,8 @@ docker load --input sdk-destination-tester.tar
 docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e WORKING_DIR=<local-data-folder> -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-destination-tester
 ```
 
+Note that it is possible to disable encryption and compression of batch files for debugging purposes by passing `--plain-text` CLI argument to the destination tester.
+
 5. To rerun the container from step #4, use the following command:
 
 ```
@@ -28,7 +30,7 @@ docker start -i <container-id>
 
 # Batch input format
 
-Destination tester simulates operations from a source by reading input files from the data folder. Each of these input files represent a batch of operations, encoded in JSON format. They will be read and executed in the alphabetical order they appear in the data folder. 
+Destination tester simulates operations from a source by reading input files from the data folder. Each of these input files represent a batch of operations, encoded in JSON format. They will be read and executed in the alphabetical order they appear in the data folder. Data types in [common.proto](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73) file can be used as column data types.
 
 Here is an example input file named `batch_1.json`:
 
@@ -37,7 +39,7 @@ Here is an example input file named `batch_1.json`:
     "create_table" : {
         "transaction": {
             "columns": {
-                "id": "INTEGER",
+                "id": "INT",
                 "amount" : "DOUBLE",
                 "desc": "STRING"
             },
@@ -45,7 +47,7 @@ Here is an example input file named `batch_1.json`:
         },
         "campaign": {
             "columns": {
-                "id": "INTEGER",
+                "id": "INT",
                 "name": "STRING"
             },
             "primary_key": ["id"]
@@ -54,7 +56,7 @@ Here is an example input file named `batch_1.json`:
     "alter_table" : {
         "transaction": {
             "columns": {
-                "id": "INTEGER",
+                "id": "INT",
                 "amount" : "FLOAT",
                 "desc": "STRING"
             },
