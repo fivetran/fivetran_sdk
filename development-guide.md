@@ -12,8 +12,17 @@ The executable needs to accept a `--port` argument that takes an integer as port
 
 ## General Tips, Conventions, Guidelines
 
+### Connector
+
 - Don't push anything other than source data to the destination. State will be saved to production DB.
 - Don't forget to handle new schemas/tables/columns per the information and user choices in `UpdateRequest#selection`
+
+### Destination
+
+- Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd) and encrypted using [AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) in [CBC](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation) mode. It is possible to disable encryption and compression of batch files for debugging purposes by passing `--plain-text` CLI argument to the destination tester.
+- Each file is encrypted separately. You can find the encryption keys in `WriteBatchRequest#keys` field.
+- First 16 bytes of each batch file holds the IV vector.
+- CsvFileParams contains `null_string` and `unmodified_string` parameters. These parameters are used to represent NULL values in all batch files and unmodified values in update files respectively.
 
 ## Security
 
