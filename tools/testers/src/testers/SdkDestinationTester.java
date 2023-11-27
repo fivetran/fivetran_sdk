@@ -6,9 +6,7 @@ import static java.time.temporal.ChronoField.YEAR;
 import static testers.SdkConnectorTester.CONFIG_FILE;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SequenceWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.csv.CsvGenerator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvParser;
@@ -28,10 +26,8 @@ import fivetran_sdk.DataType;
 import fivetran_sdk.DescribeTableResponse;
 import fivetran_sdk.Table;
 import io.grpc.ManagedChannel;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
