@@ -13,8 +13,8 @@ import java.util.function.Consumer;
 public class SdkConnectorClient {
     public static final String DEFAULT_GRPC_HOST = "127.0.0.1";
     public static final int DEFAULT_GRPC_PORT = 50051;
-    private static final int MAX_RETRY = 5;
-    private static final int INITIAL_WAIT_TIME = 250; // msec
+    private static final int MAX_RETRY = 30;
+    private static final int INITIAL_WAIT_TIME = 500; // msec
 
     private final ManagedChannel channel;
     private ConnectorGrpc.ConnectorBlockingStub blockingStub = null;
@@ -127,7 +127,6 @@ public class SdkConnectorClient {
                     return;
                 }
                 Thread.sleep(waitTime);
-                waitTime *= 2;
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
