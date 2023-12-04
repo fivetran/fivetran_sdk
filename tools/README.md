@@ -4,7 +4,8 @@
 - Docker version >= 4.23.0
 
 # SDK Connector Tester
-Make sure the gRPC server is running for your connector or one of the [connector examples](/examples/connector/).
+
+Make sure the gRPC server for your connector or one of the [connector examples](/examples/connector) is running.
 
 ## Steps
 
@@ -29,7 +30,7 @@ docker start -i <container-id>
 
 # SDK Destination Tester
 
-Make sure the gRPC server is running for your destination or one of the [destination examples](/examples/destination/).
+Make sure the gRPC server for your destination or one of the [destination examples](/examples/destination) is running.
 
 ## Steps
 1. Build the `sdk-destination-tester` docker image:
@@ -37,7 +38,7 @@ Make sure the gRPC server is running for your destination or one of the [destina
 ./tools/scripts/build_sdk_destination_tester_image.sh
 ```
 
-2. Prepare the batch files according to the format specified in the next section.
+2. Prepare your batch file(s) according to the format specified in the next section.
 
 3. Run a container using the image with the following command. Make sure to map a local directory for the tool by replacing placeholders `<local-data-folder>` in the command.
 
@@ -54,7 +55,7 @@ docker start -i <container-id>
 
 ## Batch input format
 
-Destination tester simulates operations from a source by reading input files from the data folder. Each of these input files represent a batch of operations, encoded in JSON format. They will be read and executed in the alphabetical order they appear in the data folder.
+Destination tester simulates operations from a source by reading input files from the data folder. Each of these input files represent a batch of operations, encoded in JSON format. They will be read and executed in the alphabetical order they appear in the data folder. Data types in [common.proto](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73) file can be used as column data types.
 
 Here is an example input file named `batch_1.json`:
 

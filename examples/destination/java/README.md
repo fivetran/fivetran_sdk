@@ -1,8 +1,8 @@
 # Java Destination Example
 
 ## Pre-requisites
-- JDK v17
-- Gradle 8
+JDK 17
+Gradle 8 
 
 ## Steps
 1. Copy proto files from the root folder
