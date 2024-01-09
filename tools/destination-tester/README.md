@@ -5,16 +5,9 @@
 - Docker version > 4.23.0
 
 ## Steps
-1. Download the latest docker image from [this link](https://drive.google.com/file/d/1QdumwIwo8C07czp4GiXAwzGY85CM2eDH/view?usp=drive_link) (version: 2023.1122.1625)
+1. Pull the latest docker image from [it5t/fivetran-sdk-destination-tester](https://hub.docker.com/repository/docker/it5t/fivetran-sdk-destination-tester/general) on Docker Hub.
 
-4. Unzip the file you downloaded to extract the tar file.
-
-5. Load the image to docker
-```
-docker load --input sdk-destination-tester.tar
-```
-
-4. Run a container using the image with the following command. Make sure to map a local directory for the tool by replacing `<local-data-folder>` placeholders in the command.
+2. Run a container using the image with the following command. Make sure to map a local directory for the tool by replacing `<local-data-folder>` placeholders in the command.
 
 ```
 docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e WORKING_DIR=<local-data-folder> -e GRPC_HOSTNAME=host.docker.internal --network=host sdk-destination-tester
@@ -22,7 +15,7 @@ docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a
 
 Note that it is possible to disable encryption and compression of batch files for debugging purposes by passing `--plain-text` CLI argument to the destination tester.
 
-5. To rerun the container from step #4, use the following command:
+3. To rerun the container from step #2, use the following command:
 
 ```
 docker start -i <container-id>
