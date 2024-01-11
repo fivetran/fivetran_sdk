@@ -13,6 +13,10 @@ The executable needs to:
 
 ## General Tips, Conventions, Guidelines
 
+### Proto files
+
+Partners should not directly add the proto files to their repos. Proto files should be pulled in from this repo at build time and added to `.gitignore` so they are excluded.
+
 ### Connector
 
 - Don't push anything other than source data to the destination. State will be saved to production DB.
