@@ -18,9 +18,13 @@ Our Readme's for [connectors](tools/connector-tester/) and [destinations](tools/
 > To run an example connector or destination from `examples` directory, follow the Readme specific to the example. 
 
 ### Other Examples
-You can look at the following public connector repos to see how other partner's have built their connectors:
+You can look at the following public repos to see how other partner's have built their connectors:
+#### Connectors
 * [PlanetScale](https://github.com/planetscale/fivetran-source)
 * [Convex](https://github.com/get-convex/convex-fivetran-source)
+* [Materialize](https://github.com/MaterializeInc/materialize/tree/main/src/fivetran-destination)
+#### Destinations
+* [Motherduck](https://github.com/MotherDuck-Open-Source/motherduck-fivetran-connector)
 
 ## Partner Process
 
