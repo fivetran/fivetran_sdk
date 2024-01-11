@@ -23,7 +23,26 @@ The executable needs to:
 - Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd) and encrypted using [AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) in [CBC](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation) mode. It is possible to disable encryption and compression of batch files for debugging purposes by passing `--plain-text` CLI argument to the destination tester.
 - Each file is encrypted separately. You can find the encryption keys in `WriteBatchRequest#keys` field.
 - First 16 bytes of each batch file holds the IV vector.
-- CsvFileParams contains `null_string` and `unmodified_string` parameters. These parameters are used to represent NULL values in all batch files and unmodified values in update files respectively.
+- CsvFileParams contains `null_string` and `unmodified_string` parameters:
+    - `null_string` value is used to represent `NULL` value in all batch files.
+    - `unmodified_string` value is used to indicate columns in update batch files where the values did not change.
+- Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in CSV batch files can be found below:
+    - UNSPECIFIED: This data type will never appear in batch files
+    - BOOLEAN: "true", "false"
+    - SHORT: -32768 .. 32767
+    - INT: -2147483648 .. 2147483647
+    - LONG: -9223372036854776000 .. 9223372036854775999
+    - DECIMAL: Floating point values with max precision of 38 and max scale of 37
+    - FLOAT: Single-precision 32-bit IEEE 754 values, e.g. 3.4028237E+38
+    - DOUBLE: Double-precision 64-bit IEEE 754 values, e.g. -2.2250738585072014E-308
+    - NAIVE_DATE: Date without a timezone in ISO-8601 calendar system, e.g. 2007-12-03
+    - NAIVE_DATETIME: A date-time without timezone in ISO-8601 calendar system, e.g. 2007-12-03T10:15:30.
+    - UTC_DATETIME: An instantaneous point on the timeline, always in UTC timezone, e.g. 2007-12-03T10:15:30.123Z
+    - BINARY: Binary data is represented as Google Protobuf [ByteString](https://protobuf.dev/reference/java/api-docs/com/google/protobuf/ByteString)
+    - XML: "<tag>This is xml</tag>"
+    - STRING: "This is text"
+    - JSON: "{\"a\": 123}"
+- `CreateTable` rpc call should fail if it is asked to create a table that already exists.
 
 ## Security
 
