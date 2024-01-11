@@ -7,8 +7,9 @@ Fivetran SDK uses [gRPC](https://grpc.io/) to talk to partner code. The partner 
 At the moment, partner code should be developed in a language that can generate a statically linked binary executable.
 
 ## Command Line Args
-
-The executable needs to accept a `--port` argument that takes an integer as port number to listen. It should listen on both IPV4 (i.e. 0.0.0.0) and IPV6 (i.e ::0), but if only one is possible, it should listen on IPV4.
+The executable needs to:
+* Accept a `--port` argument that takes an integer as port number to listen.
+* Listen on both IPV4 (i.e. 0.0.0.0) and IPV6 (i.e ::0), but if only one is possible, it should listen on IPV4.
 
 ## General Tips, Conventions, Guidelines
 
