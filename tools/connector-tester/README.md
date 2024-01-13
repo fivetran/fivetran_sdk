@@ -4,14 +4,14 @@
 - gRPC server is running for the particular example (see [example readme's](/examples/connector/))
 - Docker version > 4.23.0
 
-## Steps
+## How To Run
 
 1. Pull the latest docker image from [it5t/fivetran-sdk-connector-tester](https://hub.docker.com/repository/docker/it5t/fivetran-sdk-connector-tester/general) on Docker Hub
 
-2. Run a container using the image with the following command. Make sure to map a local directory for storing files that the tool generates by replacing `<local-data-folder>` in the command. 
+2. Run a container using the image with the following command. Make sure to map a local directory for storing files that the tool generates by replacing `<local-data-folder>` in the command, and replace <version> with the version of the image you pulled.
 
 ```
-docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e GRPC_HOSTNAME=host.docker.internal --network=host fivetran-sdk-connector-tester
+docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e GRPC_HOSTNAME=host.docker.internal --network=host it5t/fivetran-sdk-connector-tester:<version>
 
 ```
 
@@ -22,3 +22,13 @@ docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a
 ```
 docker start -i <container-id>
 ```
+
+## CLI Arguments
+
+The tester supports the following optional CLI arguments to alter its default behavior. You can append these options to the end of the docker run command provided in step 2 of [How To Run](https://github.com/fivetran/fivetran_sdk/blob/main/tools/connector-tester/README.md#how-to-run) section above.
+
+#### --port
+This option tells the tester to use a different port than the default 50051.
+
+#### --destination-schema
+With this option, you can alter the schema name used in the destination from the default `default_schema`.
