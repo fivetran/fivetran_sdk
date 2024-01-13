@@ -54,18 +54,39 @@ Partners should not add the proto files to their repos. Proto files should be pu
 
 ## Connector Guidelines
 
-- Don't push anything other than source data to the destination. State will be saved to production DB.
-- Don't forget to handle new schemas/tables/columns per the information and user choices in `UpdateRequest#selection`
+- Don't push anything other than source data to the destination. State will be saved to production DB and returned in `UpdateRequest`.
+- Don't forget to handle new schemas/tables/columns per the information and user choices in `UpdateRequest#selection`.
 
 ## Destination Guidelines
 
-- Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd) and encrypted using [AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) in [CBC](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation) mode. It is possible to disable encryption and compression of batch files for debugging purposes by passing `--plain-text` CLI argument to the destination tester.
+- Do not push anything other than source data to the destination.
+
+### System Columns
+- In addition to source columns, Fivetran will send the following additional system columns:
+    - `_fivetran_synced`: This is a `UTC_DATETIME` column that represents the start of sync
+    - `_fivetran_deleted`: Fivetran does soft deletes. This column is used to indicate whether a given row is deleted at the source or not.
+    - `_fivetran_id`: Fivetran supports primary-keyless source tables by adding a pseudo primary key column. Therefore, tables in batch files will always have a primary key.
+
+### Compression
+Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd) and encrypted using [AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) in [CBC](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation) mode. It is possible to disable encryption and compression of batch files for debugging purposes by passing `--plain-text` CLI argument to the destination tester.
+
+### Encryption
 - Each file is encrypted separately. You can find the encryption keys in `WriteBatchRequest#keys` field.
 - First 16 bytes of each batch file holds the IV vector.
-- CsvFileParams contains `null_string` and `unmodified_string` parameters:
+
+### CreateTable RPC call:
+This call should fail if it is asked to create a table that already exists.
+
+### WriteBatchRequest
+- `replace_files` is for `upsert` operation and each row always has values for all columns.
+- `update_files` is for `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `CsvFileParams`. 
+- `delete_files` is for `hard delete` operation. Fivetran currently does not support this operation. Delete operations will be sent as an `update` operation with just the primary key column values present.
+- `CsvFileParams`:
     - `null_string` value is used to represent `NULL` value in all batch files.
-    - `unmodified_string` value is used to indicate columns in update batch files where the values did not change.
-- Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in CSV batch files can be found below:
+    - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
+
+### Examples of Data Types
+Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in CSV batch files are as follows:
     - UNSPECIFIED: This data type will never appear in batch files
     - BOOLEAN: "true", "false"
     - SHORT: -32768 .. 32767
@@ -81,12 +102,6 @@ Partners should not add the proto files to their repos. Proto files should be pu
     - XML: "<tag>This is xml</tag>"
     - STRING: "This is text"
     - JSON: "{\"a\": 123}"
-- `CreateTable` rpc call should fail if it is asked to create a table that already exists.
-- Do not push anything other than source data to the destination.
-- In addition to source columns, Fivetran will send the following additional system columns:
-    - `_fivetran_synced`: This is a `UTC_DATETIME` column that represents the start of sync
-    - `_fivetran_deleted`: Fivetran does soft deletes. This column is used to indicate whether a given row is deleted at the source or not.
-    - `_fivetran_id`: Fivetran supports primary-keyless source tables by adding a pseudo primary key column. Therefore, tables in batch files will always have a primary key.
 
 ## Testing
 The following are a list of test scenarios we recommend you consider:
