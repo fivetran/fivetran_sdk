@@ -47,6 +47,11 @@ Partners should not directly add the proto files to their repos. Proto files sho
     - STRING: "This is text"
     - JSON: "{\"a\": 123}"
 - `CreateTable` rpc call should fail if it is asked to create a table that already exists.
+- Do not push anything other than source data to the destination.
+- In addition to source columns, Fivetran will send the following additional system columns:
+    - `_fivetran_synced`: This is a `UTC_DATETIME` column that represents the start of sync
+    - `_fivetran_deleted`: Fivetran does soft deletes. This column is used to indicate whether a given row is deleted at the source or not.
+    - `_fivetran_id`: Fivetran supports primary-keyless source tables by adding a pseudo primary key column. Therefore, tables in batch files will always have a primary key.
 
 ## Security
 
