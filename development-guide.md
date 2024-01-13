@@ -80,7 +80,7 @@ This call should fail if it is asked to create a table that already exists.
 ### WriteBatchRequest
 - `replace_files` is for `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row will always provide values for all columns.
 - `update_files` is for `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `CsvFileParams`. 
-- `delete_files` is for `soft delete` operation. Only primary key columns should be used to set `_fivetran_deleted` column of the corresponding rows to `true` in the destination.
+- `delete_files` is for `soft delete` operation. Only primary key columns and the system columns should be used to update the corresponding rows in the destination.
 - `CsvFileParams`:
     - `null_string` value is used to represent `NULL` value in all batch files.
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
