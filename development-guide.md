@@ -78,9 +78,9 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd) and 
 This call should fail if it is asked to create a table that already exists.
 
 ### WriteBatchRequest
-- `replace_files` is for `upsert` operation and each row always has values for all columns.
+- `replace_files` is for `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row will always provide values for all columns.
 - `update_files` is for `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `CsvFileParams`. 
-- `delete_files` is for `hard delete` operation. Fivetran currently does not support this operation. Delete operations will be sent as an `update` operation with just the primary key column values present.
+- `delete_files` is for `soft delete` operation. Only primary key columns should be used to set `_fivetran_deleted` column of the corresponding rows to `true` in the destination.
 - `CsvFileParams`:
     - `null_string` value is used to represent `NULL` value in all batch files.
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
