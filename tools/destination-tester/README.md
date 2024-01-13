@@ -38,10 +38,10 @@ Here is an example input file named `input_1.json`:
         },
         "campaign": {
             "columns": {
-                "id": "INT",
                 "name": "STRING"
+                "num": {"type": "DECIMAL", "precision": 6, "scale": 7},
             },
-            "primary_key": ["id"]
+            "primary_key": []
         }
     },
     "alter_table" : {
@@ -67,11 +67,11 @@ Here is an example input file named `input_1.json`:
             "upsert": {
                 "transaction": [
                     {"id":1, "amount": 100.45, "desc": null},
-                    {"id":2, "amount": 50.33, "desc": "two"}
+                    {"id":2, "amount": 150.33, "desc": "two"}
                 ],
                 "campaign": [
-                    {"id":101, "name": "Christmas"},
-                    {"id":102, "name": "New Year"}
+                    {"_fivetran_id": "abc-123-xyz", "name": "Christmas", "num": 100.23},
+                    {"_fivetran_id": "vbn-543-hjk", "name": "New Year", "num": 200.56}
                 ]
             }
         },
@@ -89,8 +89,7 @@ Here is an example input file named `input_1.json`:
                     {"id":20, "amount": 50, "desc": "mone"}
                 ],
                 "campaign": [
-                    {"id":201, "name": "Christmas 2"},
-                    {"id":202, "name": "New Year 2"}
+                    {"_fivetran_id": "dfg-890-lkj", "name": "Christmas 2", "num": 400.32}
                 ]
             }
         },
@@ -101,8 +100,8 @@ Here is an example input file named `input_1.json`:
                     {"id":4}
                 ],
                 "campaign": [
-                    {"id":103},
-                    {"id":104}
+                    {"_fivetran_id": "abc-123-xyz"},
+                    {"_fivetran_id": "dfg-890-lkj"}
                 ]
             }
         },
