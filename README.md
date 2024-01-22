@@ -68,7 +68,7 @@ Your connector will appear on:
 ### I am sold! How do I get started?
 Reach out to us via this [intake form](https://forms.gle/KezLXRSn866r7D3J9) and we'll go from there.
 The process typically looks like this:
-1. Explore the [github repo](https://github.com/fivetran/fivetran_sdk)
+1. Explore this repo
 2. Meet with us to go over the Partnership Agreement
 3. Build the connector/destination
 4. Create product docs (overview and setup form)
