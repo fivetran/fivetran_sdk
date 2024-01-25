@@ -35,7 +35,7 @@ Partners should not add the proto files to their repos. Proto files should be pu
 - Log _after_ an action. When you log after an action, additional context can be provided.
 - Include details about "what went wrong" in your error message
 - Manage log volume. Ask yourself if a consumer of the log message will find it useful to solve a problem and whether that need justifies the cost of storing and managing that log. Sources of excessive logging include: 
-    - **Tracing entries and exits in methods** - Don't do this unless it is absolutely necessary. If you must do it, consider using the `NOTICE` level.
+    - **Tracing entries and exits in methods** - Don't do this unless it is absolutely necessary. 
     - **Logging inside tight loops** - be careful about what you are logging inside loops, especially if the loop runs for many iterations.
     - **Including benign errors** - when a successful execution flow includes handling errors
     - **Repeating errors** - For instance, if you log an exception trace before each retry, you might end up logging the exception trace unnecessarily or too many times
