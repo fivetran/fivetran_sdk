@@ -5,12 +5,12 @@
 - Docker version > 4.23.0
 
 ## How To Run
-1. Pull the latest docker image from [it5t/fivetran-sdk-destination-tester](https://hub.docker.com/repository/docker/it5t/fivetran-sdk-destination-tester/general) on Docker Hub.
+1. Pull the latest docker image from [fivetrandocker/sdk-destination-tester](https://hub.docker.com/repository/docker/fivetrandocker/sdk-destination-tester/general) on Docker Hub.
 
 2. Run a container using the image with the following command. Make sure to map a local directory for the tool by replacing `<local-data-folder>` placeholders in the command, and replace `<version>` with the version of the image you pulled.
 
 ```
-docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e WORKING_DIR=<local-data-folder> -e GRPC_HOSTNAME=host.docker.internal --network=host it5t/fivetran-sdk-destination-tester:<version> 
+docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e WORKING_DIR=<local-data-folder> -e GRPC_HOSTNAME=host.docker.internal --network=host fivetrandocker/sdk-destination-tester:<version> 
 ```
 
 3. To rerun the container from step #2, use the following command:
