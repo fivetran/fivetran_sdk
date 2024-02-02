@@ -4,6 +4,10 @@ Fivetran SDK uses [gRPC](https://grpc.io/) to talk to partner code. The partner 
 
 ## General Guidelines
 
+### Versions
+* gRPC: 1.59.1
+* protobuf: 3.25.1
+
 ### Language
 
 At the moment, partner code should be developed in a language that can generate a statically linked binary executable.
