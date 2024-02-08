@@ -79,7 +79,7 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd) and 
 - First 16 bytes of each batch file holds the IV vector.
 
 ### CreateTable
-This operation should fail if it is asked to create a table that already exists.
+This operation should fail if it is asked to create a table that already exists. However, it should not fail if the target schema is missing. The destination should create the missing schema.
 
 ### DescribeTable
 This operation should report all columns in the destination table, including Fivetran system columns such as `_fivetran_synced` and `_fivetran_deleted`. It should also provide other additional information as applicable such as data type, `primary_key` and `DecimalParams`.
