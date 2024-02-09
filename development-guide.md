@@ -78,16 +78,22 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd) and 
 - Each file is encrypted separately. You can find the encryption keys in `WriteBatchRequest#keys` field.
 - First 16 bytes of each batch file holds the IV vector.
 
-### CreateTable
+### Batch Files
+- Currently we only support CSV file format
+- Each batch file is size limited to 100MB
+- Number of records in each batch file can vary depending on row size
+
+### RPC Calls
+#### CreateTable
 This operation should fail if it is asked to create a table that already exists. However, it should not fail if the target schema is missing. The destination should create the missing schema.
 
-### DescribeTable
+#### DescribeTable
 This operation should report all columns in the destination table, including Fivetran system columns such as `_fivetran_synced` and `_fivetran_deleted`. It should also provide other additional information as applicable such as data type, `primary_key` and `DecimalParams`.
 
-### Truncate
+#### Truncate
 This operation might be requested for a table that does not exist in the destination. In that case, it should NOT fail, simply ignore the request and return `success = true`.
 
-### WriteBatchRequest
+#### WriteBatchRequest
 - `replace_files` is for `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row will always provide values for all columns.
 
 - `update_files` is for `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `CsvFileParams`. 
