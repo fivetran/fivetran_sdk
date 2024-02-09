@@ -49,6 +49,11 @@ Partners should not add the proto files to their repos. Proto files should be pu
 - Partner code should handle any source/destination errors, retry any transient errors internally without deferring them to Fivetran.
 - Partner code should use [gRPC built-in error mechanism](https://grpc.io/docs/guides/error/#language-support) to relay errors instead of throwing exceptions and abruptly closing the connection.
 
+### Retries
+- Partner code should retry transient problems internally
+- Fivetran will not be able to handle any problems that the partner code runs into
+- If an error is raised to Fivetran's side, the sync will be terminated and retried from the last good known spot according to saved cursors from the last successful batch.
+
 ### Security
 
 - Do not decrypt the batch files to disk. Fivetran does not allow unencrypted files at rest. If you need to upload batch files in plaintext, do the decryption in "streaming" mode. 
