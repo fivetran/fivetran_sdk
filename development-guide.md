@@ -100,7 +100,9 @@ This operation might be requested for a table that does not exist in the destina
 
 - `delete_files` is for `soft delete` operation. Use primary key columns (or `_fivetran_id` system column for primary-keyless tables) to update `_fivetran_deleted` column of corresponding rows in the destination to `true`.
 
-Note that for all three operations above, you should update `_fivetran_synced` column in the destination with the values coming in from the csv files.
+For all three operations above, you should update `_fivetran_synced` column in the destination with the values coming in from the csv files.
+
+Also, Fivetran will deduplicate operations such that each primary key will show up only once in any of the operations
 
 - `CsvFileParams`:
     - `null_string` value is used to represent `NULL` value in all batch files.
