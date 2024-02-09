@@ -55,8 +55,8 @@ Partners should not add the proto files to their repos. Proto files should be pu
 - If an error is raised to Fivetran's side, the sync will be terminated and retried from the last good known spot according to saved cursors from the last successful batch.
 
 ### Security
-
-- Do not decrypt the batch files to disk. Fivetran does not allow unencrypted files at rest. If you need to upload batch files in plaintext, do the decryption in "streaming" mode. 
+The following are hard requirements to be able to deploy Partner code to Fivetran production:
+- Do not decrypt batch files to disk. Fivetran does not allow unencrypted files at rest. If you need to upload batch files in plaintext, do the decryption in "streaming" mode. 
 - Do not log sensitive data. Ensure only necessary information is kept in logs, and never log any sensitive data. Such data may include credentials (passwords, tokens, keys, etc), customer data, payment information, or PII.
 - Encrypt HTTP requests: Things like URLs, URL parameters, and query params are always encrypted for logging, and customer approval is needed to decrypt and examine them.
 
