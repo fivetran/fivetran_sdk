@@ -97,7 +97,8 @@ This operation should fail if it is asked to create a table that already exists.
 This operation should report all columns in the destination table, including Fivetran system columns such as `_fivetran_synced` and `_fivetran_deleted`. It should also provide other additional information as applicable such as data type, `primary_key` and `DecimalParams`.
 
 #### Truncate
-This operation might be requested for a table that does not exist in the destination. In that case, it should NOT fail, simply ignore the request and return `success = true`.
+- This operation might be requested for a table that does not exist in the destination. In that case, it should NOT fail, simply ignore the request and return `success = true`.
+- `utc_delete_before` has millisecond precision.
 
 #### WriteBatchRequest
 - `replace_files` is for `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row will always provide values for all columns.
