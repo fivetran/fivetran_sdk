@@ -24,6 +24,20 @@ message FormField {
     TextField text_field = 5;
     DropdownField dropdown_field = 6;
     ToggleField toggle_field = 7;
+    FieldSet field_set = 9;
+  }
+}
+
+message FieldSet {
+  optional VisibilityCondition visibility = 1;
+  repeated FormField fields = 2;
+}
+
+message VisibilityCondition {
+  string key = 1;
+  oneof has_value {
+    bool has_bool_value = 2;
+    string has_string_value = 3;
   }
 }
 
