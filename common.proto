@@ -34,7 +34,7 @@ message FieldSet {
 }
 
 message VisibilityCondition {
-  string key = 1;
+  string field = 1;
   oneof has_value {
     bool has_bool_value = 2;
     string has_string_value = 3;
