@@ -135,11 +135,17 @@ Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/c
 
 ## Testing
 The following are a list of test scenarios we recommend you consider:
-- Test mapping of all data types between Fivetran data types and source/destination data types (e.g. [Mysql](https://fivetran.com/docs/databases/mysql#typetransformationsandmapping))
+### General
+- Test mapping of all data types between Fivetran types and source/destination types (e.g. [Mysql](https://fivetran.com/docs/databases/mysql#typetransformationsandmapping))
 - Big data loads
 - Big incremental updates
 - Narrow event tables
 - Wide fact tables
+### Destination
+- Make sure to test with at least one of each of the following source connector types:
+    - [Database](https://fivetran.com/docs/databases)
+    - [Application](https://fivetran.com/docs/applications)
+    - [File](https://fivetran.com/docs/files)
 
 ## FAQ
 
