@@ -71,10 +71,10 @@ The following are hard requirements to be able to deploy Partner code to Fivetra
 - Do not push anything other than source data to the destination.
 
 ### System Columns
-- In addition to source columns, Fivetran will send the following additional system columns:
-    - `_fivetran_synced`: This is a `UTC_DATETIME` column that represents the start of sync
-    - `_fivetran_deleted`: Fivetran does soft deletes. This column is used to indicate whether a given row is deleted at the source or not.
-    - `_fivetran_id`: Fivetran supports primary-keyless source tables by adding a pseudo primary key column. Therefore, tables in batch files will always have a primary key.
+- In addition to source columns, Fivetran will send the following additional system columns if and when required:
+    - `_fivetran_synced`: This is a `UTC_DATETIME` column that represents the start of sync. Every table will have this system column.
+    - `_fivetran_deleted`: This column is used to indicate whether a given row is deleted at the source or not. If the source deletes a row or soft-deletes a table, this system column will get added to the table.
+    - `_fivetran_id`: Fivetran supports primary-keyless source tables by adding this column as a stand-in pseudo primary key column so that all destination tables have a primary key.
 
 ### Compression
 Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd)  
