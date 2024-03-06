@@ -111,6 +111,8 @@ For all three operations above, you should update `_fivetran_synced` column in t
 
 Also, Fivetran will deduplicate operations such that each primary key will show up only once in any of the operations
 
+Do not assume order of columns in the batch files. Always read the CSV file header to determine column order.
+
 - `CsvFileParams`:
     - `null_string` value is used to represent `NULL` value in all batch files.
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
