@@ -145,9 +145,9 @@ The following are a list of test scenarios we recommend you consider:
 - Wide fact tables
 ### Destination
 - Make sure to test with at least one of each of the following source connector types:
-    - [Database](https://fivetran.com/docs/databases)
-    - [Application](https://fivetran.com/docs/applications)
-    - [File](https://fivetran.com/docs/files)
+    - [Database](https://fivetran.com/docs/databases) (Postgres, MongoDB, etc)
+    - [Application](https://fivetran.com/docs/applications) (Github, Hubspot, Google Sheets, etc)
+    - [File](https://fivetran.com/docs/files) (S3, Google Drive, etc)
 
 ## FAQ
 
