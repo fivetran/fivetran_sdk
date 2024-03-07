@@ -137,18 +137,25 @@ Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/c
 
 ## Testing
 The following are a list of test scenarios we recommend you consider:
-### General
+### Source
 - Test mapping of all data types between Fivetran types and source/destination types (e.g. [Mysql](https://fivetran.com/docs/databases/mysql#typetransformationsandmapping))
 - Big data loads
 - Big incremental updates
 - Narrow event tables
 - Wide fact tables
 ### Destination
+In addition to the suggestions above, consider the following as well:
 - Make sure to test with at least one of each of the following source connector types:
     - [Database](https://fivetran.com/docs/databases) (Postgres, MongoDB, etc)
     - [Application](https://fivetran.com/docs/applications) (Github, Hubspot, Google Sheets, etc)
     - [File](https://fivetran.com/docs/files) (S3, Google Drive, etc)
-
+- Exercise `AlterTable` in various ways:
+    - Adding one or more column(s)
+    - Change of primary key columns (adding and removing columns from primary key constraint)
+    - Changing data type of non-primary key column(s) 
+    - Changing data type of primary key column(s)
+- Test tables with and without primary-key
+ 
 ## FAQ
 
 ### Is it possible for me to see the connector log output?
