@@ -89,7 +89,8 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
 
     @Override
     public void truncate(TruncateRequest request, StreamObserver<TruncateResponse> responseObserver) {
-        System.out.println("[TruncateTable]: " + request.getSchemaName() + " | " + request.getTableName());
+        System.out.printf("[TruncateTable]: %s | %s | soft=%s%n",
+                request.getSchemaName(), request.getTableName(), request.hasSoft());
         responseObserver.onNext(TruncateResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
