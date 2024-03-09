@@ -21,8 +21,19 @@ docker start -i <container-id>
 
 ## Input File Format
 
-Destination tester simulates operations from a source by reading input files from the local data folder. Each of these input files represent a batch of operations, encoded in JSON format. Data types in [common.proto](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73) file can be used as column data types.
+Destination tester simulates operations from a source by reading input files from the local data folder. Each input file represents a batch of operations, encoded in JSON format. Data types in [common.proto](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73) file can be used as column data types.
 
+### Available commands:
+* describe_table
+* create_table
+* alter_table
+* upsert
+* update
+* delete
+* truncate_before
+* hard_truncate_before
+
+### Example input file
 Here is an example input file named `input_1.json`:
 
 ```json
@@ -59,11 +70,6 @@ Here is an example input file named `input_1.json`:
     ],
     "ops" : [
         {
-            "truncate": [
-                "transaction"
-            ]
-        },
-        {
             "upsert": {
                 "transaction": [
                     {"id":1, "amount": 100.45, "desc": null},
@@ -76,11 +82,21 @@ Here is an example input file named `input_1.json`:
             }
         },
         {
+            "hard_truncate_before": [
+                "campaign"
+            ]
+        },
+        {
             "update": {
                 "transaction": [
                     {"id":1, "amount": 200}
                 ]
             }
+        },
+        {
+            "truncate_before": [
+                "transaction"
+            ]
         },
         {
             "upsert": {
@@ -104,11 +120,6 @@ Here is an example input file named `input_1.json`:
                     {"_fivetran_id": "dfg-890-lkj"}
                 ]
             }
-        },
-        {
-            "truncate": [
-                "transaction"
-            ]
         }
     ]
 }
