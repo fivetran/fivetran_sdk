@@ -1,8 +1,8 @@
 # SDK Destination Tester
 
 ## Pre-requisites
+- Docker Desktop >= 4.23.0 or [Rancher Desktop](https://rancherdesktop.io/) >= 1.12.1
 - gRPC server is running for the particular example (see [example readme's](/examples/destination/))
-- Docker version > 4.23.0
 
 ## How To Run
 1. Pull the latest docker image from [fivetrandocker/sdk-destination-tester](https://hub.docker.com/repository/docker/fivetrandocker/sdk-destination-tester/general) on Docker Hub.
