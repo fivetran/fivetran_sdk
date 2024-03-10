@@ -1,4 +1,4 @@
-# SDK Connector Tester
+# Connector Tester
 
 ## Pre-requisites
 - Docker Desktop >= 4.23.0 or [Rancher Desktop](https://rancherdesktop.io/) >= 1.12.1
