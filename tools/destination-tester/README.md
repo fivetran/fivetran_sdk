@@ -50,7 +50,7 @@ Here is an example input file named `input_1.json`:
         "campaign": {
             "columns": {
                 "name": "STRING"
-                "num": {"type": "DECIMAL", "precision": 6, "scale": 7},
+                "num": {"type": "DECIMAL", "precision": 6, "scale": 3},
             },
             "primary_key": []
         }
