@@ -130,7 +130,7 @@ Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/c
 - NAIVE_DATE: Date without a timezone in ISO-8601 calendar system, e.g. 2007-12-03
 - NAIVE_DATETIME: A date-time without timezone in ISO-8601 calendar system, e.g. 2007-12-03T10:15:30
 - UTC_DATETIME: An instantaneous point on the timeline, always in UTC timezone, e.g. 2007-12-03T10:15:30.123Z
-- BINARY: Binary data is represented as Google Protobuf [ByteString](https://protobuf.dev/reference/java/api-docs/com/google/protobuf/ByteString)
+- BINARY: Binary data is represented as protobuf `bytes` (e.g. [ByteString](https://github.com/protocolbuffers/protobuf/blob/main/java/core/src/main/java/com/google/protobuf/ByteString.java))
 - XML: "`<tag>`This is xml`</tag>`"
 - STRING: "This is text"
 - JSON: "{\"a\": 123}"
