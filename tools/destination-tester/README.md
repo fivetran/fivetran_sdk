@@ -19,19 +19,26 @@ docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a
 docker start -i <container-id>
 ```
 
-## Input File Format
+## Input Files
 
 Destination tester simulates operations from a source by reading input files from the local data folder. Each input file represents a batch of operations, encoded in JSON format. Data types in [common.proto](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73) file can be used as column data types.
 
-### Available commands:
+### List of Operations
+
+#### Table Operations
 * describe_table
 * create_table
 * alter_table
+
+#### Single Record Operations
 * upsert
 * update
 * delete
+* soft_delete
+
+#### Bulk Record Operations
 * truncate_before
-* hard_truncate_before
+* soft_truncate_before
 
 ### Example input file
 Here is an example input file named `input_1.json`:
@@ -82,7 +89,7 @@ Here is an example input file named `input_1.json`:
             }
         },
         {
-            "hard_truncate_before": [
+            "truncate_before": [
                 "campaign"
             ]
         },
@@ -94,7 +101,7 @@ Here is an example input file named `input_1.json`:
             }
         },
         {
-            "truncate_before": [
+            "soft_truncate_before": [
                 "transaction"
             ]
         },
@@ -113,10 +120,18 @@ Here is an example input file named `input_1.json`:
             "delete": {
                 "transaction": [
                     {"id":3},
-                    {"id":4}
                 ],
                 "campaign": [
                     {"_fivetran_id": "abc-123-xyz"},
+                ]
+            }
+        },
+        {
+            "soft_delete": {
+                "transaction": [
+                    {"id":4}
+                ],
+                "campaign": [
                     {"_fivetran_id": "dfg-890-lkj"}
                 ]
             }
