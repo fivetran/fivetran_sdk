@@ -119,10 +119,10 @@ Here is an example input file named `input_1.json`:
         {
             "delete": {
                 "transaction": [
-                    {"id":3},
+                    {"id":3}
                 ],
                 "campaign": [
-                    {"_fivetran_id": "abc-123-xyz"},
+                    {"_fivetran_id": "abc-123-xyz"}
                 ]
             }
         },
