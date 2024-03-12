@@ -73,7 +73,7 @@ The following are hard requirements to be able to deploy Partner code to Fivetra
 ### System Columns
 - In addition to source columns, Fivetran will send the following additional system columns if and when required:
     - `_fivetran_synced`: This is a `UTC_DATETIME` column that represents the start of sync. Every table will have this system column.
-    - `_fivetran_deleted`: This column is used to indicate whether a given row is deleted at the source or not. If the source deletes a row or soft-deletes a table, this system column will get added to the table.
+    - `_fivetran_deleted`: This column is used to indicate whether a given row is deleted at the source or not. If the source soft-deletes a row or a table, this system column will get added to the table.
     - `_fivetran_id`: Fivetran supports primary-keyless source tables by adding this column as a stand-in pseudo primary key column so that all destination tables have a primary key.
 
 ### Compression
@@ -101,13 +101,11 @@ This operation should report all columns in the destination table, including Fiv
 - `utc_delete_before` has millisecond precision.
 
 #### WriteBatchRequest
-- `replace_files` is for `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row will always provide values for all columns.
+- `replace_files` is for `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row will always provide values for all columns. Set the `_fivetran_synced` column in the destination with the values coming in from the csv files.
 
-- `update_files` is for `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `CsvFileParams`. 
+- `update_files` is for `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `CsvFileParams`. Soft-deleted rows will arrive in here as well. Update the `_fivetran_synced` column in the destination with the values coming in from the csv files.
 
-- `delete_files` is for `soft delete` operation. Use primary key columns (or `_fivetran_id` system column for primary-keyless tables) to update `_fivetran_deleted` column of corresponding rows in the destination to `true`.
-
-For all three operations above, you should update `_fivetran_synced` column in the destination with the values coming in from the csv files.
+- `delete_files` is for `hard delete` operation. Use primary key columns (or `_fivetran_id` system column for primary-keyless tables) to perform `DELETE FROM`.
 
 Also, Fivetran will deduplicate operations such that each primary key will show up only once in any of the operations
 
