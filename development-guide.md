@@ -147,6 +147,7 @@ In addition to the suggestions above, consider the following as well:
     - [Database](https://fivetran.com/docs/databases) (Postgres, MongoDB, etc)
     - [Application](https://fivetran.com/docs/applications) (Github, Hubspot, Google Sheets, etc)
     - [File](https://fivetran.com/docs/files) (S3, Google Drive, etc)
+    - [Fivetran Platform connector](https://fivetran.com/docs/logs/fivetran-platform)
 - Exercise `AlterTable` in various ways:
     - Adding one or more column(s)
     - Change of primary key columns (adding and removing columns from primary key constraint)
