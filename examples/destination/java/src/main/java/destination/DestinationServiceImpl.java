@@ -73,7 +73,8 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
     public void createTable(CreateTableRequest request, StreamObserver<CreateTableResponse> responseObserver) {
         Map<String, String> configuration = request.getConfigurationMap();
 
-        System.out.println("[CreateTable]: " + request.getSchemaName() + " | " + request.getTable().getName());
+        System.out.println("[CreateTable]: "
+                + request.getSchemaName() + " | " + request.getTable().getName() + " | " + request.getTable().getColumnsList());
         responseObserver.onNext(CreateTableResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
@@ -82,7 +83,8 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
     public void alterTable(AlterTableRequest request, StreamObserver<AlterTableResponse> responseObserver) {
         Map<String, String> configuration = request.getConfigurationMap();
 
-        System.out.println("[AlterTable]: " + request.getSchemaName() + " | " + request.getTable().getName());
+        System.out.println("[AlterTable]: " +
+                request.getSchemaName() + " | " + request.getTable().getName() + " | " + request.getTable().getColumnsList());
         responseObserver.onNext(AlterTableResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
