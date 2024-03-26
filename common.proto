@@ -86,6 +86,7 @@ enum DataType {
   XML = 12;
   STRING = 13;
   JSON = 14;
+  NAIVE_TIME = 15;
 }
 
 message DecimalParams {
@@ -117,6 +118,7 @@ message ValueType {
     string string = 13;
     string json = 14;
     string xml = 15;
+    google.protobuf.Timestamp naive_time = 16;
   }
 }
 
