@@ -1,0 +1,1 @@
+protoc --proto_path=../proto --python_out=../proto ../proto/common.proto ../proto/destination_sdk.proto
