@@ -20,8 +20,8 @@ repositories {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-def grpcVersion = '1.59.1'
-def protobufVersion = '3.25.1'
+def grpcVersion = '1.61.1'
+def protobufVersion = '3.25.2'
 def protocVersion = protobufVersion
 
 dependencies {
@@ -33,8 +33,11 @@ dependencies {
 
     runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
-    implementation "com.fasterxml.jackson.core:jackson-core:2.14.1"
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation "com.fasterxml.jackson.core:jackson-core:2.15.2"
+
+    implementation 'com.github.luben:zstd-jni:1.5.5-11'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.2.3'
 }
 
 protobuf {
