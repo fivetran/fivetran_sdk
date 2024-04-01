@@ -47,7 +47,6 @@ class DescribeTableResponse(_message.Message):
     FAILURE_FIELD_NUMBER: _ClassVar[int]
     TABLE_FIELD_NUMBER: _ClassVar[int]
     not_found: bool
-    not_found: bool
     failure: str
     table: _common_pb2.Table
     def __init__(self, not_found: bool = ..., failure: _Optional[str] = ..., table: _Optional[_Union[_common_pb2.Table, _Mapping]] = ...) -> None: ...

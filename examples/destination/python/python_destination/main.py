@@ -1,17 +1,12 @@
 from concurrent import futures
 import grpc
-
 import common_pb2 as comm
 import destination_sdk_pb2 as dest
 import destination_sdk_pb2_grpc as dest_grpc
 
 
 class DestinationImpl(dest_grpc.DestinationServicer):
-    def __init__(self):
-        self.stub = dest_grpc.DestinationStub()
-
     def ConfigurationForm(self, request, context):
-        req: comm.ConfigurationFormRequest = request
 
         host = comm.FormField(name="host", label="Host", required=True, text_field=comm.TextField.PlainText)
         password = comm.FormField(name="password", label="Password", required=True, text_field=comm.TextField.Password)
@@ -28,72 +23,69 @@ class DestinationImpl(dest_grpc.DestinationServicer):
                                                                              fields=[host, password, region, hidden,
                                                                                      is_public],
                                                                              tests=[connect_test, select_test]
+
                                                                              )
-        context.set_details(res)
+        return res
 
     def Test(self, request, context):
         req: comm.TestRequest = request
         config = req.configuration
         test_name = req.name
         print("test name: " + test_name)
-        res: comm.TestResponse = context
-        res.success = True
-        context.set_details(res)
+        res: comm.TestResponse = comm.TestResponse(success=True)
+        return res
         # return self.stub
 
     def CreateTable(self, request, context):
         req: dest.CreateTableRequest = request
         config = req.configuration
-        print("[CreateTable] :" + req.schema_name + " | " + req.table.name + " | " + req.table.columns)
-        res: dest.CreateTableResponse
-        res.success = True
-        context.set_details(res)
+        print("[CreateTable] :" + str(req.schema_name) + " | " + str(req.table.name) + " | " + str(req.table.columns))
+        res: dest.CreateTableResponse = dest.CreateTableResponse(success=True)
+        return res
 
     def AlterTable(self, request, context):
         req: dest.AlterTableRequest = request
         res: dest.AlterTableResponse
         config = req.configuration
 
-        print("[AlterTable]: " + req.schema_name + " | " + req.table.name + " | " + req.table.columns)
-        res.success = True
-        context.set_details(res)
+        print("[AlterTable]: " + str(req.schema_name) + " | " + str(req.table.name) + " | " + str(req.table.columns))
+        res: dest.AlterTableResponse = dest.AlterTableResponse(success=True)
+        return res
 
     def Truncate(self, request, context):
         req: dest.TruncateRequest = request
-        res: dest.TruncateResponse
-        print("[TruncateTable]: " + req.schema_name + " | " + req.schema_name + " | soft" + req.soft)
-        res.success = True
-        context.set_details(res)
+        res: dest.TruncateResponse = dest.TruncateResponse(success=True)
+        print("[TruncateTable]: " + str(req.schema_name) + " | " + str(req.schema_name) + " | soft" + str(req.soft))
+        return res
 
     def WriteBatch(self, request, context):
         req: dest.WriteBatchRequest = request
         for replace_file in req.replace_files:
-            print("replace files: " + replace_file)
+            print("replace files: " + str(replace_file))
         for update_file in req.update_files:
-            print("replace files: " + update_file)
+            print("replace files: " + str(update_file))
         for delete_file in req.delete_files:
-            print("replace files: " + delete_file)
+            print("replace files: " + str(delete_file))
 
         for key, value in req.keys.items():
             print(f"{key}: {value}")
 
-        res: dest.WriteBatchResponse
-        res.success = True
-        context.set_details(res)
+        res: dest.WriteBatchResponse = dest.WriteBatchResponse(success=True)
+        return res
 
     def DescribeTable(self, request, context):
         req: dest.DescribeTableRequest = request
         column1 = comm.Column(name="a1", type=comm.DataType.UNSPECIFIED, primary_key=True)
         column2 = comm.Column(name="a2", type=comm.DataType.DOUBLE)
         table: comm.Table = comm.Table(name=req.table_name, columns=[column1, column2])
-        res: dest.DescribeTableResponse
-        res.table = table
-        context.set_details(res)
+        res: dest.DescribeTableResponse = dest.DescribeTableResponse(not_found=False, table=table)
+        return res
 
 
 if __name__ == '__main__':
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))
-    server.add_insecure_port('[::]:50051')
-    
+    server.add_insecure_port('[::]:50052')
+    dest_grpc.add_DestinationServicer_to_server(DestinationImpl(), server)
     server.start()
-    server.await_termination()
+    print("Destination gRPC server started")
+    server.wait_for_termination()
