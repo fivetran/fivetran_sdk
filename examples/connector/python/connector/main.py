@@ -18,6 +18,33 @@ class ConnectorService(connector__sdk__pb2__grpc.ConnectorServicer):
         api_key_field.label = "API Key"
         api_key_field.required = True
         api_key_field.text_field = common__pb2.TextField.PlainText
+
+        password_field = form_fields.fields.add()
+        password_field.name = "password"
+        password_field.label = "User Password"
+        password_field.required = True
+        password_field.text_field = common__pb2.TextField.Password
+
+        region_field = form_fields.fields.add()
+        region_field.name = "region"
+        region_field.label = "AWS Region"
+        region_field.required = False
+        dropdown_field = common__pb2.DropdownField()
+        dropdown_field.dropdown_field.append("US-EAST")
+        dropdown_field.dropdown_field.append("US-WEST")
+        region_field.dropdown_field.CopyFrom(dropdown_field)
+
+        hidden_field = form_fields.fields.add()
+        hidden_field.name = "hidden"
+        hidden_field.label = "my-hidden-value"
+        hidden_field.text_field = common__pb2.TextField.Hidden
+
+        public_field = form_fields.fields.add()
+        public_field.name = "isPublic"
+        public_field.label = "Public?"
+        public_field.description = "Is this public?"
+        public_field.toggle_field.CopyFrom(common__pb2.ToggleField())
+
         connection_test = form_fields.tests.add()
         connection_test.name = "connection_test"
         connection_test.label = "Tests connection"
