@@ -55,36 +55,36 @@ class ConnectorService(connector__sdk__pb2__grpc.ConnectorServicer):
 
 
     def Update(self, request, context):
+
         state_json = "{}"
         if request.HasField('state_json'):
             state_json = request.state_json
 
+        state = json.loads(state_json)
+        if state.get("cursor") is None:
+            state["cursor"] = 0
+
         # -- Send UPSERT records
         for t in range(0, 3):
-            response = connector__sdk__pb2.UpdateResponse()
-            operation = response.operation
+            operation = connector__sdk__pb2.Operation()
             val1 = common__pb2.ValueType()
             val1.string = "a-" + str(t)
 
             val2 = common__pb2.ValueType()
             val2.double = t * 0.234
 
-            print("Values are assigned", val1.string)
-
             record = connector__sdk__pb2.Record()
             record.type = common__pb2.OpType.UPSERT
             record.table_name="table1"
             record.data["a1"].CopyFrom(val1)
             record.data["a2"].CopyFrom(val2)
+            state["cursor"] += 1
 
             operation.record.CopyFrom(record)
             yield connector__sdk__pb2.UpdateResponse(operation=operation)
 
-        print("Upserted records")
-
         # -- Send UPDATE record
-        response = connector__sdk__pb2.UpdateResponse()
-        operation = response.operation
+        operation = connector__sdk__pb2.Operation()
         val1 = common__pb2.ValueType()
         val1.string = "a-0"
 
@@ -99,12 +99,10 @@ class ConnectorService(connector__sdk__pb2__grpc.ConnectorServicer):
 
         operation.record.CopyFrom(record)
         yield connector__sdk__pb2.UpdateResponse(operation=operation)
-
-        print("Updated record")
+        state["cursor"] += 1
 
         # -- Send DELETE record
-        response = connector__sdk__pb2.UpdateResponse()
-        operation = response.operation
+        operation = connector__sdk__pb2.Operation()
         val1 = common__pb2.ValueType()
         val1.string = "a-2"
 
@@ -115,7 +113,19 @@ class ConnectorService(connector__sdk__pb2__grpc.ConnectorServicer):
 
         operation.record.CopyFrom(record)
         yield connector__sdk__pb2.UpdateResponse(operation=operation)
-        print("deleted the record")
+        state["cursor"] += 1
+
+        checkpoint = connector__sdk__pb2.Checkpoint()
+        checkpoint.state_json = json.dumps(state)
+        checkpoint_operation = connector__sdk__pb2.Operation()
+        checkpoint_operation.checkpoint.CopyFrom(checkpoint)
+        yield connector__sdk__pb2.UpdateResponse(operation=checkpoint_operation)
+
+        log = connector__sdk__pb2.LogEntry()
+        log.level = connector__sdk__pb2.LogLevel.INFO
+        log.message = "Sync Done"
+        yield connector__sdk__pb2.UpdateResponse(log_entry=log)
+
 
 
 
