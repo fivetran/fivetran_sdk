@@ -59,13 +59,6 @@ class ConnectorService(connector__sdk__pb2__grpc.ConnectorServicer):
         if request.HasField('state_json'):
             state_json = request.state_json
 
-        # # Read london subway API response and update the table with line status
-        # result = requests.get('https://api.tfl.gov.uk/line/mode/tube/status',
-        #                       headers={"content-type": "application/json", "charset": "utf-8"})
-        #
-        #
-        # timeline = json.loads(result.text)
-
         # -- Send UPSERT records
         for t in range(0, 3):
             response = connector__sdk__pb2.UpdateResponse()
