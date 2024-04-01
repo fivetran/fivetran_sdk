@@ -1,0 +1,1 @@
+python3 ../python_destination/main.py
