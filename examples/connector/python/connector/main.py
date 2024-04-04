@@ -17,11 +17,12 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
         form_fields.fields.add(name="apiKey", label="API Key", required=True, text_field=common_pb2.TextField.PlainText)
         form_fields.fields.add(name="password", label="User Password", required=True, text_field=common_pb2.TextField.Password)
 
-        region_field = form_fields.fields.add(name="region", label="AWS Region", required=False)
-        region_dropdown_field = common_pb2.DropdownField()
-        region_dropdown_field.dropdown_field.append("US-EAST")
-        region_dropdown_field.dropdown_field.append("US-WEST")
-        region_field.dropdown_field.CopyFrom(region_dropdown_field)
+        form_fields.fields.add(
+            name="region",
+            label="AWS Region",
+            required=False,
+            dropdown_field=common_pb2.DropdownField(dropdown_field=["US-EAST", "US-WEST"])
+        )
 
         form_fields.fields.add(name="hidden", label="my-hidden-value", text_field= common_pb2.TextField.Hidden)
         form_fields.fields.add(name="isPublic", label="Public?", description="Is this public?", toggle_field=common_pb2.ToggleField())
