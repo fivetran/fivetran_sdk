@@ -4,9 +4,10 @@ source connector_run/bin/activate
 mkdir -p protos
 cp ../../../../*.proto protos/
 pip install -r requirements.txt
+mkdir -p sdk_pb2
 python -m grpc_tools.protoc \
        --proto_path=./protos/ \
-       --python_out=. \
-       --pyi_out=. \
-       --grpc_python_out=. protos/*.proto
+       --python_out=sdk_pb2 \
+       --pyi_out=sdk_pb2 \
+       --grpc_python_out=sdk_pb2 protos/*.proto
 deactivate
