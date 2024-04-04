@@ -32,8 +32,12 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
         return form_fields
 
     def Test(self, request, context):
-        res = common_pb2.TestResponse(success=True)
-        return res
+        configuration = request.configuration
+        # Name of the test to be run
+        test_name = request.name
+        print("Configuration: ", configuration)
+        print("Test name: ", test_name)
+        return common_pb2.TestResponse(success=True)
 
     def Schema(self, request, context):
         table_list = common_pb2.TableList()
@@ -120,13 +124,6 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
         log.message = "Sync Done"
         yield connector_sdk_pb2.UpdateResponse(log_entry=log)
 
-
-
-
-def convert_string_to_utc_seconds(datetime_str):
-    utc_datetime = datetime.datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S.%fZ")
-    utc_seconds = int(utc_datetime.timestamp())
-    return utc_seconds
 
 def start_server():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
