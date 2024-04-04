@@ -37,29 +37,15 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
 
     def Schema(self, request, context):
         table_list = common_pb2.TableList()
-        t1 = table_list.tables.add()
-        t1.name = "table1"
-        c1 = t1.columns.add()
-        c1.name = "a1"
-        c1.type = common_pb2.DataType.STRING
-        c1.primary_key = True
-        c2 = t1.columns.add()
-        c2.name = "a2"
-        c2.type = common_pb2.DataType.DOUBLE
+        t1 = table_list.tables.add(name="table1")
+        t1.columns.add(name="a1", type=common_pb2.DataType.STRING, primary_key=True)
+        t1.columns.add(name="a2", type=common_pb2.DataType.DOUBLE)
 
-        t2 = table_list.tables.add()
-        t2.name = "table2"
-        c1 = t2.columns.add()
-        c1.name = "b1"
-        c1.type = common_pb2.DataType.STRING
-        c1.primary_key = True
-        c2 = t1.columns.add()
-        c2.name = "b2"
-        c2.type = common_pb2.DataType.UNSPECIFIED
+        t2 = table_list.tables.add(name="table2")
+        t2.columns.add(name="b1", type=common_pb2.DataType.STRING, primary_key=True)
+        t2.columns.add(name="b2", type=common_pb2.DataType.UNSPECIFIED)
 
-
-        response = connector_sdk_pb2.SchemaResponse(without_schema=table_list)
-        return response
+        return connector_sdk_pb2.SchemaResponse(without_schema=table_list)
 
 
     def Update(self, request, context):
