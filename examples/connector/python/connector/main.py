@@ -1,7 +1,6 @@
 import grpc
 from concurrent import futures
 import json
-import datetime
 import sys
 sys.path.append('sdk_pb2')
 
@@ -24,7 +23,7 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
             dropdown_field=common_pb2.DropdownField(dropdown_field=["US-EAST", "US-WEST"])
         )
 
-        form_fields.fields.add(name="hidden", label="my-hidden-value", text_field= common_pb2.TextField.Hidden)
+        form_fields.fields.add(name="hidden", label="my-hidden-value", text_field=common_pb2.TextField.Hidden)
         form_fields.fields.add(name="isPublic", label="Public?", description="Is this public?", toggle_field=common_pb2.ToggleField())
 
         # add setup tests
@@ -52,7 +51,6 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
 
         return connector_sdk_pb2.SchemaResponse(without_schema=table_list)
 
-
     def Update(self, request, context):
 
         state_json = "{}"
@@ -74,7 +72,7 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
 
             record = connector_sdk_pb2.Record()
             record.type = common_pb2.OpType.UPSERT
-            record.table_name="table1"
+            record.table_name = "table1"
             record.data["a1"].CopyFrom(val1)
             record.data["a2"].CopyFrom(val2)
             state["cursor"] += 1
