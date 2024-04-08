@@ -125,8 +125,9 @@ Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/c
 - DECIMAL: Floating point values with max precision of 38 and max scale of 37
 - FLOAT: Single-precision 32-bit IEEE 754 values, e.g. 3.4028237E+38
 - DOUBLE: Double-precision 64-bit IEEE 754 values, e.g. -2.2250738585072014E-308
-- NAIVE_DATE: Date without a timezone in ISO-8601 calendar system, e.g. 2007-12-03
-- NAIVE_DATETIME: A date-time without timezone in ISO-8601 calendar system, e.g. 2007-12-03T10:15:30
+- NAIVE_TIME: Time without a timezone in the ISO-8601 calendar system, e.g. 10:15:30 
+- NAIVE_DATE: Date without a timezone in the ISO-8601 calendar system, e.g. 2007-12-03
+- NAIVE_DATETIME: A date-time without timezone in the ISO-8601 calendar system, e.g. 2007-12-03T10:15:30
 - UTC_DATETIME: An instantaneous point on the timeline, always in UTC timezone, e.g. 2007-12-03T10:15:30.123Z
 - BINARY: Binary data is represented as protobuf `bytes` (e.g. [ByteString](https://github.com/protocolbuffers/protobuf/blob/main/java/core/src/main/java/com/google/protobuf/ByteString.java))
 - XML: "`<tag>`This is xml`</tag>`"
