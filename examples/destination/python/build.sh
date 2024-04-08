@@ -2,7 +2,7 @@
 python3 -m venv destination_run
 source destination_run/bin/activate
 mkdir -p protos
-cp ../../../../*.proto protos/
+cp ../../../*.proto protos/
 pip install -r requirements.txt
 mkdir -p sdk_pb2
 python -m grpc_tools.protoc \
