@@ -1,7 +1,7 @@
 # Python Connector Example
 
 ## Pre-requisites
-- Python3
+- Python 3.9 or later
 
 ## Steps
 - Run the build.sh file to copy protos, install python dependencies in virtual environment
