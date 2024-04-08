@@ -14,8 +14,6 @@ import (
 )
 
 var port = flag.Int("port", 50051, "The server port")
-var cursor int32
-var credentials int64
 
 type MyState struct {
 	Cursor int32 `json:"cursor"`
