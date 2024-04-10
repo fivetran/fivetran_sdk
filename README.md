@@ -66,19 +66,20 @@ Your connector will appear on:
 * Our docs
 
 ### I am sold! How do I get started?
-Reach out to us via this [intake form](https://forms.gle/KezLXRSn866r7D3J9) and we'll go from there.
+Reach out to us via this [intake form](https://docs.google.com/forms/d/e/1FAIpQLScyxlu4Lhm_P4WfTit-WM_PazbFmZ1YBHDCeFXvu0O_5sA45w/viewform) and we'll go from there.
 The process typically looks like this:
 1. Explore this repo
 2. Meet with us to go over the Partnership Agreement
-3. Build the connector/destination
-4. Create product docs (overview and setup form)
-5. Test it locally
-6. Deploy to our platform
-7. Test the connector/destination on our platform
-8. Support Collaboration
+3. Build the connector (source, destination or both)
+4. Test it locally
+5. Create product docs (overview and setup form)
+6. Deploy to production on our platform
+7. Test in production
+8. Move to private preview
+9. Handle support
     * Share an email address we can send customer related issues to
     * Share a link on your SLAs
-9. Go-to-market with us
+10. Go-to-market with us
 
 ### How do I get help?
 After you meet with us, we will create a shared slack channel where we can assist you.
