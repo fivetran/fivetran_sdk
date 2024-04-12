@@ -1,12 +1,15 @@
 package destination;
 
+import com.google.protobuf.AbstractMessage;
 import fivetran_sdk.*;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase {
+public class DestinationServiceImpl extends DestinationConnectorGrpc.DestinationConnectorImplBase {
     @Override
     public void configurationForm(ConfigurationFormRequest request, StreamObserver<ConfigurationFormResponse> responseObserver) {
         responseObserver.onNext(
@@ -15,25 +18,25 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
                         .setTableSelectionSupported(true)
                         .addAllFields(Arrays.asList(
                                 FormField.newBuilder()
-                                        .setName("host").setLabel("Host").setRequired(true).setTextField(TextField.PlainText).build(),
-                                FormField.newBuilder()
-                                        .setName("password").setLabel("Password").setRequired(true).setTextField(TextField.Password).build(),
-                                FormField.newBuilder()
-                                        .setName("region").setLabel("AWS Region").setRequired(false).setDropdownField(
-                                                DropdownField.newBuilder().addAllDropdownField(
-                                                        Arrays.asList("US-EAST", "US-WEST")).build()
-                                        ).build(),
-                                FormField.newBuilder()
-                                        .setName("hidden").setLabel("my-hidden-value").setTextField(TextField.Hidden)
+                                        .setSingle(Field.newBuilder().setName("host").setLabel("Host").setRequired(true).setTextField(TextField.PlainText).build())
                                         .build(),
                                 FormField.newBuilder()
-                                        .setName("isPublic")
-                                        .setLabel("Public?")
-                                        .setDescription("Is this public?")
-                                        .setToggleField(ToggleField.newBuilder().build())
+                                        .setSingle(Field.newBuilder().setName("password").setLabel("Password").setRequired(true).setTextField(TextField.Password).build())
+                                        .build(),
+                                FormField.newBuilder()
+                                        .setSingle(Field.newBuilder().setName("region").setLabel("AWS Region").setRequired(false)
+                                                .setDropdownField(DropdownField.newBuilder().addAllDropdownField(Arrays.asList("US-EAST", "US-WEST")).build())
+                                                .build())
+                                        .build(),
+                                FormField.newBuilder()
+                                        .setSingle(Field.newBuilder().setName("hidden").setLabel("my-hidden-value").setTextField(TextField.Hidden).build())
+                                        .build(),
+                                FormField.newBuilder()
+                                        .setSingle(Field.newBuilder().setName("isPublic").setLabel("Public?").setDescription("Is this public?")
+                                                .setToggleField(ToggleField.newBuilder().build())
+                                                .build())
                                         .build()
-                        ))
-                        .addAllTests(Arrays.asList(
+                        )).addAllTests(Arrays.asList(
                                 ConfigurationTest.newBuilder().setName("connect").setLabel("Tests connection").build(),
                                 ConfigurationTest.newBuilder().setName("select").setLabel("Tests selection").build()))
                         .build());
@@ -84,7 +87,7 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
         Map<String, String> configuration = request.getConfigurationMap();
 
         System.out.println("[AlterTable]: " +
-                request.getSchemaName() + " | " + request.getTable().getName() + " | " + request.getTable().getColumnsList());
+                request.getSchemaName() + " | " + request.getTableName() + " | " + getChangesFromRequest(request));
         responseObserver.onNext(AlterTableResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
@@ -111,5 +114,10 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
         }
         responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
+    }
+
+    private static String getChangesFromRequest(AlterTableRequest request) {
+        final List<DestinationSchemaChange> changes = request.getChangesList();
+        return changes.stream().map(AbstractMessage::toString).collect(Collectors.joining(", "));
     }
 }
