@@ -67,12 +67,12 @@ message TableSelection {
 message UpdateResponse {
     oneof operation {
         Record record = 1;
-        ConnectorSchemaChange schema_change = 2;
+        SchemaChange schema_change = 2;
         Checkpoint checkpoint = 3;
     }
 }
 
-message ConnectorSchemaChange {
+message SchemaChange {
     oneof change {
         SchemaList with_schema = 1;
         TableList without_schema = 2;

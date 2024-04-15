@@ -117,7 +117,7 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
     }
 
     private static String getChangesFromRequest(AlterTableRequest request) {
-        final List<DestinationSchemaChange> changes = request.getChangesList();
+        final List<SchemaDiff> changes = request.getChangesList();
         return changes.stream().map(AbstractMessage::toString).collect(Collectors.joining(", "));
     }
 }
