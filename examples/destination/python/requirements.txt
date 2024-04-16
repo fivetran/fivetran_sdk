@@ -1,5 +1,5 @@
-grpcio==1.62.1
-grpcio-tools==1.62.1
+grpcio==1.60.1
+grpcio-tools==1.60.1
 protobuf==4.25.3
 google~=3.0.0
 pip~=23.0.1
