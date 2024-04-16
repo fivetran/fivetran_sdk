@@ -17,13 +17,15 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
                         .setTableSelectionSupported(true)
                         .addAllFields(Arrays.asList(
                                 FormField.newBuilder()
-                                        .setSingle(Field.newBuilder().setName("apiKey").setLabel("API Key").setRequired(true).setTextField(TextField.PlainText).build())
+                                        .setSingle(Field.newBuilder().setName("apiKey").setLabel("API Key").setPlaceholder("my-api-key")
+                                                .setRequired(true).setTextField(TextField.PlainText).build())
                                         .build(),
                                 FormField.newBuilder()
-                                        .setSingle(Field.newBuilder().setName("password").setLabel("User Password").setRequired(true).setTextField(TextField.Password).build())
+                                        .setSingle(Field.newBuilder().setName("password").setLabel("User Password").setPlaceholder("p4ssw0rd")
+                                                .setRequired(true).setTextField(TextField.Password).build())
                                         .build(),
                                 FormField.newBuilder()
-                                        .setSingle(Field.newBuilder().setName("region").setLabel("AWS Region").setRequired(false)
+                                        .setSingle(Field.newBuilder().setName("region").setLabel("AWS Region").setDefaultValue("US-EAST").setRequired(false)
                                                 .setDropdownField(DropdownField.newBuilder().addAllDropdownField(Arrays.asList("US-EAST", "US-WEST")).build())
                                                 .build())
                                         .build(),

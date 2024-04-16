@@ -1,11 +1,11 @@
 package destination;
 
+import com.google.common.collect.Lists;
 import com.google.protobuf.AbstractMessage;
 import fivetran_sdk.*;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -18,13 +18,15 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
                         .setTableSelectionSupported(true)
                         .addAllFields(Arrays.asList(
                                 FormField.newBuilder()
-                                        .setSingle(Field.newBuilder().setName("host").setLabel("Host").setRequired(true).setTextField(TextField.PlainText).build())
+                                        .setSingle(Field.newBuilder().setName("host").setLabel("Host").setPlaceholder("my.example.host")
+                                                .setRequired(true).setTextField(TextField.PlainText).build())
                                         .build(),
                                 FormField.newBuilder()
-                                        .setSingle(Field.newBuilder().setName("password").setLabel("Password").setRequired(true).setTextField(TextField.Password).build())
+                                        .setSingle(Field.newBuilder().setName("password").setLabel("Password").setPlaceholder("p4ssw0rd")
+                                                .setRequired(true).setTextField(TextField.Password).build())
                                         .build(),
                                 FormField.newBuilder()
-                                        .setSingle(Field.newBuilder().setName("region").setLabel("AWS Region").setRequired(false)
+                                        .setSingle(Field.newBuilder().setName("region").setLabel("AWS Region").setDefaultValue("US-EAST").setRequired(false)
                                                 .setDropdownField(DropdownField.newBuilder().addAllDropdownField(Arrays.asList("US-EAST", "US-WEST")).build())
                                                 .build())
                                         .build(),
@@ -39,6 +41,22 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
                         )).addAllTests(Arrays.asList(
                                 ConfigurationTest.newBuilder().setName("connect").setLabel("Tests connection").build(),
                                 ConfigurationTest.newBuilder().setName("select").setLabel("Tests selection").build()))
+                        .build());
+
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void capabilities(CapabilitiesRequest request, StreamObserver<CapabilitiesResponse> responseObserver) {
+        responseObserver.onNext(
+                CapabilitiesResponse.newBuilder()
+                        .setSupportsHistoryMode(true)
+                        .addAllDataTypeMappings(Lists.newArrayList(
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.STRING).setMapTo(DestinationType.newBuilder().setName("VARCHAR").setMapTo(DataType.STRING).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.FLOAT).setMapTo(DestinationType.newBuilder().setName("NUMBER").setMapTo(DataType.INT).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.UTC_DATETIME).setMapTo(DestinationType.newBuilder().setName("DATE").setMapTo(DataType.UTC_DATETIME).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.BINARY).setMapTo(DestinationType.newBuilder().setName("BLOB").setMapTo(DataType.BINARY).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.XML).setUnsupported(true).build()))
                         .build());
 
         responseObserver.onCompleted();
@@ -87,7 +105,8 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
         Map<String, String> configuration = request.getConfigurationMap();
 
         System.out.println("[AlterTable]: " +
-                request.getSchemaName() + " | " + request.getTableName() + " | " + getChangesFromRequest(request));
+                request.getSchemaName() + " | " + request.getTableName() + " | " +
+                request.getChangesList().stream().map(AbstractMessage::toString).collect(Collectors.joining(", ")));
         responseObserver.onNext(AlterTableResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
@@ -114,10 +133,5 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
         }
         responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
-    }
-
-    private static String getChangesFromRequest(AlterTableRequest request) {
-        final List<SchemaDiff> changes = request.getChangesList();
-        return changes.stream().map(AbstractMessage::toString).collect(Collectors.joining(", "));
     }
 }
