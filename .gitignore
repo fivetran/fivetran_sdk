@@ -7,15 +7,8 @@
 bin/*
 examples/**/*.proto
 examples/**/*.pb.go
-<<<<<<< HEAD
 examples/**/*pb2.py
 examples/**/*pb2.pyi
 examples/**/*pb2_grpc.py
 destination_run/
 **/__pycache__/
-=======
-examples/**/*_pb*.py
-examples/**/*.pyc
-examples/**/*.pyi
-examples/**/connector_run/*
->>>>>>> 80eb642 (feature(partner-sdk): added new python example)
