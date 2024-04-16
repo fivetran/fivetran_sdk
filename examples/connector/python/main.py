@@ -42,7 +42,7 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
     def Schema(self, request, context):
         table_list = common_pb2.TableList()
         t1 = table_list.tables.add(name="table1")
-        t1.columns.add(name="a1", type=common_pb2.DataType.STRING, primary_key=True)
+        t1.columns.add(name="a1", type=common_pb2.DataType.UNSPECIFIED, primary_key=True)
         t1.columns.add(name="a2", type=common_pb2.DataType.DOUBLE)
 
         t2 = table_list.tables.add(name="table2")
