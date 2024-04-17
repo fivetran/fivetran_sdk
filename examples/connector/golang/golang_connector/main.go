@@ -34,11 +34,11 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.SourceConnector_UpdateSe
 
 	// -- Send a log message
 	logEntry := map[string]interface{}{
-        "level":   "INFO",
-        "message": "Sync STARTING",
-    }
-    logJSON, _ := json.Marshal(logEntry)
-    fmt.Println(string(logJSON))
+		"level":   "INFO",
+		"message": "Sync STARTING",
+	}
+	logJSON, _ := json.Marshal(logEntry)
+	fmt.Println(string(logJSON))
 
 	// -- Send UPSERT records
 	schemaName := "schema1"
@@ -47,8 +47,8 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.SourceConnector_UpdateSe
 			Operation: &pb.UpdateResponse_Record{
 				Record: &pb.Record{
 					SchemaName: &schemaName,
-					TableName: "table1",
-					Type: pb.RecordType_UPSERT,
+					TableName:  "table1",
+					Type:       pb.RecordType_UPSERT,
 					Data: map[string]*pb.ValueType{
 						"a1": {Inner: &pb.ValueType_String_{String_: "a-" + strconv.Itoa(i)}},
 						"a2": {Inner: &pb.ValueType_Double{Double: float64(i) * float64(0.234)}},
@@ -65,8 +65,8 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.SourceConnector_UpdateSe
 		Operation: &pb.UpdateResponse_Record{
 			Record: &pb.Record{
 				SchemaName: &schemaName,
-				TableName: "table1",
-				Type: pb.RecordType_UPDATE,
+				TableName:  "table1",
+				Type:       pb.RecordType_UPDATE,
 				Data: map[string]*pb.ValueType{
 					"a1": {Inner: &pb.ValueType_String_{String_: "a-0"}},
 					"a2": {Inner: &pb.ValueType_Double{Double: float64(110.234)}},
@@ -81,8 +81,8 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.SourceConnector_UpdateSe
 		Operation: &pb.UpdateResponse_Record{
 			Record: &pb.Record{
 				SchemaName: &schemaName,
-				TableName: "table1",
-				Type: pb.RecordType_DELETE,
+				TableName:  "table1",
+				Type:       pb.RecordType_DELETE,
 				Data: map[string]*pb.ValueType{
 					"a1": {Inner: &pb.ValueType_String_{String_: "a-2"}},
 				},
@@ -107,12 +107,11 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.SourceConnector_UpdateSe
 
 	// -- Send a log message
 	syncEndLog := map[string]interface{}{
-        "level":   "INFO",
-        "message": "Sync DONE",
-    }
-    syncEndLogJson, _ := json.Marshal(syncEndLog)
-    fmt.Println(string(syncEndLogJson))
-
+		"level":   "INFO",
+		"message": "Sync DONE",
+	}
+	syncEndLogJson, _ := json.Marshal(syncEndLog)
+	fmt.Println(string(syncEndLogJson))
 
 	// End the RPC call
 	return nil
@@ -184,8 +183,8 @@ func (s *server) ConfigurationForm(ctx context.Context, in *pb.ConfigurationForm
 			{
 				Field: &pb.FormField_Single{
 					Single: &pb.Field{
-						Name: "password",
-						Label: "User password",
+						Name:     "password",
+						Label:    "User password",
 						Required: true,
 						Type: &pb.Field_TextField{
 							TextField: pb.TextField_Password,
@@ -196,7 +195,7 @@ func (s *server) ConfigurationForm(ctx context.Context, in *pb.ConfigurationForm
 			{
 				Field: &pb.FormField_Single{
 					Single: &pb.Field{
-						Name: "hidden",
+						Name:  "hidden",
 						Label: "my-hidden-value",
 						Type: &pb.Field_TextField{
 							TextField: pb.TextField_Hidden,
@@ -207,10 +206,10 @@ func (s *server) ConfigurationForm(ctx context.Context, in *pb.ConfigurationForm
 			{
 				Field: &pb.FormField_Single{
 					Single: &pb.Field{
-						Name: "isPublic",
-						Label: "Public?",
+						Name:        "isPublic",
+						Label:       "Public?",
 						Description: &toggleDescription,
-						Required: false,
+						Required:    false,
 						Type: &pb.Field_ToggleField{
 							ToggleField: &pb.ToggleField{},
 						},
@@ -220,12 +219,12 @@ func (s *server) ConfigurationForm(ctx context.Context, in *pb.ConfigurationForm
 			{
 				Field: &pb.FormField_Single{
 					Single: &pb.Field{
-						Name: "region",
-						Label: "Region",
+						Name:     "region",
+						Label:    "Region",
 						Required: true,
 						Type: &pb.Field_DropdownField{
 							DropdownField: &pb.DropdownField{
-								DropdownField: []string {
+								DropdownField: []string{
 									"US-EAST", "US-WEST",
 								},
 							},
