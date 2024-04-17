@@ -46,7 +46,7 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
         t1.columns.add(name="a2", type=common_pb2.DataType.DOUBLE)
 
         t2 = table_list.tables.add(name="table2")
-        t2.columns.add(name="b1", type=common_pb2.DataType.STRING, primary_key=True)
+        t2.columns.add(name="b1", type=common_pb2.DataType.UNSPECIFIED, primary_key=True)
         t2.columns.add(name="b2", type=common_pb2.DataType.UNSPECIFIED)
 
         return connector_sdk_pb2.SchemaResponse(without_schema=table_list)
@@ -79,6 +79,22 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
 
             operation.record.CopyFrom(record)
             yield connector_sdk_pb2.UpdateResponse(operation=operation)
+
+        # -- Send UPSERT record for table2
+        operation = connector_sdk_pb2.Operation()
+        val1 = common_pb2.ValueType()
+        val1.string = "b1"
+        val2 = common_pb2.ValueType()
+        val2.string = "ben"
+        record = connector_sdk_pb2.Record()
+        record.type = common_pb2.OpType.UPSERT
+        record.table_name = "table2"
+        record.data["b1"].CopyFrom(val1)
+        record.data["b2"].CopyFrom(val2)
+        state["cursor"] += 1
+
+        operation.record.CopyFrom(record)
+        yield connector_sdk_pb2.UpdateResponse(operation=operation)
 
         # -- Send UPDATE record
         operation = connector_sdk_pb2.Operation()
