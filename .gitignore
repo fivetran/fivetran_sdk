@@ -7,3 +7,8 @@
 bin/*
 examples/**/*.proto
 examples/**/*.pb.go
+examples/**/*pb2.py
+examples/**/*pb2.pyi
+examples/**/*pb2_grpc.py
+destination_run/
+**/__pycache__/
