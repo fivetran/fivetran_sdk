@@ -11,6 +11,13 @@ jobs:
 
   audit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      packages: none
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-java@v4
