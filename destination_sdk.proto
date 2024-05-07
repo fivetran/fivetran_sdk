@@ -73,10 +73,10 @@ message AlterTableRequest {
     map<string, string> configuration = 1;
     string schema_name = 2;
     string table_name = 3;
-    repeated SchemaChange changes = 4;
+    repeated SchemaDiff changes = 4;
 }
 
-message SchemaChange {
+message SchemaDiff {
     oneof change {
         Column add_column = 1;
         ChangeType change_column_type = 2;
