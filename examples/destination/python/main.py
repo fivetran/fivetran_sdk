@@ -26,7 +26,7 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
                                     dropdown_field=common_pb2.DropdownField(dropdown_field=["US-EAST", "US-WEST"])))
 
         hidden = common_pb2.FormField(
-            common_pb2.Field(name="hidden", label="my-hidden-value", text_field=common_pb2.TextField.Hidden))
+            single=common_pb2.Field(name="hidden", label="my-hidden-value", text_field=common_pb2.TextField.Hidden))
 
         is_public = common_pb2.FormField(
             single=common_pb2.Field(name="isPublic", label="Public?", description="Is this public?",
@@ -62,25 +62,25 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
 
     def Capabilities(self, request, context):
         destination_map_to_1 = destination_sdk_pb2.DestinationType(name="VARCHAR",
-                                                                   map_to=destination_sdk_pb2.DestinationType.map_to.STRING)
+                                                                   map_to=common_pb2.DataType.STRING)
         data_type_mapping_1 = destination_sdk_pb2.DataTypeMappingEntry(
             fivetran_type=common_pb2.DataType.STRING,
             map_to=destination_map_to_1)
 
         destination_map_to_2 = destination_sdk_pb2.DestinationType(name="NUMBER",
-                                                                   map_to=destination_sdk_pb2.DestinationType.map_to.INT)
+                                                                   map_to=common_pb2.DataType.INT)
         data_type_mapping_2 = destination_sdk_pb2.DataTypeMappingEntry(
             fivetran_type=common_pb2.DataType.FLOAT,
             map_to=destination_map_to_2)
 
         destination_map_to_3 = destination_sdk_pb2.DestinationType(name="DATE",
-                                                                   map_to=destination_sdk_pb2.DestinationType.map_to.UTC_DATETIME)
+                                                                   map_to=common_pb2.DataType.UTC_DATETIME)
         data_type_mapping_3 = destination_sdk_pb2.DataTypeMappingEntry(
             fivetran_type=common_pb2.DataType.UTC_DATETIME,
             map_to=destination_map_to_3)
 
         destination_map_to_4 = destination_sdk_pb2.DestinationType(name="BLOB",
-                                                                   map_to=destination_sdk_pb2.DestinationType.map_to.BINARY)
+                                                                   map_to=common_pb2.DataType.BINARY)
         data_type_mapping_4 = destination_sdk_pb2.DataTypeMappingEntry(
             fivetran_type=common_pb2.DataType.BINARY,
             map_to=destination_map_to_4)
