@@ -1,29 +1,19 @@
-package connector;
+package connector.logging;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
-public final class LogEntry {
-
-    private final Level level;
-    private final String message;
+public final class FivetranLogRecord extends LogRecord {
 
     @JsonProperty(value = "message-origin")
     private final MessageOrigin messageOrigin;
 
-    public LogEntry(Level level, String message, MessageOrigin messageOrigin) {
-        this.level = level;
-        this.message = message;
+    public FivetranLogRecord(Level level, String message, MessageOrigin messageOrigin) {
+        super(level, message);
         this.messageOrigin = messageOrigin;
-    }
-
-    public Level getLevel() {
-        return level;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     public MessageOrigin getMessageOrigin() {
@@ -37,13 +27,5 @@ public final class LogEntry {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    enum Level {
-        INFO, WARNING, SEVERE
-    }
-
-    enum MessageOrigin {
-        @JsonProperty(value = "sdk_connector") SDK_CONNECTOR, @JsonProperty(value = "sdk_destination") SDK_DESTINATION
     }
 }

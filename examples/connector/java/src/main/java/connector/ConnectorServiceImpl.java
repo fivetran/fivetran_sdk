@@ -1,18 +1,21 @@
 package connector;
 
-import static connector.LogEntry.Level.INFO;
-import static connector.LogEntry.MessageOrigin.SDK_CONNECTOR;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import connector.logging.FivetranLoggerFactory;
+import connector.logging.MessageOrigin;
 import fivetran_sdk.Record;
 import fivetran_sdk.*;
 import io.grpc.stub.StreamObserver;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImplBase {
+
+    private static final Logger LOGGER = FivetranLoggerFactory.getFivetranLogger(ConnectorServiceImpl.class, MessageOrigin.SDK_CONNECTOR);
+
     @Override
     public void configurationForm(ConfigurationFormRequest request, StreamObserver<ConfigurationFormResponse> responseObserver) {
         responseObserver.onNext(
@@ -97,7 +100,7 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
             State state = mapper.readValue(stateJson, State.class);
 
             // -- Send a log message
-            System.out.println(new LogEntry(INFO, "[Update]: Sync STARTING", SDK_CONNECTOR));
+            LOGGER.info("[Update]: Sync STARTING");
 
             // -- Send UPSERT records
             Record.Builder recordBuilder = Record.newBuilder();
@@ -153,7 +156,7 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
             responseObserver.onNext(responseBuilder.setCheckpoint(checkpoint).build());
 
             // -- Send a log message
-            System.out.println(new LogEntry(INFO, "[Update]: Sync DONE", SDK_CONNECTOR));
+            LOGGER.info("[Update]: Sync DONE");
         } catch (JsonProcessingException e) {
             responseObserver.onError(e);
         }
