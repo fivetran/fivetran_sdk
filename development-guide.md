@@ -88,6 +88,7 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd)
 - Currently we only support CSV file format
 - Each batch file is size limited to 100MB
 - Number of records in each batch file can vary depending on row size
+- Fivetran create batch file using ```com.fasterxml.jackson.dataformat.csv.CsvSchema``` which by default doesn't consider backslash as escape character. If you are reading the batch file then make sure that you do not consider backslash as escape character.
 
 ### RPC Calls
 #### CreateTable
