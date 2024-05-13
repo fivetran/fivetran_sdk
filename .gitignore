@@ -11,4 +11,5 @@ examples/**/*pb2.py
 examples/**/*pb2.pyi
 examples/**/*pb2_grpc.py
 destination_run/
+connector_run/
 **/__pycache__/
