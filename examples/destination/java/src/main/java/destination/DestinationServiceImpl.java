@@ -50,7 +50,7 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
     public void capabilities(CapabilitiesRequest request, StreamObserver<CapabilitiesResponse> responseObserver) {
         responseObserver.onNext(
                 CapabilitiesResponse.newBuilder()
-                        .setSupportsHistoryMode(true)
+                        .setSupportsHistoryMode(false)
                         .addAllDataTypeMappings(Lists.newArrayList(
                                 DataTypeMappingEntry.newBuilder().setFivetranType(DataType.STRING).setMapTo(DestinationType.newBuilder().setName("VARCHAR").setMapTo(DataType.STRING).build()).build(),
                                 DataTypeMappingEntry.newBuilder().setFivetranType(DataType.FLOAT).setMapTo(DestinationType.newBuilder().setName("NUMBER").setMapTo(DataType.INT).build()).build(),
