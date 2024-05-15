@@ -85,10 +85,13 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd)
 - First 16 bytes of each batch file holds the IV vector
 
 ### Batch Files
-- Currently we only support CSV file format
 - Each batch file is size limited to 100MB
 - Number of records in each batch file can vary depending on row size
-- Fivetran create batch file using ```com.fasterxml.jackson.dataformat.csv.CsvSchema``` which by default doesn't consider backslash as escape character. If you are reading the batch file then make sure that you do not consider backslash as escape character.
+- Currently we only support CSV file format
+
+#### CSV
+- Fivetran creates batch files using `com.fasterxml.jackson.dataformat.csv.CsvSchema` which by default doesn't consider backslash as escape character. If you are reading the batch file then make sure that you do not consider backslash as escape character.
+- BINARY data will be written to batch files using base64 encoding. You will need to decode it to get back the original byte array.
 
 ### RPC Calls
 #### CreateTable
@@ -130,7 +133,7 @@ Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/c
 - NAIVE_DATE: Date without a timezone in the ISO-8601 calendar system, e.g. 2007-12-03
 - NAIVE_DATETIME: A date-time without timezone in the ISO-8601 calendar system, e.g. 2007-12-03T10:15:30
 - UTC_DATETIME: An instantaneous point on the timeline, always in UTC timezone, e.g. 2007-12-03T10:15:30.123Z
-- BINARY: Binary data is represented as protobuf `bytes` (e.g. [ByteString](https://github.com/protocolbuffers/protobuf/blob/main/java/core/src/main/java/com/google/protobuf/ByteString.java))
+- BINARY: Binary data is represented as protobuf `bytes` (such as [ByteString](https://github.com/protocolbuffers/protobuf/blob/main/java/core/src/main/java/com/google/protobuf/ByteString.java) in Java), e.g. `[B@7d4991ad` (showing ByteString as bytes)
 - XML: "`<tag>`This is xml`</tag>`"
 - STRING: "This is text"
 - JSON: "{\"a\": 123}"
