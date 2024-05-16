@@ -92,7 +92,6 @@ class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
 
         # -- Send UPSERT records
         for t in range(0, 3):
-            operation = connector_sdk_pb2.UpdateResponse()
             val1 = common_pb2.ValueType()
             val1.string = "a-" + str(t)
 
@@ -106,11 +105,9 @@ class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
             record.data["a2"].CopyFrom(val2)
             state["cursor"] += 1
 
-            operation.record.CopyFrom(record)
             yield connector_sdk_pb2.UpdateResponse(record=record)
 
         # -- Send UPSERT record for table2
-        operation = connector_sdk_pb2.UpdateResponse()
         val1 = common_pb2.ValueType()
         val1.string = "b1"
         val2 = common_pb2.ValueType()
@@ -122,11 +119,9 @@ class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
         record.data["b2"].CopyFrom(val2)
         state["cursor"] += 1
 
-        operation.record.CopyFrom(record)
         yield connector_sdk_pb2.UpdateResponse(record=record)
 
         # -- Send UPDATE record
-        operation = connector_sdk_pb2.UpdateResponse()
         val1 = common_pb2.ValueType()
         val1.string = "a-0"
 
@@ -139,12 +134,10 @@ class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
         record.data["a1"].CopyFrom(val1)
         record.data["a2"].CopyFrom(val2)
 
-        operation.record.CopyFrom(record)
         yield connector_sdk_pb2.UpdateResponse(record=record)
         state["cursor"] += 1
 
         # -- Send DELETE record
-        operation = connector_sdk_pb2.UpdateResponse()
         val1 = common_pb2.ValueType()
         val1.string = "a-2"
 
@@ -153,7 +146,6 @@ class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
         record.table_name = "table1"
         record.data["a1"].CopyFrom(val1)
 
-        operation.record.CopyFrom(record)
         yield connector_sdk_pb2.UpdateResponse(record=record)
         state["cursor"] += 1
 
