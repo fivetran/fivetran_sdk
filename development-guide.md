@@ -65,6 +65,7 @@ The following are hard requirements to be able to deploy Partner code to Fivetra
 
 - Don't push anything other than source data to the destination. State will be saved to production DB and returned in `UpdateRequest`.
 - Don't forget to handle new schemas/tables/columns per the information and user choices in `UpdateRequest#selection`.
+- Make sure you checkpoint at least once an hour. The more frequently you do it, the better.
 
 ## Destination Guidelines
 
