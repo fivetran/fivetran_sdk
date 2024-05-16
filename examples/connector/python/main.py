@@ -13,7 +13,7 @@ class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
     def ConfigurationForm(self, request, context):
         response = common_pb2.ConfigurationFormResponse(schema_selection_supported=True,
                                                            table_selection_supported=True)
-        response.fields.add().single.CopyFrom(
+        response.fields.add(single=
             common_pb2.Field(
                 name="apiKey",
                 label="API Key",
@@ -22,7 +22,7 @@ class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
             )
         )
 
-        response.fields.add().single.CopyFrom(
+        response.fields.add(single=
             common_pb2.Field(
                 name="password",
                 label="User Password",
@@ -31,7 +31,7 @@ class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
             )
         )
 
-        response.fields.add().single.CopyFrom(
+        response.fields.add(single=
             common_pb2.Field(
                 name="region",
                 label="AWS Region",
@@ -40,7 +40,7 @@ class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
             )
         )
 
-        response.fields.add().single.CopyFrom(
+        response.fields.add(single=
             common_pb2.Field(
                 name="hidden",
                 label="my-hidden-value",
@@ -48,7 +48,7 @@ class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
             )
         )
 
-        response.fields.add().single.CopyFrom(
+        response.fields.add(single=
             common_pb2.Field(
                 name="isPublic",
                 label="Public?",
