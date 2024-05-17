@@ -8,7 +8,7 @@ import io.grpc.stub.StreamObserver;
 
 import java.util.*;
 
-public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
+public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImplBase {
     @Override
     public void configurationForm(ConfigurationFormRequest request, StreamObserver<ConfigurationFormResponse> responseObserver) {
         responseObserver.onNext(
@@ -17,22 +17,24 @@ public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
                         .setTableSelectionSupported(true)
                         .addAllFields(Arrays.asList(
                                 FormField.newBuilder()
-                                        .setName("apikey").setLabel("API key").setRequired(true).setTextField(TextField.PlainText).build(),
-                                FormField.newBuilder()
-                                        .setName("password").setLabel("User Password").setRequired(true).setTextField(TextField.Password).build(),
-                                FormField.newBuilder()
-                                        .setName("region").setLabel("AWS Region").setRequired(false).setDropdownField(
-                                                DropdownField.newBuilder().addAllDropdownField(
-                                                        Arrays.asList("US-EAST", "US-WEST")).build()
-                                        ).build(),
-                                FormField.newBuilder()
-                                        .setName("hidden").setLabel("my-hidden-value").setTextField(TextField.Hidden)
+                                        .setSingle(Field.newBuilder().setName("apiKey").setLabel("API Key").setPlaceholder("my-api-key")
+                                                .setRequired(true).setTextField(TextField.PlainText).build())
                                         .build(),
                                 FormField.newBuilder()
-                                        .setName("isPublic")
-                                        .setLabel("Public?")
-                                        .setDescription("Is this public?")
-                                        .setToggleField(ToggleField.newBuilder()
+                                        .setSingle(Field.newBuilder().setName("password").setLabel("User Password").setPlaceholder("p4ssw0rd")
+                                                .setRequired(true).setTextField(TextField.Password).build())
+                                        .build(),
+                                FormField.newBuilder()
+                                        .setSingle(Field.newBuilder().setName("region").setLabel("AWS Region").setDefaultValue("US-EAST").setRequired(false)
+                                                .setDropdownField(DropdownField.newBuilder().addAllDropdownField(Arrays.asList("US-EAST", "US-WEST")).build())
+                                                .build())
+                                        .build(),
+                                FormField.newBuilder()
+                                        .setSingle(Field.newBuilder().setName("hidden").setLabel("my-hidden-value").setTextField(TextField.Hidden).build())
+                                        .build(),
+                                FormField.newBuilder()
+                                        .setSingle(Field.newBuilder().setName("isPublic").setLabel("Public?").setDescription("Is this public?")
+                                                .setToggleField(ToggleField.newBuilder().build())
                                                 .build())
                                         .build()
                         ))
@@ -81,101 +83,82 @@ public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
     @Override
     public void update(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
         Map<String, String> configuration = request.getConfigurationMap();
-        String state_json = request.hasStateJson() ? request.getStateJson() : "{}";
+        String stateJson = request.hasStateJson() ? request.getStateJson() : "{}";
         Selection selection = request.hasSelection() ? request.getSelection() : null;
 
         ObjectMapper mapper = new ObjectMapper();
         UpdateResponse.Builder responseBuilder = UpdateResponse.newBuilder();
 
         try {
-            State state = mapper.readValue(state_json, State.class);
+            State state = mapper.readValue(stateJson, State.class);
 
             // -- Send a log message
-            responseBuilder.clear();
-            responseObserver.onNext(responseBuilder
-                    .setLogEntry(LogEntry.newBuilder()
-                            .setLevel(LogLevel.INFO)
-                            .setMessage("Sync STARTING")
-                            .build())
-                    .build());
+            System.out.println("{" +
+                    "\"level\":\"INFO\"," +
+                    "\"message\": \"[Update]: Sync STARTING\"," +
+                    "\"message-origin\": \"sdk_connector\"" +
+                    "}");
 
             // -- Send UPSERT records
-            Operation.Builder operationBuilder = Operation.newBuilder();
             Record.Builder recordBuilder = Record.newBuilder();
             Map<String, ValueType> row = new HashMap<>();
             for (int i=0; i<3; i++) {
                 responseBuilder.clear();
-                operationBuilder.clear();
                 recordBuilder.clear();
 
                 row.clear();
                 row.put("a1", ValueType.newBuilder().setString("a-" + i).build());
                 row.put("a2", ValueType.newBuilder().setDouble(i * 0.234d).build());
 
-                responseObserver.onNext(responseBuilder
-                        .setOperation(operationBuilder
-                                .setRecord(recordBuilder
+                responseObserver.onNext(responseBuilder.setRecord(recordBuilder
                                         .setTableName("table1")
-                                        .setType(OpType.UPSERT)
+                                        .setType(RecordType.UPSERT)
                                         .putAllData(row)
                                         .build())
-                                .build())
-                        .build());
+                                .build());
 
                 state.cursor += 1;
             }
 
             // -- Send UPDATE record
             responseBuilder.clear();
-            operationBuilder.clear();
             recordBuilder.clear();
             row.clear();
             row.put("a1", ValueType.newBuilder().setString("a-0").build());
             row.put("a2", ValueType.newBuilder().setDouble(110.234d).build());
-            responseObserver.onNext(responseBuilder
-                    .setOperation(operationBuilder
-                            .setRecord(recordBuilder
+            responseObserver.onNext(responseBuilder.setRecord(recordBuilder
                                     .setTableName("table1")
-                                    .setType(OpType.UPDATE)
+                                    .setType(RecordType.UPDATE)
                                     .putAllData(row)
                                     .build())
-                            .build())
-                    .build());
+                            .build());
             state.cursor += 1;
 
             // -- Send DELETE record
             responseBuilder.clear();
-            operationBuilder.clear();
             recordBuilder.clear();
             row.clear();
             row.put("a1", ValueType.newBuilder().setString("a-2").build());
-            responseObserver.onNext(responseBuilder
-                    .setOperation(operationBuilder
-                            .setRecord(recordBuilder
+            responseObserver.onNext(responseBuilder.setRecord(recordBuilder
                                     .setTableName("table1")
-                                    .setType(OpType.DELETE)
+                                    .setType(RecordType.DELETE)
                                     .putAllData(row)
                                     .build())
-                            .build())
-                    .build());
+                            .build());
             state.cursor += 1;
 
             // -- Send checkpoint
             String newState = mapper.writeValueAsString(state);
             Checkpoint checkpoint = Checkpoint.newBuilder().setStateJson(newState).build();
-            operationBuilder.clear();
-            responseObserver.onNext(responseBuilder
-                    .setOperation(operationBuilder
-                            .setCheckpoint(checkpoint).build()).build());
+            responseObserver.onNext(responseBuilder.setCheckpoint(checkpoint).build());
 
             // -- Send a log message
-            responseBuilder.clear();
-            responseObserver.onNext(responseBuilder
-                    .setLogEntry(LogEntry.newBuilder()
-                            .setLevel(LogLevel.INFO)
-                            .setMessage("Sync DONE")
-                            .build())
-                    .build());
+            System.out.println("{" +
+                    "\"level\":\"INFO\"," +
+                    "\"message\": \"[Update]: Sync DONE\"," +
+                    "\"message-origin\": \"sdk_connector\"" +
+                    "}");
+
         } catch (JsonProcessingException e) {
             responseObserver.onError(e);
         }
