@@ -93,7 +93,11 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
             State state = mapper.readValue(stateJson, State.class);
 
             // -- Send a log message
-            System.out.println("[Update]: Sync STARTING");
+            System.out.println("{" +
+                    "\"level\":\"INFO\"," +
+                    "\"message\": \"[Update]: Sync STARTING\"," +
+                    "\"message-origin\": \"sdk_connector\"" +
+                    "}");
 
             // -- Send UPSERT records
             Record.Builder recordBuilder = Record.newBuilder();
@@ -149,7 +153,12 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
             responseObserver.onNext(responseBuilder.setCheckpoint(checkpoint).build());
 
             // -- Send a log message
-            System.out.println("[Update]: Sync DONE");
+            System.out.println("{" +
+                    "\"level\":\"INFO\"," +
+                    "\"message\": \"[Update]: Sync DONE\"," +
+                    "\"message-origin\": \"sdk_connector\"" +
+                    "}");
+
         } catch (JsonProcessingException e) {
             responseObserver.onError(e);
         }
