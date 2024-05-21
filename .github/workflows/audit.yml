@@ -28,13 +28,14 @@ jobs:
     - name: Install Python
       uses: actions/setup-python@v5
       with:
-        # Semantic version range syntax or exact version of a Python version
-        python-version: '3.x'
+        # Fivetran build script requires Python 3.10, not above.
+        # Testing the destination found that it also requires 3.10, latest does not work.
+        python-version: '3.10.8'
 
     - name: Install Python dependencies
       run: python -m pip install --upgrade pip setuptools wheel
 
-    - name: Install Python requirements
+    - name: Install Python connector requirements
       working-directory: examples/connector/python
       run: |
         python -m pip install --upgrade pip
@@ -42,6 +43,16 @@ jobs:
 
     - name: Run Python connector build script
       working-directory: examples/connector/python
+      run: ./build.sh
+
+    - name: Install Python destination requirements
+      working-directory: examples/destination/python
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt 
+
+    - name: Run Python destination build script
+      working-directory: examples/destination/python
       run: ./build.sh
 
     - name: Set up Go
