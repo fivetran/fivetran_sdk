@@ -37,9 +37,7 @@ jobs:
 
     - name: Install Python connector requirements
       working-directory: examples/connector/python
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt 
+      run: pip install -r requirements.txt
 
     - name: Run Python connector build script
       working-directory: examples/connector/python
@@ -47,9 +45,7 @@ jobs:
 
     - name: Install Python destination requirements
       working-directory: examples/destination/python
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt 
+      run: pip install -r requirements.txt
 
     - name: Run Python destination build script
       working-directory: examples/destination/python
