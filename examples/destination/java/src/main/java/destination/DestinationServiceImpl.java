@@ -2,7 +2,7 @@ package destination;
 
 import com.google.common.collect.Lists;
 import com.google.protobuf.AbstractMessage;
-import fivetran_sdk.*;
+import fivetran_sdk.v2.*;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Arrays;
