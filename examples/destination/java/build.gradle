@@ -64,10 +64,15 @@ application {
     mainClass = 'destination.JavaDestination'
 }
 
+tasks.register('deleteBuild', Delete) {
+    delete "build"
+}
+
 tasks.register('copyProtos', Copy) {
     from file("$rootDir/../../..")
     into file("src/main/proto/")
     include "*.proto"
+    dependsOn 'deleteBuild'
 }
 
 jar {
