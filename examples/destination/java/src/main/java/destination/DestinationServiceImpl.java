@@ -2,9 +2,10 @@ package destination;
 
 import com.google.common.collect.Lists;
 import com.google.protobuf.AbstractMessage;
+import com.google.protobuf.Timestamp;
 import fivetran_sdk.v2.*;
 import io.grpc.stub.StreamObserver;
-
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,26 +49,32 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
 
     @Override
     public void capabilities(CapabilitiesRequest request, StreamObserver<CapabilitiesResponse> responseObserver) {
+        final int million = 1_000_000;
+        final Instant maxInstant = Instant.ofEpochMilli(Long.MAX_VALUE);
+        final Timestamp maxTimestamp = Timestamp.newBuilder().setSeconds(maxInstant.getEpochSecond()).setNanos(maxInstant.getNano()).build();
+        final DecimalParams maxFloatDecimalParams = DecimalParams.newBuilder().setPrecision(16).setScale(16).build();
+        final DecimalParams maxDoubleDecimalParams = DecimalParams.newBuilder().setPrecision(32).setScale(16).build();
+
         responseObserver.onNext(
                 CapabilitiesResponse.newBuilder()
                         .setSupportsHistoryMode(false)
                         .addAllDataTypeMappings(Lists.newArrayList(
                                 DataTypeMappingEntry.newBuilder().setFivetranType(DataType.UNSPECIFIED).setMapTo(DestinationType.newBuilder().setName("UNKNOWN").setMapTo(DataType.UNSPECIFIED).build()).build(),
                                 DataTypeMappingEntry.newBuilder().setFivetranType(DataType.BOOLEAN).setMapTo(DestinationType.newBuilder().setName("BOOL").setMapTo(DataType.BOOLEAN).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.SHORT).setMapTo(DestinationType.newBuilder().setName("SHORT_INTEGER").setMapTo(DataType.SHORT).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.INT).setMapTo(DestinationType.newBuilder().setName("INTEGER").setMapTo(DataType.INT).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.LONG).setMapTo(DestinationType.newBuilder().setName("LONG_INTEGER").setMapTo(DataType.LONG).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.DECIMAL).setMapTo(DestinationType.newBuilder().setName("DECIMAL").setMapTo(DataType.DECIMAL).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.FLOAT).setMapTo(DestinationType.newBuilder().setName("FLOAT").setMapTo(DataType.FLOAT).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.DOUBLE).setMapTo(DestinationType.newBuilder().setName("DOUBLE").setMapTo(DataType.DOUBLE).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.NAIVE_TIME).setMapTo(DestinationType.newBuilder().setName("TIME").setMapTo(DataType.NAIVE_TIME).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.NAIVE_DATE).setMapTo(DestinationType.newBuilder().setName("DATE").setMapTo(DataType.NAIVE_DATE).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.NAIVE_DATETIME).setMapTo(DestinationType.newBuilder().setName("DATETIME").setMapTo(DataType.NAIVE_DATETIME).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.UTC_DATETIME).setMapTo(DestinationType.newBuilder().setName("UTC_DATETIME").setMapTo(DataType.UTC_DATETIME).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.BINARY).setMapTo(DestinationType.newBuilder().setName("BLOB").setMapTo(DataType.BINARY).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.XML).setMapTo(DestinationType.newBuilder().setName("XML").setMapTo(DataType.XML).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.STRING).setMapTo(DestinationType.newBuilder().setName("VARCHAR").setMapTo(DataType.STRING).build()).build(),
-                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.JSON).setMapTo(DestinationType.newBuilder().setName("OBJECT").setMapTo(DataType.JSON).build()).build()))
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.SHORT).setMapTo(DestinationType.newBuilder().setName("SHORT_INTEGER").setMapTo(DataType.SHORT).setMaxValue(MaxValue.newBuilder().setNumericParam(Integer.MAX_VALUE)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.INT).setMapTo(DestinationType.newBuilder().setName("INTEGER").setMapTo(DataType.INT).setMaxValue(MaxValue.newBuilder().setNumericParam(Integer.MAX_VALUE)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.LONG).setMapTo(DestinationType.newBuilder().setName("LONG_INTEGER").setMapTo(DataType.LONG).setMaxValue(MaxValue.newBuilder().setNumericParam(Integer.MAX_VALUE)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.DECIMAL).setMapTo(DestinationType.newBuilder().setName("DECIMAL").setMapTo(DataType.DECIMAL).setMaxValue(MaxValue.newBuilder().setDecimalParam(maxFloatDecimalParams)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.FLOAT).setMapTo(DestinationType.newBuilder().setName("FLOAT").setMapTo(DataType.FLOAT).setMaxValue(MaxValue.newBuilder().setDecimalParam(maxFloatDecimalParams)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.DOUBLE).setMapTo(DestinationType.newBuilder().setName("DOUBLE").setMapTo(DataType.DOUBLE).setMaxValue(MaxValue.newBuilder().setDecimalParam(maxDoubleDecimalParams)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.NAIVE_TIME).setMapTo(DestinationType.newBuilder().setName("TIME").setMapTo(DataType.NAIVE_TIME).setMaxValue(MaxValue.newBuilder().setDateParam(maxTimestamp)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.NAIVE_DATE).setMapTo(DestinationType.newBuilder().setName("DATE").setMapTo(DataType.NAIVE_DATE).setMaxValue(MaxValue.newBuilder().setDateParam(maxTimestamp)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.NAIVE_DATETIME).setMapTo(DestinationType.newBuilder().setName("DATETIME").setMapTo(DataType.NAIVE_DATETIME).setMaxValue(MaxValue.newBuilder().setDateParam(maxTimestamp)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.UTC_DATETIME).setMapTo(DestinationType.newBuilder().setName("UTC_DATETIME").setMapTo(DataType.UTC_DATETIME).setMaxValue(MaxValue.newBuilder().setDateParam(maxTimestamp)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.BINARY).setMapTo(DestinationType.newBuilder().setName("BLOB").setMapTo(DataType.BINARY).setMaxValue(MaxValue.newBuilder().setNumericParam(million)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.XML).setMapTo(DestinationType.newBuilder().setName("XML").setMapTo(DataType.XML).setMaxValue(MaxValue.newBuilder().setNumericParam(million)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.STRING).setMapTo(DestinationType.newBuilder().setName("VARCHAR").setMapTo(DataType.STRING).setMaxValue(MaxValue.newBuilder().setNumericParam(million)).build()).build(),
+                                DataTypeMappingEntry.newBuilder().setFivetranType(DataType.JSON).setMapTo(DestinationType.newBuilder().setName("OBJECT").setMapTo(DataType.JSON).setMaxValue(MaxValue.newBuilder().setNumericParam(million)).build()).build()))
                         .build());
 
         responseObserver.onCompleted();
