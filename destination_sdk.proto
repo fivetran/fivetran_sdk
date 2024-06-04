@@ -40,6 +40,15 @@ message DestinationType {
         bool keep_same = 2;
         DataType map_to = 3;
     }
+    optional MaxValue max_value = 4;
+}
+
+message MaxValue {
+    oneof max_param {
+        int32 numeric_param = 1;
+        DecimalParams decimal_param = 2;
+        google.protobuf.Timestamp date_param = 3;
+    }
 }
 
 message DescribeTableRequest {
