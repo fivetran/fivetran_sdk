@@ -124,12 +124,17 @@ This operation should report all columns in the destination table, including Fiv
 - This operation might be requested for a table that does not exist in the destination. In that case, it should NOT fail, simply ignore the request and return `success = true`.
 - `utc_delete_before` has millisecond precision.
 
-#### WriteBatchRequest
+#### WriteBatch
+This operations provides details about the batch files containing the retrieved data. We provide a parameter `WriteBatchRequest` which contains all the information required for you to read the batch files. Here are some of the fields included in the request message::
 - `replace_files` is for `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row will always provide values for all columns. Set the `_fivetran_synced` column in the destination with the values coming in from the csv files.
 
 - `update_files` is for `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `CsvFileParams`. Soft-deleted rows will arrive in here as well. Update the `_fivetran_synced` column in the destination with the values coming in from the csv files.
 
 - `delete_files` is for `hard delete` operation. Use primary key columns (or `_fivetran_id` system column for primary-keyless tables) to perform `DELETE FROM`.
+
+- `keys` is a map that provides a list of secret keys that can be used to decrypt batch files.
+
+- `file_params` provides information about the file type and any configurations applied to it, such as encryption or compression.
 
 Also, Fivetran will deduplicate operations such that each primary key will show up only once in any of the operations
 
@@ -138,6 +143,19 @@ Do not assume order of columns in the batch files. Always read the CSV file head
 - `CsvFileParams`:
     - `null_string` value is used to represent `NULL` value in all batch files.
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
+
+#### Capabilities
+This operation offers several additional features, as listed below:
+
+- Datatype Mappings: Supports adjusting partner data types for each Fivetran data type.
+- Max value for columns: Provides an option to specify the maximum value for each data type.
+
+#### AlterTable
+This operation is used to communicate updates to a table. The `SchemaDiff` message within the `AlterTableRequest` parameter provides details about these updates:
+- Adding a column (`add_column`): Fivetran uses this field to provide information about a new column to be added in destination table.
+- Update Column type (`change_column_type`): This field provides the info on updated Column from source that needs to be reflected in destination table.
+- Primary key updates (`new_primary_key`):  If the customer's primary key have changed, this field lists all the new primary key used.
+
 
 ### Examples of Data Types
 Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in CSV batch files are as follows:
