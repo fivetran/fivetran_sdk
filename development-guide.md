@@ -61,13 +61,32 @@ The following are hard requirements to be able to deploy Partner code to Fivetra
 - Encrypt HTTP requests: Things like URLs, URL parameters, and query params are always encrypted for logging, and customer approval is needed to decrypt and examine them.
 
 
-## Connector Guidelines
+## Setup Form Guidelines
+- Keep the form clear and concise, only requesting essential information for successful connector setup.
+- Use clear and descriptive labels for each form field. Avoid technical jargon if possible.
+- Organize the fields in a logical order that reflects the setup process.
+
+### RPC Calls
+#### ConfigurationForm
+This operation retrieves all the setup form fields and tests info required to establish a connection. You can provide various parameters for the fields to enhance the user experience, such as descriptions, optional fields, and more.
+
+#### Test
+The previous RPC call retrieves the tests that need to be executed during connection setup. This operation then invokes the test with the customer's credentials as parameters. Finally, it should return a success or failure indication for the test execution.
+
+## Source Connector Guidelines
 
 - Don't push anything other than source data to the destination. State will be saved to production DB and returned in `UpdateRequest`.
 - Don't forget to handle new schemas/tables/columns per the information and user choices in `UpdateRequest#selection`.
 - Make sure you checkpoint at least once an hour. The more frequently you do it, the better.
 
-## Destination Guidelines
+### RPC Calls
+#### Schema
+This operation should retrieve all the information about the customer's schemas, tables, and columns. It also offers an optional `selection_not_supported` field that indicates whether customers can select or deselect tables and columns within the Fivetran dashboard.
+
+#### Update
+This operation should retrieve data from the source. We provide a request using the `UpdateRequest` message, which includes the customer's state, credentials, and schema information. The response, delivered through the `UpdateResponse` message, should contain data records or other supported operations.
+
+## Destination Connector Guidelines
 
 - Do not push anything other than source data to the destination.
 
