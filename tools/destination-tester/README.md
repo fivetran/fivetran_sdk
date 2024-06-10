@@ -45,98 +45,113 @@ Here is an example input file named `input_1.json`:
 
 ```json
 {
-    "create_table" : {
-        "transaction": {
-            "columns": {
-                "id": "INT",
-                "amount" : "DOUBLE",
-                "desc": "STRING"
-            },
-            "primary_key": ["id"]
+  "create_table" : {
+    "transaction": {
+      "columns": {
+        "id": "INT",
+        "amount" : "DOUBLE",
+        "desc": {"type": "STRING", "string_byte_length": 256}
+      },
+      "primary_key": ["id"]
+    },
+    "campaign": {
+      "columns": {
+        "name": {"type": "STRING", "string_byte_length": 256},
+        "num": {"type": "DECIMAL", "precision": 6, "scale": 3}
+      },
+      "primary_key": []
+    }
+  },
+  "alter_table" : {
+    "transaction":
+    {
+      "add_column": {
+        "columns": {
+          "order_id": "INT",
+          "value": {
+            "type": "DECIMAL",
+            "precision": 6,
+            "scale": 3
+          }
         },
-        "campaign": {
-            "columns": {
-                "name": "STRING",
-                "num": {"type": "DECIMAL", "precision": 6, "scale": 3}
-            },
-            "primary_key": []
-        }
+        "primary_key": [
+          "order_id"
+        ]
+      },
+      "updated_primary_keys": [
+        "id",
+        "order_id"
+      ],
+      "change_column_type": {
+        "amount": "FLOAT"
+      }
+    }
+  },
+  "describe_table" : [
+    "transaction"
+  ],
+  "ops" : [
+    {
+      "upsert": {
+        "transaction": [
+          {"id":1, "amount": 100.45, "desc": null, "order_id": 1, "value": 10.10},
+          {"id":2, "amount": 150.33, "desc": "two", "order_id": 2, "value": 10.20}
+        ],
+        "campaign": [
+          {"_fivetran_id": "abc-123-xyz", "name": "Christmas", "num": 100.23},
+          {"_fivetran_id": "vbn-543-hjk", "name": "New Year", "num": 200.56}
+        ]
+      }
     },
-    "alter_table" : {
-        "transaction": {
-            "columns": {
-                "id": "INT",
-                "amount" : "FLOAT",
-                "desc": "STRING"
-            },
-            "primary_key": ["id"]
-        }
+    {
+      "truncate_before": [
+        "campaign"
+      ]
     },
-    "describe_table" : [
+    {
+      "update": {
+        "transaction": [
+          {"id":1, "amount": 200}
+        ]
+      }
+    },
+    {
+      "soft_truncate_before": [
         "transaction"
-    ],
-    "ops" : [
-        {
-            "upsert": {
-                "transaction": [
-                    {"id":1, "amount": 100.45, "desc": null},
-                    {"id":2, "amount": 150.33, "desc": "two"}
-                ],
-                "campaign": [
-                    {"_fivetran_id": "abc-123-xyz", "name": "Christmas", "num": 100.23},
-                    {"_fivetran_id": "vbn-543-hjk", "name": "New Year", "num": 200.56}
-                ]
-            }
-        },
-        {
-            "truncate_before": [
-                "campaign"
-            ]
-        },
-        {
-            "update": {
-                "transaction": [
-                    {"id":1, "amount": 200}
-                ]
-            }
-        },
-        {
-            "soft_truncate_before": [
-                "transaction"
-            ]
-        },
-        {
-            "upsert": {
-                "transaction": [
-                    {"id":10, "amount": 100, "desc": "thee"},
-                    {"id":20, "amount": 50, "desc": "mone"}
-                ],
-                "campaign": [
-                    {"_fivetran_id": "dfg-890-lkj", "name": "Christmas 2", "num": 400.32}
-                ]
-            }
-        },
-        {
-            "delete": {
-                "transaction": [
-                    {"id":3}
-                ],
-                "campaign": [
-                    {"_fivetran_id": "abc-123-xyz"}
-                ]
-            }
-        },
-        {
-            "soft_delete": {
-                "transaction": [
-                    {"id":4}
-                ],
-                "campaign": [
-                    {"_fivetran_id": "dfg-890-lkj"}
-                ]
-            }
-        }
-    ]
+      ]
+    },
+    {
+      "upsert": {
+        "transaction": [
+          {"id":10, "amount": 100, "desc": "thee", "order_id": 3, "value": 10.30},
+          {"id":20, "amount": 50, "desc": "mone", "order_id": 4, "value": 10.40}
+        ],
+        "campaign": [
+          {"_fivetran_id": "dfg-890-lkj", "name": "Christmas 2", "num": 400.32}
+        ]
+      }
+    },
+    {
+      "delete": {
+        "transaction": [
+          {"id":3}
+        ],
+        "campaign": [
+          {"_fivetran_id": "abc-123-xyz"}
+        ]
+      }
+    },
+    {
+      "soft_delete": {
+        "transaction": [
+          {"id":4}
+        ],
+        "campaign": [
+          {"_fivetran_id": "dfg-890-lkj"}
+        ]
+      }
+    }
+  ]
 }
 
 ```
