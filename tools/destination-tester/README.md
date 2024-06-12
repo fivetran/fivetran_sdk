@@ -56,7 +56,7 @@ Here is an example input file named `input_1.json`:
     },
     "campaign": {
       "columns": {
-        "name": {"type": "STRING", "string_byte_length": 256},
+        "name": "STRING",
         "num": {"type": "DECIMAL", "precision": 6, "scale": 3}
       },
       "primary_key": []

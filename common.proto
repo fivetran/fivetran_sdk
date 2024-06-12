@@ -118,8 +118,8 @@ message DecimalParams {
 
 message DataTypeParams {
   oneof params {
-    DecimalParams decimal = 4;
-    int32 string_byte_length = 5;
+    DecimalParams decimal = 1;
+    int32 string_byte_length = 2;
   }
 }
 
