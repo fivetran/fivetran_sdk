@@ -17,20 +17,24 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
                         .setTableSelectionSupported(true)
                         .addAllFields(Arrays.asList(
                                 FormField.newBuilder()
-                                        .setSingle(Field.newBuilder().setName("apiKey").setLabel("API Key").setPlaceholder("my-api-key")
-                                                .setRequired(true).setTextField(TextField.PlainText).build())
-                                        .build(),
-                                FormField.newBuilder()
-                                        .setSingle(Field.newBuilder().setName("password").setLabel("User Password").setPlaceholder("p4ssw0rd")
-                                                .setRequired(true).setTextField(TextField.Password).build())
-                                        .build(),
-                                FormField.newBuilder()
-                                        .setSingle(Field.newBuilder().setName("region").setLabel("AWS Region").setDefaultValue("US-EAST").setRequired(false)
-                                                .setDropdownField(DropdownField.newBuilder().addAllDropdownField(Arrays.asList("US-EAST", "US-WEST")).build())
+                                        .setFieldSet(FieldSet.newBuilder().addAllFields(Arrays.asList(
+                                                FormField.newBuilder()
+                                                        .setSingle(Field.newBuilder().setName("apiKey").setLabel("API Key").setPlaceholder("my-api-key")
+                                                                .setRequired(true).setTextField(TextField.PlainText).build())
+                                                        .build(),
+                                                FormField.newBuilder()
+                                                        .setSingle(Field.newBuilder().setName("password").setLabel("User Password").setPlaceholder("p4ssw0rd")
+                                                                .setRequired(true).setTextField(TextField.Password).build())
+                                                        .build(),
+                                                FormField.newBuilder()
+                                                        .setSingle(Field.newBuilder().setName("region").setLabel("AWS Region").setDefaultValue("US-EAST").setRequired(false)
+                                                                .setDropdownField(DropdownField.newBuilder().addAllDropdownField(Arrays.asList("US-EAST", "US-WEST")).build()).build())
+                                                        .build()))
                                                 .build())
                                         .build(),
                                 FormField.newBuilder()
-                                        .setSingle(Field.newBuilder().setName("hidden").setLabel("my-hidden-value").setTextField(TextField.Hidden).build())
+                                        .setSingle(Field.newBuilder().setName("hidden").setLabel("my-hidden-value")
+                                                .setTextField(TextField.Hidden).build())
                                         .build(),
                                 FormField.newBuilder()
                                         .setSingle(Field.newBuilder().setName("isPublic").setLabel("Public?").setDescription("Is this public?")

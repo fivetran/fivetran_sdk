@@ -46,6 +46,7 @@ message VisibilityCondition {
   oneof condition {
     bool has_bool_value = 2;
     string has_string_value = 3;
+    bool has_any_value = 4;
   }
 }
 
