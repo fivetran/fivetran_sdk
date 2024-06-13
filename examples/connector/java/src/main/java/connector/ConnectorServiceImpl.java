@@ -17,31 +17,57 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
                         .setTableSelectionSupported(true)
                         .addAllFields(Arrays.asList(
                                 FormField.newBuilder()
-                                        .setFieldSet(FieldSet.newBuilder().addAllFields(Arrays.asList(
-                                                FormField.newBuilder()
-                                                        .setSingle(Field.newBuilder().setName("apiKey").setLabel("API Key").setPlaceholder("my-api-key")
-                                                                .setRequired(true).setTextField(TextField.PlainText).build())
-                                                        .build(),
-                                                FormField.newBuilder()
-                                                        .setSingle(Field.newBuilder().setName("password").setLabel("User Password").setPlaceholder("p4ssw0rd")
-                                                                .setRequired(true).setTextField(TextField.Password).build())
-                                                        .build(),
-                                                FormField.newBuilder()
-                                                        .setSingle(Field.newBuilder().setName("region").setLabel("AWS Region").setDefaultValue("US-EAST").setRequired(false)
-                                                                .setDropdownField(DropdownField.newBuilder().addAllDropdownField(Arrays.asList("US-EAST", "US-WEST")).build()).build())
-                                                        .build()))
+                                        .setSingle(Field.newBuilder().setName("apiKey").setLabel("API Key").setPlaceholder("my-api-key")
+                                                .setRequired(true).setTextField(TextField.PlainText).build())
+                                        .build(),
+                                FormField.newBuilder()
+                                        .setSingle(Field.newBuilder().setName("password").setLabel("User Password").setPlaceholder("p4ssw0rd")
+                                                .setRequired(true).setTextField(TextField.Password).build())
+                                        .build(),
+                                FormField.newBuilder()
+                                        .setSingle(Field.newBuilder().setName("region").setLabel("AWS Region").setDefaultValue("US-EAST").setRequired(false)
+                                                .setDropdownField(DropdownField.newBuilder().addAllDropdownField(Arrays.asList("US-EAST", "US-WEST")).build())
                                                 .build())
                                         .build(),
                                 FormField.newBuilder()
-                                        .setSingle(Field.newBuilder().setName("hidden").setLabel("my-hidden-value")
-                                                .setTextField(TextField.Hidden).build())
+                                        .setSingle(Field.newBuilder().setName("hidden").setLabel("my-hidden-value").setTextField(TextField.Hidden).build())
                                         .build(),
                                 FormField.newBuilder()
                                         .setSingle(Field.newBuilder().setName("isPublic").setLabel("Public?").setDescription("Is this public?")
                                                 .setToggleField(ToggleField.newBuilder().build())
                                                 .build())
+                                        .build(),
+                                FormField.newBuilder().setFieldSet(
+                                        FieldSet.newBuilder()
+                                                .addAllFields(Arrays.asList(
+                                                        FormField.newBuilder().setSingle(
+                                                                Field.newBuilder()
+                                                                        .setName("Connection String")
+                                                                        .setLabel("Connection String")
+                                                                        .setTextField(TextField.Password)
+                                                                        .setPlaceholder("connection-string-used")
+                                                                        .setRequired(false)
+                                                                        .build())
+                                                                .build(),
+                                                        FormField.newBuilder().setSingle(
+                                                                Field.newBuilder()
+                                                                        .setName("SSH tunnel")
+                                                                        .setLabel("Ssh tunnel")
+                                                                        .setTextField(TextField.PlainText)
+                                                                        .setPlaceholder("ssh-tunnel")
+                                                                        .setRequired(false)
+                                                                        .build())
+                                                                .build()
+                                                ))
+                                                .setCondition(
+                                                        VisibilityCondition.newBuilder()
+                                                                .setFieldName("isPublic")
+                                                                .setHasStringValue("false")
+                                                                .build())
+                                                .build())
                                         .build()
-                        ))
+                                )
+                        )
                         .addAllTests(Arrays.asList(
                                 ConfigurationTest.newBuilder().setName("connect").setLabel("Tests connection").build(),
                                 ConfigurationTest.newBuilder().setName("select").setLabel("Tests selection").build()))
