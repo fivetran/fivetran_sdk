@@ -68,7 +68,7 @@ The following are hard requirements to be able to deploy Partner code to Fivetra
 
 ### RPC Calls
 #### ConfigurationForm
-This operation retrieves all the setup form fields and tests info required to establish a connection. You can provide various parameters for the fields to enhance the user experience, such as descriptions, optional fields, and more.
+This operation retrieves all the setup form fields and tests information. You can provide various parameters for the fields to enhance the user experience, such as descriptions, optional fields, and more.
 
 #### Test
 The previous RPC call retrieves the tests that need to be executed during connection setup. This operation then invokes the test with the customer's credentials as parameters. Finally, it should return a success or failure indication for the test execution.
@@ -81,7 +81,7 @@ The previous RPC call retrieves the tests that need to be executed during connec
 
 ### RPC Calls
 #### Schema
-This operation should retrieve all the information about the customer's schemas, tables, and columns. It also offers an optional `selection_not_supported` field that indicates whether customers can select or deselect tables and columns within the Fivetran dashboard.
+This operation retrieves the customer's schemas, tables, and columns. It also includes an optional `selection_not_supported` field that indicates whether customers can select or deselect tables and columns within the Fivetran dashboard.
 
 #### Update
 This operation should retrieve data from the source. We provide a request using the `UpdateRequest` message, which includes the customer's state, credentials, and schema information. The response, delivered through the `UpdateResponse` message, should contain data records or other supported operations.
@@ -154,7 +154,7 @@ This operation offers several additional features, as listed below:
 This operation is used to communicate updates to a table. The `SchemaDiff` message within the `AlterTableRequest` parameter provides details about these updates:
 - Adding a column (`add_column`): Fivetran uses this field to provide information about a new column to be added in destination table.
 - Update Column type (`change_column_type`): This field provides information on updated type of a column in the source that needs to be reflected in a destination table.
-- Primary key updates (`new_primary_key`):  If the customer's primary key have changed, this field lists all the new primary key used.
+- Primary key updates (`new_primary_key`):  If the primary key has changed, this field lists all the new columns used in the updated primary key.
 
 
 ### Examples of Data Types
