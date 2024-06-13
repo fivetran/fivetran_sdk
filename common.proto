@@ -116,6 +116,13 @@ message DecimalParams {
   uint32 scale = 2;
 }
 
+message DataTypeParams {
+  oneof params {
+    DecimalParams decimal = 1;
+    int32 string_byte_length = 2;
+  }
+}
+
 enum RecordType {
   UPSERT = 0;
   UPDATE = 1;
@@ -153,5 +160,5 @@ message Column {
   string name = 1;
   DataType type = 2;
   bool primary_key = 3;
-  optional DecimalParams decimal = 4;
+  optional DataTypeParams params = 4;
 }
