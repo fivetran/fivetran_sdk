@@ -19,6 +19,7 @@
 - A new rpc method Capabilities is introduced. This brings the functionalities:
     - Adjust column type: Supports adjusting Partner data type for each Fivetran type
     - Define the max value supported for the columns types.
+    - We have added support for providing parquet batch files. Now, partner can choose the file type to create batch files.
 - Changes in AlterTableRequest:
     - Takes table_name instead of Table
     - Introduced SchemaDiff field, which supports adding new columns, change column type, and update primary keys.
