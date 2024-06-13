@@ -2,7 +2,7 @@ syntax = "proto3";
 option optimize_for = SPEED;
 option java_multiple_files = true;
 option go_package = "fivetran.com/fivetran_sdk";
-package fivetran_sdk;
+package fivetran_sdk.v2;
 
 import "google/protobuf/timestamp.proto";
 
@@ -16,14 +16,36 @@ message ConfigurationFormResponse {
 }
 
 message FormField {
+  oneof field {
+      Field single = 1;
+      FieldSet field_set = 2;
+  }
+}
+
+message Field {
   string name = 1;
   string label = 2;
   bool required = 3;
   optional string description = 4;
+  optional string default_value = 5;
+  optional string placeholder = 6;
   oneof type {
-    TextField text_field = 5;
-    DropdownField dropdown_field = 6;
-    ToggleField toggle_field = 7;
+    TextField text_field = 7;
+    DropdownField dropdown_field = 8;
+    ToggleField toggle_field = 9;
+  }
+}
+
+message FieldSet {
+  repeated FormField fields = 1;
+  optional VisibilityCondition condition = 2;
+}
+
+message VisibilityCondition {
+  string field_name = 1;
+  oneof condition {
+    bool has_bool_value = 2;
+    string has_string_value = 3;
   }
 }
 
@@ -94,7 +116,14 @@ message DecimalParams {
   uint32 scale = 2;
 }
 
-enum OpType {
+message DataTypeParams {
+  oneof params {
+    DecimalParams decimal = 1;
+    int32 string_byte_length = 2;
+  }
+}
+
+enum RecordType {
   UPSERT = 0;
   UPDATE = 1;
   DELETE = 2;
@@ -131,5 +160,5 @@ message Column {
   string name = 1;
   DataType type = 2;
   bool primary_key = 3;
-  optional DecimalParams decimal = 4;
+  optional DataTypeParams params = 4;
 }

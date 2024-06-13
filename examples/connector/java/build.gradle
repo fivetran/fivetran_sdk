@@ -68,7 +68,10 @@ tasks.register('deleteBuild', Delete) {
 tasks.register('copyProtos', Copy) {
     from file("$rootDir/../../..")
     into file("src/main/proto/")
-    include "*.proto"
+    include "*v2.proto"
+    rename { String fileName ->
+        fileName.replace('_v2.proto', '.proto')
+    }
     dependsOn 'deleteBuild'
 }
 
