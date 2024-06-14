@@ -9,8 +9,10 @@ import (
 	"net"
 	"strconv"
 
+    "google.golang.org/grpc"
+    _ "google.golang.org/grpc/encoding/gzip"
+
 	pb "fivetran.com/fivetran_sdk/proto"
-	"google.golang.org/grpc"
 )
 
 var port = flag.Int("port", 50051, "The server port")
