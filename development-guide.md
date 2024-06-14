@@ -154,7 +154,7 @@ This operation offers several additional features, as listed below:
 This operation is used to communicate updates to a table. The `SchemaDiff` message within the `AlterTableRequest` parameter provides the details about these updates:
 - Adding a column (`add_column`): Fivetran uses this field to provide information about a new column to be added in a destination table.
 - Update Column type (`change_column_type`): This field provides information on updated type of a column in the source that needs to be reflected in a destination table.
-- Primary key updates (`new_primary_key`):  If the primary key has changed, this field lists all the new columns used in the updated primary key.
+- Primary key updates (`updated_primary_keys`):  If the primary key has changed, this field lists all the columns used in the updated primary key.
 
 
 ### Examples of Data Types
