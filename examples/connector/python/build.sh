@@ -6,7 +6,7 @@ source connector_run/bin/activate
 pip install -r requirements.txt
 
 # copying protos present in the root of directory to `protos` folder
-mkdir -p proto
+mkdir -p protos
 cp ../../../*v2.proto protos/
 
 # Generates the required gRPC Python files using protos into `sdk_pb2` folder

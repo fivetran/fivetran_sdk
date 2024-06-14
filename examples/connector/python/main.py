@@ -4,9 +4,9 @@ import json
 import sys
 sys.path.append('sdk_pb2')
 
-from sdk_pb2 import connector_sdk_pb2_grpc
-from sdk_pb2 import common_pb2
-from sdk_pb2 import connector_sdk_pb2
+from sdk_pb2 import connector_sdk_v2_pb2_grpc as connector_sdk_pb2_grpc
+from sdk_pb2 import common_v2_pb2 as common_pb2
+from sdk_pb2 import connector_sdk_v2_pb2 as connector_sdk_pb2
 
 
 class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
