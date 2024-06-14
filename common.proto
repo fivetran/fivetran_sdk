@@ -112,6 +112,13 @@ enum DataType {
   JSON = 15;
 }
 
+message DataTypeParams {
+  oneof params {
+    DecimalParams decimal = 1;
+    int32 string_byte_length = 2;
+  }
+}
+
 message DecimalParams {
   uint32 precision = 1;
   uint32 scale = 2;
