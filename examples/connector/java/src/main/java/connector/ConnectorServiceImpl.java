@@ -42,7 +42,7 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
                                                 .addAllFields(Arrays.asList(
                                                         FormField.newBuilder().setSingle(
                                                                 Field.newBuilder()
-                                                                        .setName("Connection String")
+                                                                        .setName("connectionString")
                                                                         .setLabel("Connection String")
                                                                         .setTextField(TextField.Password)
                                                                         .setPlaceholder("connection-string-used")
@@ -51,7 +51,7 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
                                                                 .build(),
                                                         FormField.newBuilder().setSingle(
                                                                 Field.newBuilder()
-                                                                        .setName("SSH tunnel")
+                                                                        .setName("sshTunnel")
                                                                         .setLabel("Ssh tunnel")
                                                                         .setTextField(TextField.PlainText)
                                                                         .setPlaceholder("ssh-tunnel")
