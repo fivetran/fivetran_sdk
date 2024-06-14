@@ -8,9 +8,7 @@ source destination_run/bin/activate
 
 # copying protos present in the root of directory to `protos` folder
 mkdir -p proto
-
-# Copy proto files to protos directory
-cp ../../../*_v2.proto protos/
+cp ../../../*v2.proto protos/
 
 # Install the required packages
 pip install -r requirements.txt
@@ -20,10 +18,10 @@ mkdir -p sdk_pb2
 
 # Generate grpc python code and store it in sdk_pb2
 python -m grpc_tools.protoc \
-       --proto_path=./proto/ \
+       --proto_path=./protos/ \
        --python_out=sdk_pb2 \
        --pyi_out=sdk_pb2 \
-       --grpc_python_out=sdk_pb2 proto/*.proto
+       --grpc_python_out=sdk_pb2 protos/*.proto
 
 # Deactivate virtual environment
 deactivate

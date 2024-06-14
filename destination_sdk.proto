@@ -10,12 +10,19 @@ import "common.proto";
 // Fivetran (grpc client) <> Destination (grpc server)
 service Destination {
     rpc ConfigurationForm (ConfigurationFormRequest) returns (ConfigurationFormResponse) {}
+    rpc Capabilities (CapabilitiesRequest) returns (CapabilitiesResponse) {}
     rpc Test (TestRequest) returns (TestResponse) {}
     rpc DescribeTable (DescribeTableRequest) returns (DescribeTableResponse) {}
     rpc CreateTable(CreateTableRequest) returns (CreateTableResponse) {}
     rpc AlterTable(AlterTableRequest) returns (AlterTableResponse) {}
     rpc Truncate(TruncateRequest) returns (TruncateResponse) {}
     rpc WriteBatch (WriteBatchRequest) returns (WriteBatchResponse) {}
+}
+
+message CapabilitiesRequest {}
+
+message CapabilitiesResponse {
+    BatchFileFormat batch_file_format = 1;
 }
 
 message DescribeTableRequest {
@@ -88,6 +95,7 @@ message WriteBatchRequest {
     repeated string delete_files = 7;
     oneof file_params {
         CsvFileParams csv = 8;
+        ParquetFileParams parquet = 9;
     }
 }
 
@@ -98,9 +106,18 @@ message CsvFileParams {
     string unmodified_string = 4;
 }
 
+message ParquetFileParams {
+    Encryption encryption = 1;
+}
+
 enum Encryption {
     NONE = 0;
     AES = 1;
+}
+
+enum BatchFileFormat {
+    CSV = 0;
+    PARQUET = 1;
 }
 
 enum Compression {

@@ -5,7 +5,7 @@ option go_package = "fivetran.com/fivetran_sdk/v2";
 package fivetran_sdk.v2;
 
 import "google/protobuf/timestamp.proto";
-import "common.proto";
+import "common_v2.proto";
 
 // Fivetran (grpc client) <> DestinationConnector (grpc server)
 service DestinationConnector {
@@ -22,8 +22,9 @@ service DestinationConnector {
 message CapabilitiesRequest {}
 
 message CapabilitiesResponse {
-    repeated DataTypeMappingEntry data_type_mappings = 1;
-    bool supports_history_mode = 2;
+    BatchFileFormat batch_file_format = 1;
+    repeated DataTypeMappingEntry data_type_mappings = 2;
+    bool supports_history_mode = 3;
 }
 
 message DataTypeMappingEntry {
@@ -141,6 +142,7 @@ message WriteBatchRequest {
     repeated string delete_files = 8;
     oneof file_params {
         CsvFileParams csv = 9;
+        ParquetFileParams parquet = 10;
     }
 }
 
@@ -151,9 +153,18 @@ message CsvFileParams {
     string unmodified_string = 4;
 }
 
+message ParquetFileParams {
+    Encryption encryption = 1;
+}
+
 enum Encryption {
     NONE = 0;
     AES = 1;
+}
+
+enum BatchFileFormat {
+    CSV = 0;
+    PARQUET = 1;
 }
 
 enum Compression {
