@@ -232,6 +232,44 @@ func (s *server) ConfigurationForm(ctx context.Context, in *pb.ConfigurationForm
 					},
 				},
 			},
+			{
+				Field: &pb.FormField_FieldSet{
+					FieldSet: &pb.FieldSet{
+						Fields: []*pb.FormField{
+							{
+								Field: &pb.FormField_Single{
+									Single: &pb.Field{
+										Name:     "connectionString",
+										Label:    "ConnectionString",
+										Required: false,
+										Type: &pb.Field_TextField{
+											TextField: pb.TextField_Password,
+										},
+									},
+								},
+							},
+							{
+								Field: &pb.FormField_Single{
+									Single: &pb.Field{
+										Name:     "sshTunnel",
+										Label:    "SSH Tunnel",
+										Required: false,
+										Type: &pb.Field_TextField{
+											TextField: pb.TextField_PlainText,
+										},
+									},
+								},
+							},
+						},
+						Condition: &pb.VisibilityCondition{
+							FieldName: "isPublic",
+							Condition: &pb.VisibilityCondition_HasStringValue{
+								HasStringValue: "false",
+							},
+						},
+					},
+				},
+			},
 		},
 		Tests: []*pb.ConfigurationTest{
 			{
