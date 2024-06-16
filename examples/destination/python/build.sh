@@ -9,7 +9,7 @@ source destination_run/bin/activate
 # Make a directory protos
 mkdir -p protos
 
-# Copy proto files t oprotos directory
+# Copy proto files to protos directory
 cp ../../../*.proto protos/
 
 # Install the required packages
