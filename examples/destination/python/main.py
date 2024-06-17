@@ -1,7 +1,11 @@
-from concurrent import futures
-import grpc
-import read_csv
+import datetime
 import sys
+from concurrent import futures
+
+import grpc
+from google.protobuf.timestamp_pb2 import Timestamp
+
+import read_csv
 
 sys.path.append('sdk_pb2')
 
@@ -61,32 +65,53 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
         return destination_sdk_pb2.AlterTableResponse(success=True)
 
     def Capabilities(self, request, context):
+        max_int_value = 2 ** 31 - 1  # 32-bit signed int
+        max_string_length = int(1e6)
+        max_binary_length = int(1e6)
+        max_decimal_param = common_pb2.DecimalParams(precision=16, scale=16)
+
+        max_timestamp = datetime.datetime(2999, 12, 31, 23, 59, 59, 99999).timestamp()
+        timestamp_seconds = int(max_timestamp)
+        timestamp_nanos = int(max_timestamp % 1 * 1e9)
+        max_timestamp_param = Timestamp(seconds=timestamp_seconds, nanos=timestamp_nanos)
+
         destination_map_to_1 = destination_sdk_pb2.DestinationType(name="VARCHAR",
-                                                                   map_to=common_pb2.DataType.STRING)
+                                                                   map_to=common_pb2.DataType.STRING,
+                                                                   max_value=destination_sdk_pb2.MaxValue(numeric_param=max_string_length))
         data_type_mapping_1 = destination_sdk_pb2.DataTypeMappingEntry(
             fivetran_type=common_pb2.DataType.STRING,
             map_to=destination_map_to_1)
 
         destination_map_to_2 = destination_sdk_pb2.DestinationType(name="NUMBER",
-                                                                   map_to=common_pb2.DataType.INT)
+                                                                   map_to=common_pb2.DataType.INT,
+                                                                   max_value=destination_sdk_pb2.MaxValue(numeric_param=max_int_value))
         data_type_mapping_2 = destination_sdk_pb2.DataTypeMappingEntry(
             fivetran_type=common_pb2.DataType.FLOAT,
             map_to=destination_map_to_2)
 
         destination_map_to_3 = destination_sdk_pb2.DestinationType(name="DATE",
-                                                                   map_to=common_pb2.DataType.UTC_DATETIME)
+                                                                   map_to=common_pb2.DataType.UTC_DATETIME,
+                                                                   max_value=destination_sdk_pb2.MaxValue(date_param=max_timestamp_param))
         data_type_mapping_3 = destination_sdk_pb2.DataTypeMappingEntry(
             fivetran_type=common_pb2.DataType.UTC_DATETIME,
             map_to=destination_map_to_3)
 
         destination_map_to_4 = destination_sdk_pb2.DestinationType(name="BLOB",
-                                                                   map_to=common_pb2.DataType.BINARY)
+                                                                   map_to=common_pb2.DataType.BINARY,
+                                                                   max_value=destination_sdk_pb2.MaxValue(numeric_param=max_binary_length))
         data_type_mapping_4 = destination_sdk_pb2.DataTypeMappingEntry(
             fivetran_type=common_pb2.DataType.BINARY,
             map_to=destination_map_to_4)
 
+        destination_map_to_5 = destination_sdk_pb2.DestinationType(name="DECIMAL",
+                                                                   map_to=common_pb2.DataType.FLOAT,
+                                                                   max_value=destination_sdk_pb2.MaxValue(decimal_param=max_decimal_param))
+        data_type_mapping_5 = destination_sdk_pb2.DataTypeMappingEntry(
+            fivetran_type=common_pb2.DataType.FLOAT,
+            map_to=destination_map_to_5)
+
         return destination_sdk_pb2.CapabilitiesResponse(
-            data_type_mappings=[data_type_mapping_1, data_type_mapping_2, data_type_mapping_3, data_type_mapping_4],
+            data_type_mappings=[data_type_mapping_1, data_type_mapping_2, data_type_mapping_3, data_type_mapping_4, data_type_mapping_5],
             supports_history_mode=True)
 
     def Truncate(self, request, context):
