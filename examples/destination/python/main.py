@@ -1,8 +1,9 @@
 import datetime
+import sys
 from concurrent import futures
 
-from google.protobuf.timestamp_pb2 import Timestamp
 import grpc
+from google.protobuf.timestamp_pb2 import Timestamp
 
 import read_csv
 
@@ -64,7 +65,7 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
         return destination_sdk_pb2.AlterTableResponse(success=True)
 
     def Capabilities(self, request, context):
-        max_int_value = 2**31 - 1  # 32-bit signed int
+        max_int_value = 2 ** 31 - 1  # 32-bit signed int
         max_string_length = int(1e6)
         max_binary_length = int(1e6)
         max_decimal_param = common_pb2.DecimalParams(precision=16, scale=16)
