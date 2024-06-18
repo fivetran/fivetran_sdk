@@ -13,12 +13,12 @@ _fivetran_end | TimeStamp | The value for this column depends on whether the rec
 
 #### Points to remember in history mode
 
-- In WriterBatchRequest we pass a new optional field HistoryMode which specifies if current connector mode is history mode or not. In this HistoryMode field, we pass `deleted_column` column name which we need to modify only if it is present in destination.   
+- In WriterBatchRequest we pass a new optional field HistoryMode which indicates connector is in history mode or not. In this HistoryMode field, we pass `deleted_column` column name which we need to modify only if it is present in destination.   
 - If the existing table is not empty then in the batch file we also send a boolean column `_fivetran_earliest`. Suppose in an `upsert` we got multiple versions of the same record in a flush, then we set the `_fivetran_earliest` to `TRUE` for the record which have the earliest `_fivetran_start` and rest of the versions will have `_fivetran_earliest` as FALSE.
 - For each Replace, Update and Delete batch files, DELETE the existing records from destination table if `_fivetran_start` of destination table is greater than or equal to  `_fivetran_start` of batch file(Refer Replace example 1 and example 2).
 
-Note: This `_fivetran_earliest` column should never be added in the destination table. We introduced this column to easily identify the earliest record and can be used to optimize data loads query.
-Below is an example of `replaqce_file`
+Note: The `_fivetran_earliest` column shouldn't be added in the destination table. It is introduced to easily identify the earliest record and can be used to optimize data loads query.
+Below is an example of `replace_file`
 
 Id(PK) | COL1    | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_earliest
 ---|---------|---------------------| --- |------------------| --- 
