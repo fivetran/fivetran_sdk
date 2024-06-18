@@ -34,7 +34,7 @@ Id(PK) | COL1    | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fiv
 ###### Example 1:
 
 When the `_fivetran_start` column value of destination table is less than  `_fivetran_start` of batch file.
-Suppose the existing Table in destination is as below:
+Suppose the existing table in destination is as below:
 
 Id(PK) | COL1 | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_synced
 --- |------|----| --- | --- | --- | ---
@@ -117,7 +117,7 @@ Id(PK) |  COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 
 ##### Updates
 
-Suppose the existing Table in destination is as below:
+Suppose the existing table in destination is as below:
 
 Id(PK) | COL1 | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_synced
 --- | --- | --- | --- | --- | --- | --- 
@@ -181,7 +181,7 @@ Id(PK) |  COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 
 ##### Deletes
 
-Suppose the existing Table in destination is as below:
+Suppose the existing table in destination is as below:
 
 Id(PK) | COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_synced
 --- | --- | --- | --- | --- | --- | ---
