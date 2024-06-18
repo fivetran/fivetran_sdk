@@ -145,7 +145,7 @@ Do not assume order of columns in the batch files. Always read the CSV file head
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
 
 #### Capabilities
-This operation offers several additional features, as listed below:
+This operation offers the ability for the partner code to declare its choices for capabilities listed below:
 
 - Datatype Mappings: Supports adjusting partner data types for each Fivetran data type.
 - Max value for columns: Provides an option to specify the maximum value for each data type.
