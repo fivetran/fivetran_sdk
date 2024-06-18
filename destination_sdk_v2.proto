@@ -1,7 +1,7 @@
 syntax = "proto3";
 option optimize_for = SPEED;
 option java_multiple_files = true;
-option go_package = "fivetran.com/fivetran_sdk/v2";
+option go_package = "fivetran.com/fivetran_sdk_v2";
 package fivetran_sdk.v2;
 
 import "google/protobuf/timestamp.proto";
@@ -10,7 +10,7 @@ import "common_v2.proto";
 // Fivetran (grpc client) <> DestinationConnector (grpc server)
 service DestinationConnector {
     rpc ConfigurationForm (ConfigurationFormRequest) returns (ConfigurationFormResponse) {}
-    rpc Capabilities(CapabilitiesRequest) returns (CapabilitiesResponse) {}
+    rpc Capabilities (CapabilitiesRequest) returns (CapabilitiesResponse) {}
     rpc Test (TestRequest) returns (TestResponse) {}
     rpc DescribeTable (DescribeTableRequest) returns (DescribeTableResponse) {}
     rpc CreateTable(CreateTableRequest) returns (CreateTableResponse) {}
@@ -22,9 +22,9 @@ service DestinationConnector {
 message CapabilitiesRequest {}
 
 message CapabilitiesResponse {
-    BatchFileFormat batch_file_format = 1;
-    repeated DataTypeMappingEntry data_type_mappings = 2;
-    bool supports_history_mode = 3;
+    repeated DataTypeMappingEntry data_type_mappings = 1;
+    bool supports_history_mode = 2;
+    BatchFileFormat batch_file_format = 3;
 }
 
 message DataTypeMappingEntry {
@@ -90,7 +90,7 @@ message SchemaDiff {
     oneof change {
         Column add_column = 1;
         ChangeType change_column_type = 2;
-        PrimaryKey updated_primary_keys = 3;
+        PrimaryKey update_primary_keys = 3;
     }
 }
 
@@ -135,7 +135,7 @@ message WriteBatchRequest {
     map<string, string> configuration = 1;
     string schema_name = 2;
     Table table = 3;
-    bool history_mode = 4;
+    optional HistoryMode history_mode = 4;
     map<string, bytes> keys = 5;
     repeated string replace_files = 6;
     repeated string update_files = 7;
@@ -144,6 +144,10 @@ message WriteBatchRequest {
         CsvFileParams csv = 9;
         ParquetFileParams parquet = 10;
     }
+}
+
+message HistoryMode {
+    string deleted_column = 1;
 }
 
 message CsvFileParams {

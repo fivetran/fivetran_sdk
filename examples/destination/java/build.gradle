@@ -71,7 +71,7 @@ tasks.register('deleteBuild', Delete) {
 tasks.register('copyProtos', Copy) {
     from file("$rootDir/../../..")
     into file("src/main/proto/")
-    include "*v2.proto"
+    include "*_v2.proto"
 
     dependsOn 'deleteBuild'
 }

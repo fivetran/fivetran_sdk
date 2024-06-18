@@ -1,1 +1,1 @@
-cp ../../../*v2.proto proto/
+cp ../../../*_v2.proto proto/

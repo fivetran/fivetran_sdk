@@ -8,7 +8,7 @@ source destination_run/bin/activate
 
 # copying protos present in the root of directory to `protos` folder
 mkdir -p proto
-cp ../../../*v2.proto protos/
+cp ../../../*_v2.proto protos/
 
 # Install the required packages
 pip install -r requirements.txt
