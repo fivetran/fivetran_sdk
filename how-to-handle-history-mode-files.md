@@ -46,10 +46,10 @@ At the source, new records are added:
 
 Id(PK) | COL1 | COL2 | Timestamp | Type
 --- | --- | --- |-----------| ---
-1 | def |1 | T3        | Inserted
-1 | ghi | 1 |  T4       | Inserted
+1 | def |1 | T3        | Upserted
+1 | ghi | 1 |  T4       | Upserted
 
-The Replace batch file will be as follows:
+The replace batch file will be as follows:
 
 Id(PK) | COL1 | COL2  | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_earliest | _fivetran_synced
 --- |------|-------|---------------------| --- | --- | --- | ---
@@ -90,7 +90,7 @@ At the source new records are added:
 
 Id(PK) | COL1 | COL2  | Timestamp  | Type
 --- | --- | --- | --- | ---
-1 | ghi | 1  | T2  | Inserted
+1 | ghi | 1  | T2  | Upserted
 
 
 
@@ -148,7 +148,7 @@ Id(PK) |  COL1  | Timestamp  | Type
 
 
 
-Update batch file will be as follows:
+The update batch file will be as follows:
 
 
 Id(PK) | COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_earliest | _fivetran_synced
