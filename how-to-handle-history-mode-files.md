@@ -110,9 +110,9 @@ Id(PK) |  COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 
 **Explanation:**
 - We got new records for id = 1.
-- We check for the corresponding earliest record(`_fivetran_earliest` as TRUE), and deleted the existing records from the destination table if `_fivetran_start` of destination table is greater than or equal to the `_fivetran_start` of the batch file(in the above example we have such records, so deleted records with id = 1 and _fivetran_start = T3 and T4)
+- We check for the corresponding earliest record(`_fivetran_earliest` as TRUE), and deleted the existing records from the destination table if `_fivetran_start` of destination table is greater than or equal to the `_fivetran_start` of the batch file(in the above example we have such records, so we deleted records with id = 1, _fivetran_start = T3 and id = 1, _fivetran_start = T4).
 - `_fivetran_end` of the active record in destination table is set to `_fivetran_start`-1 of the `_fivetran_earliest` record of batch file.
-- We set the `_fivetran_active` column value for above updated record to FALSE and `deleted_column`(if present in destination table) to TRUE
+- We set the `_fivetran_active` column value for above updated record to FALSE and `deleted_column`(if present in destination table) to TRUE.
 - We inserted new records _as is_ excluding the `_fivetran_earliest` column in the destination table.
 
 ##### Updates
@@ -175,7 +175,7 @@ Id(PK) |  COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
  - In batch file we got records with id = 1 and id = 2.
 - We set other columns(non updated columns) to the values of the active records. In above case for id = 2, we didn’t get COL1 value, so we set COL1 to “mno”(COL1 value of the active record).
  - We set `_fivetran_end` of the active record in destination table to `_fivetran_start`-1 of the `_fivetran_earliest` record of batch file.
-- We set `_fivetran_active` column value for above updated record to FALSE and `deleted_column`(if present in destination table) to TRUE
+- We set `_fivetran_active` column value for above updated record to FALSE and `deleted_column`(if present in destination table) to TRUE.
 - We set other columns _as is_ from the batch file in the destination table except the `_fivetran_earliest` column.
 
 
@@ -215,6 +215,6 @@ Id(PK) | COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active |
 2  | mno | 3 | T2 | TMAX | TRUE             | T103
 
 **Explanation:**
-- We set the `_fivetran_active` column value to FALSE for the active record and set the `_fivetran_end` column value to `T3-1` and the `deleted_column`(if present in the destination table) to TRUE
+- We set the `_fivetran_active` column value to FALSE for the active record and set the `_fivetran_end` column value to `T3-1` and the `deleted_column`(if present in the destination table) to TRUE.
 
 
