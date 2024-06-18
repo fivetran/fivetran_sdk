@@ -42,7 +42,7 @@ Id(PK) | COL1 | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | 
 1 | pqr | 2  |  T2 | TMAX | TRUE | T101
 2 | mno | 3  | T2  | TMAX | TRUE | T103
 
-At source, new records are added:
+At the source, new records are added:
 
 Id(PK) | COL1 | COL2 | Timestamp | Type
 --- | --- | --- |-----------| ---
@@ -126,7 +126,7 @@ Id(PK) | COL1 | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | 
 2 | mno | 3 | T2 | TMAX | TRUE | T103
 
 
-At source records with Id = 1 is updated:
+At the source records with Id = 1 is updated:
 
 Id(PK) | COL1 | Timestamp  | Type
 --- | --- | --- | ---
@@ -191,7 +191,7 @@ Id(PK) | COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active |
 
 
 
-At source a record is deleted:
+At the source a record is deleted:
 
 
 Id(PK) | Timestamp  | Type
