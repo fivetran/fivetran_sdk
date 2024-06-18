@@ -84,7 +84,7 @@ The previous RPC call retrieves the tests that need to be executed during connec
 This operation retrieves the customer's schemas, tables, and columns. It also includes an optional `selection_not_supported` field that indicates whether customers can select or deselect tables and columns within the Fivetran dashboard.
 
 #### Update
-This operation should retrieve data from the source. We provide a request using the `UpdateRequest` message, which includes the customer's state, credentials, and schema information. The response, delivered through the `UpdateResponse` message, should contain data records or other supported operations.
+This operation should retrieve data from the source. We send a request using the `UpdateRequest` message, which includes the customer's state, credentials, and schema information. The response, streaming through the `UpdateResponse` message, can contain data records and other supported operations.
 
 ## Destination Connector Guidelines
 
