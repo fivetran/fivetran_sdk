@@ -7,7 +7,7 @@ In order to keep all versions of the record, we have introduced three new system
 Column | Type | Description
 --- | --- | ---
 _fivetran_active | Boolean | TRUE if it is the currently active record. FALSE if it is a historical version of the record. Only one version of the record can be TRUE.
-_fivatran_start | TimeStamp | The time when the record was first created or modified in the source.
+_fivetran_start | TimeStamp | The time when the record was first created or modified in the source.
 _fivetran_end | TimeStamp | The value for this column depends on whether the record is active. If the record is not active(`_fivetran_active`=FALSE), then `_fivetran_end` value will be `_fivetran_start` of the next version of the record minus 1 millisecond. If the record is deleted, then the value will be the same as the timestamp of delete operation. If the record is active(`_fivetran_active`=TRUE), then `_fivetran_end` is the max allowed value that we can set for a TIMESTAMP column.
 
 
@@ -51,7 +51,7 @@ Id(PK) | COL1 | COL2 | Timestamp | Type
 
 Replace batch file will be:
 
-Id(PK) | COL1 | COL2  | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivatran_earliest | _fivetran_synced
+Id(PK) | COL1 | COL2  | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_earliest | _fivetran_synced
 --- |------|-------|---------------------| --- | --- | --- | ---
 1 | def  | 1     | T3                  | T4-1 | FALSE | TRUE | T104
 1 | ghi  | 1| T4                  | TMAX | TRUE | FALSE | T105
@@ -70,7 +70,7 @@ Id(PK) | COL1 | COL2   | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 **Explanation:**
 - We got new records for id = 1. 
 - Check for corresponding earliest record(`_fivetran_earliest` as TRUE), DELETE the existing records from destination table if `_fivetran_start` of destination table is greater than or equal to  `_fivetran_start` of batch file(In above example no)
-- `_fivetran_end` of the active record in destination table is set to `_fivatran_start`-1 of the `_fivatran_earliest` record of batch file.
+- `_fivetran_end` of the active record in destination table is set to `_fivetran_start`-1 of the `_fivetran_earliest` record of batch file.
 - Set `_fivetran_active` for above updated record to FALSE and `deleted_column`(if present in destination table) to TRUE
 - New records are inserted AS IS excluding `_fivetran_earliest` column in destination table.
 
@@ -96,7 +96,7 @@ Id(PK) | COL1 | COL2  | Timestamp  | Type
 
 Replace batch file will be:
 
-Id(PK) | COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivatran_earliest | _fivetran_synced
+Id(PK) | COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_earliest | _fivetran_synced
 --- | --- | --- | --- | --- | --- | --- | ---
 1  | ghi | 1 | T2 | TMAX | TRUE | TRUE | T104
 
@@ -111,7 +111,7 @@ Id(PK) |  COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 **Explanation:**
 We got new records for id = 1.
 - Check for corresponding earliest record(`_fivetran_earliest` TRUE), DELETE the existing records from destination table if `_fivetran_start` of destination table is greater than or equal to  `_fivetran_start` of batch file(in above example yes, so deleted id = 1 with _fivetran_start = T3 and T4)
-- `_fivetran_end` of the active record in destination table is set to `_fivatran_start`-1 of the `_fivatran_earliest` record of batch file.
+- `_fivetran_end` of the active record in destination table is set to `_fivetran_start`-1 of the `_fivetran_earliest` record of batch file.
 - Set `_fivetran_active` for above updated record to FALSE and `deleted_column`(if present in destination table) to TRUE
 - New records are inserted AS IS excluding `_fivetran_earliest` column in destination table.
 
@@ -151,7 +151,7 @@ Id(PK) |  COL1  | Timestamp  | Type
 Update batch file will be:
 
 
-Id(PK) | COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivatran_earliest | _fivatran_synced
+Id(PK) | COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_earliest | _fivetran_synced
 --- | --- | --- | --- | --- | --- | --- | ---
 1  | xyz | | T3| T5-1 | FALSE | TRUE | T107
 2 | | 1000 | T4 | TMAX | TRUE | TRUE | T108
@@ -174,7 +174,7 @@ Id(PK) |  COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 **Explanation:**
  - In batch file we got records with id = 1 and id = 2.
 - We set other columns(non updated columns) to the values of the active records. In above case for id = 2, we didn’t get COL1 value, so we set COL1 to “mno”(COL1 value of the active record)
- - _fivetran_end of the active record in destination table is set to _fivatran_start-1 of the _fivatran_earliest record of batch file
+ - _fivetran_end of the active record in destination table is set to _fivetran_start-1 of the _fivetran_earliest record of batch file
 - Set _fivetran_active for above updated record to FALSE and deleted_column(if present in destination table) to TRUE
 - Other columns are set AS IS from the batch file in the destination table except _fivetran_earliest column.
 
