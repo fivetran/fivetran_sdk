@@ -132,7 +132,7 @@ This operation provides details about the batch files containing the records to 
 
 - `delete_files` is for `hard delete` operation. Use primary key columns (or `_fivetran_id` system column for primary-keyless tables) to perform `DELETE FROM`.
 
-- `keys` is a map that provides a list of secret keys that can be used to decrypt batch files.
+- `keys` is a map that provides a list of secret keys, one for each batch file, that can be used to decrypt them.
 
 - `file_params` provides information about the file type and any configurations applied to it, such as encryption or compression.
 
