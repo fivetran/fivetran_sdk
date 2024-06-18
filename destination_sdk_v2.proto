@@ -121,7 +121,7 @@ message TruncateRequest {
 }
 
 message SoftTruncate {
-    string deleted_column = 3;
+    string deleted_column = 1;
 }
 
 message TruncateResponse {
