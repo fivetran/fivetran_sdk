@@ -24,4 +24,4 @@
     - We have introduced a new field, `SchemaDiff`, which supports adding new columns, changing column type, and updating primary keys.  
 - Changes in WriteBatchRequest:
     - We have added support for Parquet batch files configuration details.
-    - We have introduced a new field, `HistoryMode`, which indicates that history mode is enabled for the table.
+    - We have introduced a new boolean field, `history_mode`, which indicates that history mode is enabled for the table.
