@@ -13,12 +13,12 @@ _fivetran_end | TimeStamp | The value for this column depends on whether the rec
 
 # Points to remember in history mode
 
-- In `WriterBatchRequest`, we pass a new optional field HistoryMode which indicates connector is in history mode or not. In this HistoryMode field, we pass `deleted_column` column name which we need to modify only if it is present in destination.   
+- In `WriterBatchRequest`, we pass a new optional field, `HistoryMode`, which indicates if the connector is in history mode or not. In this `HistoryMode` field, we pass the `deleted_column` column name, which we need to modify only if it is present in the destination.   
 - If the existing table is not empty, then, in the batch file, we also send a boolean column `_fivetran_earliest`. Suppose, in an `upsert`, we got multiple versions of the same record in a flush, then we set the `_fivetran_earliest` column value to `TRUE` for the record which have the earliest `_fivetran_start` and rest of the versions will have `_fivetran_earliest` as FALSE.
-- For each `replace`, `update` and `delete` batch file, DELETE the existing records in the destination table with `_fivetran_start` greater than or equal to  `_fivetran_start` of matcing records in batch file (refer to [Example 1](###Example 1) and [Example 2](###Example 2)).   
+- For each `replace`, `update` and `delete` batch file, DELETE the existing records in the destination table with `_fivetran_start` greater than or equal to  `_fivetran_start` of matcing records in batch file (refer to [Example 1](#example1) and [Example 2](#example2)).   
 
-Do Not add the `_fivetran_earliest` column to the destination table. It is provided for convenience to easily identify the earliest record and can be used to optimize the data load query.   
-Below is an example of a`replace` batch file in history mode:
+> IMPORTANT: Do not add the `_fivetran_earliest` column to the destination table. It is provided for convenience to easily identify the earliest record and can be used to optimize the data load query.   
+See the following example of a `replace` batch file in history mode:
 
 Id(PK) | COL1    | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_earliest
 ---|---------|---------------------| --- |------------------| --- 
@@ -31,9 +31,9 @@ Id(PK) | COL1    | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fiv
 
 ## Replace
 
-### Example 1: `_fivetran_start` column value of destination row is less than  `_fivetran_start` of matching row in batch file:
+### Example 1: `_fivetran_start` column value of destination row is less than `_fivetran_start` of matching row in batch file
 
-Suppose the existing table in destination is as below:
+Suppose the existing table in the destination is as follows:
 
 Id(PK) | COL1 | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_synced
 --- |------|----| --- | --- | --- | ---
@@ -68,14 +68,14 @@ Id(PK) | COL1 | COL2   | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 
 **Explanation:**
 - We got new records for id = 1. 
-- We check for the corresponding earliest record (`_fivetran_earliest` = TRUE), and delete the existing records from the destination table where the `_fivetran_start` column value is greater than or equal to  `_fivetran_start` of matching rows in batch file.
-- We set `_fivetran_end` of the active record in destination table to `_fivetran_start`-1 of the `_fivetran_earliest` record of batch file.
+- We check for the corresponding earliest record (`_fivetran_earliest` = TRUE), and delete the existing records from the destination table where the `_fivetran_start` column value is greater than or equal to the  `_fivetran_start` column value of the matching rows in batch file.
+- We set the value of `_fivetran_end` of the active record in the destination table to `_fivetran_start`-1 of the `_fivetran_earliest` record of the batch file.
 - We set the `_fivetran_active` column value for the above updated record to FALSE and `deleted_column` (if present in the destination table) to TRUE.
-- We inserted new records in the destination table _as is_, excluding the `_fivetran_earliest` column.
+- We insert new records in the destination table _as is_, excluding the `_fivetran_earliest` column.
 
-### Example 2: `_fivetran_start` column value of destination row is greater than or equal to the  `_fivetran_start` of matching row in the batch file.
+### Example 2: `_fivetran_start` column value of destination row is greater than or equal to the  `_fivetran_start` of matching row in batch file
 
-Suppose the existing table in destination is as below:
+Suppose the existing table in the destination is as follows:
 
 Id(PK) | COL1 | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_synced
 --- |---|--------|---------------------| --- |------------------| ---
@@ -84,7 +84,7 @@ Id(PK) | COL1 | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | 
 1  | pqr | 2 | T4 | TMAX | TRUE             | T101
 2  | mno | 3 | T4 | TMAX | TRUE             | T103
 
-At the source new records are added:
+At the source, new records are added:
 
 Id(PK) | COL1 | COL2  | Timestamp  | Type
 --- | --- | --- | --- | ---
@@ -98,7 +98,7 @@ Id(PK) | COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active |
 --- | --- | --- | --- | --- | --- | --- | ---
 1  | ghi | 1 | T2 | TMAX | TRUE | TRUE | T104
 
-Final Destination table will be as follows:
+The final destination table will be as follows:
 
 Id(PK) |  COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_synced
 --- | --- | --- | --- | --- | --- | --- 
@@ -108,14 +108,14 @@ Id(PK) |  COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 
 **Explanation:**
 - We got a new record for id = 1.
-- We check for the corresponding earliest record(`_fivetran_earliest` = TRUE), and delete existing records from the destination table where `_fivetran_start` of destination row is greater than or equal to the `_fivetran_start` of the matching row in batch file. In this example we have such records, so we deleted records with id = 1, _fivetran_start = T3 and id = 1, _fivetran_start = T4.
-- `_fivetran_end` of the active record in destination table is set to `_fivetran_start`-1 of the `_fivetran_earliest` record of batch file.
-- We set the `_fivetran_active` column value for above updated record to FALSE and `deleted_column`(if present in destination table) to TRUE.
+- We check for the corresponding earliest record(`_fivetran_earliest` = TRUE), and delete existing records from the destination table where `_fivetran_start` of destination row is greater than or equal to the `_fivetran_start` of the matching row in the batch file. In this example, we have such records, so we delete records with id = 1, _fivetran_start = T3 and id = 1, _fivetran_start = T4.
+- `_fivetran_end` of the active record in the destination table is set to `_fivetran_start`-1 of the `_fivetran_earliest` record of the batch file.
+- We set the `_fivetran_active` column value for the above updated record to FALSE and `deleted_column`(if present in the destination table) to TRUE.
 - We insert new records _as is_ excluding the `_fivetran_earliest` column.
 
 ## Updates
 
-Suppose the existing table in destination is as below:
+Suppose the existing table in destination is as follows:
 
 Id(PK) | COL1 | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_synced
 --- | --- | --- | --- | --- | --- | --- 
@@ -132,13 +132,13 @@ Id(PK) | COL1 | Timestamp  | Type
 
 
 
-And record with Id = 2 is updated as:
+and record with Id = 2 is updated:
 
 Id(PK) |  COL2  | Timestamp  | Type
 --- | --- | --- | ---
 2 | 1000 | T4 | Updated
 
-And record with Id = 1 is again updated as
+And lastly, record with Id = 1 is again updated:
 
 Id(PK) |  COL1  | Timestamp  | Type
 --- | --- | --- | ---
@@ -170,16 +170,16 @@ Id(PK) |  COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 
 
 **Explanation:**
- - In batch file we got records with id = 1 and id = 2.
-- We set unmodified columns to the values of the active records. In this example, for id = 2, we didn’t get COL1 value, so we set COL1 to “mno” (COL1 value of the active record).
- - We set `_fivetran_end` of the active record in destination table to `_fivetran_start`-1 of the `_fivetran_earliest` record of batch file.
-- We set `_fivetran_active` column value for above updated record to FALSE and `deleted_column`(if present in destination table) to TRUE.
+ - In the batch file, we got records with id = 1 and id = 2.
+- We set unmodified columns' values to the values of the active records. In this example, for id = 2, we didn’t get COL1 value, so we set COL1 to “mno” (COL1 value of the active record).
+- We set `_fivetran_end` of the active record in the destination table to `_fivetran_start`-1 of the `_fivetran_earliest` record of the batch file.
+- We set the `_fivetran_active` column value for the above updated record to FALSE and `deleted_column`(if present in destination table) to TRUE.
 - We set other columns _as is_ from the batch file in the destination table except the `_fivetran_earliest` column.
 
 
 ## Deletes
 
-Suppose the existing table in destination is as below:
+Suppose the existing table in the destination is as follows:
 
 Id(PK) | COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_synced
 --- | --- | --- | --- | --- | --- | ---
@@ -197,14 +197,14 @@ Id(PK) | Timestamp  | Type
 1  | T3 | Deleted
 
 
-Delete batch file will be as follows:
+The delete batch file will be as follows:
 
 Id(PK) | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_earliest | _fivetran_synced
 --- | --- |---------------|------| --- | ---
 1  | | T3-1          |  | TRUE | T104
 
     
-Final Destination Table will be as follows:
+The final destination table will be as follows:
 
 Id(PK) | COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fivetran_synced
 --- | --- | --- | --- | --- |------------------| ---
