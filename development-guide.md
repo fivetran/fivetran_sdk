@@ -112,7 +112,7 @@ This operation should report all columns in the destination table, including Fiv
 
 - `delete_files` is for `hard delete` operation. Use primary key columns (or `_fivetran_id` system column for primary-keyless tables) to perform `DELETE FROM`.   
 
-> Note: To handle history mode `replace_files`, `update_files` and `delete_files`, follow [How to Handle History Mode Data](how-to-handle-history-mode-files.md) guide.
+> Note: To handle history mode `replace_files`, `update_files` and `delete_files`, follow [How to Handle History Mode Batch Files](how-to-handle-history-mode-batch-files.md) guide.
 
 Also, Fivetran will deduplicate operations such that each primary key will show up only once in any of the operations
 
