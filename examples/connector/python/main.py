@@ -56,6 +56,32 @@ class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
             )
         )
 
+        fields = [
+                    common_pb2.FormField(
+                        single=common_pb2.Field(
+                            name="connectionString",
+                            label="Connection String",
+                            text_field=common_pb2.TextField.Password,
+                            required=False,
+                        )
+                    ),
+                    common_pb2.FormField(
+                        single=common_pb2.Field(
+                            name="sshTunnel",
+                            label="Ssh Tunnel",
+                            text_field=common_pb2.TextField.PlainText,
+                            required=False,
+                        )
+                    ),
+                ]
+
+        response.fields.add(
+            field_set=common_pb2.FieldSet(
+                fields=fields,
+                condition=common_pb2.VisibilityCondition(field_name="isPublic", has_string_value="false"),
+            )
+        )
+
         response.tests.add(name="connection_test", label="Tests connection")
 
         return response
