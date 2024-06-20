@@ -11,7 +11,7 @@ _fivetran_start | TimeStamp | The time when the record was first created or modi
 _fivetran_end | TimeStamp | The value for this column depends on whether the record is active. If the record is not active, then `_fivetran_end` value will be `_fivetran_start` of the next version of the record minus 1 millisecond. If the record is deleted, then the value will be the same as the timestamp of delete operation. If the record is active, then `_fivetran_end` is set to maximum TIMESTAMP value.
 
 
-# Points to remember in history mode
+## Points to remember in history mode
 
 - In `WriterBatchRequest`, we pass a new boolean field, `history_mode`, which indicates if the connector is in history mode or not.
 - If the existing table is not empty, then, in the batch file, we also send a boolean column `_fivetran_earliest`. Suppose, in an `upsert`, we got multiple versions of the same record in a flush, then we set the `_fivetran_earliest` column value to `TRUE` for the record which have the earliest `_fivetran_start` and rest of the versions will have `_fivetran_earliest` as FALSE.
@@ -27,11 +27,12 @@ Id(PK) | COL1    | _fivetran_start(PK) | _fivetran_end | _fivetran_active | _fiv
 1 | pqr     | T2                  | T3-1 | FALSE            | FALSE
 1 | def | T3                  | TMAX                | TRUE             | FALSE
 
-# How to Handle Replaces, Updates and Deletes
+## How to Handle Replaces, Updates and Deletes
 
-## Replace
+### Replace
 
-### Example 1: `_fivetran_start` column value of destination row is less than `_fivetran_start` of matching row in batch file
+#### Example 1
+This example describes a case where the `_fivetran_start` column value of the destination row is less than `_fivetran_start` of the matching row in the batch file.
 
 Suppose the existing table in the destination is as follows:
 
@@ -73,7 +74,9 @@ Id(PK) | COL1 | COL2   | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 - We set the `_fivetran_active` column value for the above updated record to FALSE.
 - We insert new records in the destination table _as is_, excluding the `_fivetran_earliest` column.
 
-### Example 2: `_fivetran_start` column value of destination row is greater than or equal to the  `_fivetran_start` of matching row in batch file
+#### Example 2
+
+This example describes a case where the `_fivetran_start` column value of the destination row is greater than or equal to the  `_fivetran_start` of the matching row in the batch file.
 
 Suppose the existing table in the destination is as follows:
 
@@ -113,7 +116,7 @@ Id(PK) |  COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 - We set the `_fivetran_active` column value for the above updated record to FALSE.
 - We insert new records _as is_ excluding the `_fivetran_earliest` column.
 
-## Updates
+### Updates
 
 Suppose the existing table in destination is as follows:
 
@@ -177,7 +180,7 @@ Id(PK) |  COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 - We set other columns _as is_ from the batch file in the destination table except the `_fivetran_earliest` column.
 
 
-## Deletes
+### Deletes
 
 Suppose the existing table in the destination is as follows:
 
