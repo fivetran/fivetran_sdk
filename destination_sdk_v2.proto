@@ -121,7 +121,10 @@ message TruncateRequest {
 }
 
 message SoftTruncate {
-    string deleted_column = 1;
+    oneof soft_truncate {
+        string deleted_column = 1;
+        bool history_mode = 2;
+    }
 }
 
 message TruncateResponse {
@@ -135,7 +138,7 @@ message WriteBatchRequest {
     map<string, string> configuration = 1;
     string schema_name = 2;
     Table table = 3;
-    optional HistoryMode history_mode = 4;
+    bool history_mode = 4;
     map<string, bytes> keys = 5;
     repeated string replace_files = 6;
     repeated string update_files = 7;
@@ -144,10 +147,6 @@ message WriteBatchRequest {
         CsvFileParams csv = 9;
         ParquetFileParams parquet = 10;
     }
-}
-
-message HistoryMode {
-    string deleted_column = 1;
 }
 
 message CsvFileParams {

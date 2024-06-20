@@ -9,9 +9,9 @@ import read_csv
 
 sys.path.append('sdk_pb2')
 
-from sdk_pb2 import destination_sdk_pb2
-from sdk_pb2 import common_pb2
-from sdk_pb2 import destination_sdk_pb2_grpc
+from sdk_pb2 import destination_sdk_v2_pb2 as destination_sdk_pb2
+from sdk_pb2 import common_v2_pb2 as common_pb2
+from sdk_pb2 import destination_sdk_v2_pb2_grpc as destination_sdk_pb2_grpc
 
 
 class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
