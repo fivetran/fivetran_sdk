@@ -103,11 +103,11 @@ This operation should report all columns in the destination table, including Fiv
 
 #### TruncateRequest
 - This operation might be requested for a table that does not exist in the destination. In that case, it should NOT fail, simply ignore the request and return `success = true`.
-- It contains an optional `SoftTruncate` field which either contains a string column `deleted_column` or boolean `history_mode`. If `deleted_column` is present, then current sync mode is `soft-delete-mode` and if `history_mode` is true then current sync mode is `history-mode`, otherwise the current sync mode is `live-mode`.
-- It contains `utc_delete_before` timestamp field which has millisecond precision and use it to DELETE/UPDATE the rows in destination table as per the sync mode:
-  - **Soft-Delete Mode:** Set `deleted_column` to TRUE where `_fivetran_synced` column value is less than `utc_delete_before`.
-  - **History Mode:** Set `_fivetran_active` column value to FALSE, `_fivetran_end` column value to `utc_delete_before` value, where `_fivetran_synced` column value is less than `utc_delete_before` and `_fivetran_active` is TRUE.
-  - **Live Mode:** DELETE the record where `_fivetran_synced` column value is less than `utc_delete_before`
+- `SoftTruncate`: This optional field can be configured to either regular `soft-truncate` mode by setting the `deleted_column` field or history `soft-truncate` mode by setting the `history_mode` field to TRUE. Both modes keep the rows in the destination and update relevant system columns to mark any matching rows as deleted. If optional `SoftTruncate` field is not configured, then perform a `hard-truncate` operation where matching rows are actually removed from the destination.
+- `utc_delete_before`: This timestamp field has millisecond precision and used to DELETE/UPDATE the rows in destination table as per the following:
+  - **Soft-Truncate:** Set `deleted_column` to TRUE where `_fivetran_synced` column value is less than `utc_delete_before`.
+  - **History Truncate:** Set `_fivetran_active` column value to FALSE, `_fivetran_end` column value to `utc_delete_before` value, where `_fivetran_synced` column value is less than `utc_delete_before` and `_fivetran_active` is TRUE.
+  - **Hard Truncate:** DELETE the record where `_fivetran_synced` column value is less than `utc_delete_before`
 
 
 #### WriteBatchRequest
