@@ -36,8 +36,37 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
                                         .setSingle(Field.newBuilder().setName("isPublic").setLabel("Public?").setDescription("Is this public?")
                                                 .setToggleField(ToggleField.newBuilder().build())
                                                 .build())
+                                        .build(),
+                                FormField.newBuilder().setFieldSet(
+                                        FieldSet.newBuilder()
+                                                .addAllFields(Arrays.asList(
+                                                        FormField.newBuilder().setSingle(
+                                                                Field.newBuilder()
+                                                                        .setName("connectionString")
+                                                                        .setLabel("Connection String")
+                                                                        .setTextField(TextField.Password)
+                                                                        .setPlaceholder("connection-string-used")
+                                                                        .setRequired(false)
+                                                                        .build())
+                                                                .build(),
+                                                        FormField.newBuilder().setSingle(
+                                                                Field.newBuilder()
+                                                                        .setName("sshTunnel")
+                                                                        .setLabel("Ssh tunnel")
+                                                                        .setTextField(TextField.PlainText)
+                                                                        .setPlaceholder("ssh-tunnel")
+                                                                        .setRequired(false)
+                                                                        .build())
+                                                                .build()
+                                                ))
+                                                .setCondition(VisibilityCondition.newBuilder()
+                                                        .setFieldName("isPublic")
+                                                        .setHasStringValue("false")
+                                                        .build())
+                                                .build())
                                         .build()
-                        ))
+                                )
+                        )
                         .addAllTests(Arrays.asList(
                                 ConfigurationTest.newBuilder().setName("connect").setLabel("Tests connection").build(),
                                 ConfigurationTest.newBuilder().setName("select").setLabel("Tests selection").build()))
