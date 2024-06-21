@@ -1,14 +1,14 @@
 syntax = "proto3";
 option optimize_for = SPEED;
 option java_multiple_files = true;
-option go_package = "fivetran.com/fivetran_sdk";
-package fivetran_sdk;
+option go_package = "fivetran.com/fivetran_sdk_v2";
+package fivetran_sdk.v2;
 
 import "google/protobuf/timestamp.proto";
-import "common.proto";
+import "common_v2.proto";
 
-// Fivetran (grpc client) <> Destination (grpc server)
-service Destination {
+// Fivetran (grpc client) <> DestinationConnector (grpc server)
+service DestinationConnector {
     rpc ConfigurationForm (ConfigurationFormRequest) returns (ConfigurationFormResponse) {}
     rpc Capabilities (CapabilitiesRequest) returns (CapabilitiesResponse) {}
     rpc Test (TestRequest) returns (TestResponse) {}
@@ -22,7 +22,34 @@ service Destination {
 message CapabilitiesRequest {}
 
 message CapabilitiesResponse {
-    BatchFileFormat batch_file_format = 1;
+    repeated DataTypeMappingEntry data_type_mappings = 1;
+    bool supports_history_mode = 2;
+    BatchFileFormat batch_file_format = 3;
+}
+
+message DataTypeMappingEntry {
+    DataType fivetran_type = 1;
+    oneof destination_type {
+        DestinationType map_to = 2;
+        bool unsupported = 3;
+    }
+}
+
+message DestinationType {
+    string name = 1;
+    oneof mapping {
+        bool keep_same = 2;
+        DataType map_to = 3;
+    }
+    optional MaxValue max_value = 4;
+}
+
+message MaxValue {
+    oneof max_param {
+        int32 numeric_param = 1;
+        DecimalParams decimal_param = 2;
+        google.protobuf.Timestamp date_param = 3;
+    }
 }
 
 message DescribeTableRequest {
@@ -55,7 +82,26 @@ message CreateTableResponse {
 message AlterTableRequest {
     map<string, string> configuration = 1;
     string schema_name = 2;
-    Table table = 3;
+    string table_name = 3;
+    repeated SchemaDiff changes = 4;
+}
+
+message SchemaDiff {
+    oneof change {
+        Column add_column = 1;
+        ChangeType change_column_type = 2;
+        PrimaryKey update_primary_keys = 3;
+    }
+}
+
+message PrimaryKey {
+    repeated string column_name = 1;
+}
+
+message ChangeType {
+    string column_name = 1;
+    DataType new_type = 2;
+    optional DataTypeParams params = 3;
 }
 
 message AlterTableResponse {
@@ -75,7 +121,10 @@ message TruncateRequest {
 }
 
 message SoftTruncate {
-    string deleted_column = 3;
+    oneof soft_truncate {
+        string deleted_column = 1;
+        bool history_mode = 2;
+    }
 }
 
 message TruncateResponse {
@@ -89,13 +138,14 @@ message WriteBatchRequest {
     map<string, string> configuration = 1;
     string schema_name = 2;
     Table table = 3;
-    map<string, bytes> keys = 4;
-    repeated string replace_files = 5;
-    repeated string update_files = 6;
-    repeated string delete_files = 7;
+    bool history_mode = 4;
+    map<string, bytes> keys = 5;
+    repeated string replace_files = 6;
+    repeated string update_files = 7;
+    repeated string delete_files = 8;
     oneof file_params {
-        CsvFileParams csv = 8;
-        ParquetFileParams parquet = 9;
+        CsvFileParams csv = 9;
+        ParquetFileParams parquet = 10;
     }
 }
 
