@@ -38,6 +38,34 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
                                         .setSingle(Field.newBuilder().setName("isPublic").setLabel("Public?").setDescription("Is this public?")
                                                 .setToggleField(ToggleField.newBuilder().build())
                                                 .build())
+                                        .build(),
+                                FormField.newBuilder().setFieldSet(
+                                        FieldSet.newBuilder()
+                                                .addAllFields(Arrays.asList(
+                                                        FormField.newBuilder().setSingle(
+                                                                        Field.newBuilder()
+                                                                                .setName("ssh_tunnel_host")
+                                                                                .setLabel("SSH Host")
+                                                                                .setTextField(TextField.PlainText)
+                                                                                .setPlaceholder("127.0.0")
+                                                                                .setRequired(true)
+                                                                                .build())
+                                                                .build(),
+                                                        FormField.newBuilder().setSingle(
+                                                                        Field.newBuilder()
+                                                                                .setName("ssh_tunnel_user")
+                                                                                .setLabel("SSH User")
+                                                                                .setTextField(TextField.PlainText)
+                                                                                .setPlaceholder("user_name")
+                                                                                .setRequired(false)
+                                                                                .build())
+                                                                .build()
+                                                ))
+                                                .setCondition(VisibilityCondition.newBuilder()
+                                                        .setFieldName("isPublic")
+                                                        .setHasStringValue("false")
+                                                        .build())
+                                                .build())
                                         .build()
                         )).addAllTests(Arrays.asList(
                                 ConfigurationTest.newBuilder().setName("connect").setLabel("Tests connection").build(),
