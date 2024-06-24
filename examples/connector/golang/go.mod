@@ -1,4 +1,4 @@
-module fivetran.com/fivetran_sdk
+module fivetran.com/partner_sdk
 
 go 1.21
 

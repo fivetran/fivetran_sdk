@@ -3,7 +3,7 @@ package destination;
 import com.google.common.collect.Lists;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Timestamp;
-import fivetran_sdk.v2.*;
+import partner_sdk.v2.*;
 import io.grpc.stub.StreamObserver;
 import java.time.Instant;
 import java.util.Arrays;

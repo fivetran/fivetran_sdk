@@ -2,8 +2,8 @@ package connector;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fivetran_sdk.v2.*;
-import fivetran_sdk.v2.Record;
+import partner_sdk.v2.*;
+import partner_sdk.v2.Record;
 import io.grpc.stub.StreamObserver;
 
 import java.util.*;

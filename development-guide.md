@@ -121,7 +121,7 @@ Do not assume order of columns in the batch files. Always read the CSV file head
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
 
 ### Examples of Data Types
-Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in CSV batch files are as follows:
+Examples of each [DataType](https://github.com/fivetran/partner_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in CSV batch files are as follows:
 - UNSPECIFIED: This data type will never appear in batch files
 - BOOLEAN: "true", "false"
 - SHORT: -32768 .. 32767

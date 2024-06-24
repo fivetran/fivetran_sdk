@@ -21,7 +21,7 @@ docker start -i <container-id>
 
 ## Input Files
 
-Destination tester simulates operations from a source by reading input files from the local data folder. Each input file represents a batch of operations, encoded in JSON format. Data types in [common.proto](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73) file can be used as column data types.
+Destination tester simulates operations from a source by reading input files from the local data folder. Each input file represents a batch of operations, encoded in JSON format. Data types in [common.proto](https://github.com/fivetran/partner_sdk/blob/main/common.proto#L73) file can be used as column data types.
 
 ### List of Operations
 
@@ -158,7 +158,7 @@ Here is an example input file named `input_1.json`:
 
 ## CLI Arguments
 
-The tester supports the following optional CLI arguments to alter its default behavior. You can append these options to the end of the `docker run` command provided in step 2 of [How To Run](https://github.com/fivetran/fivetran_sdk/tree/main/tools/destination-tester#how-to-run) section above.
+The tester supports the following optional CLI arguments to alter its default behavior. You can append these options to the end of the `docker run` command provided in step 2 of [How To Run](https://github.com/fivetran/partner_sdk/tree/main/tools/destination-tester#how-to-run) section above.
 
 #### --port
 This option tells the tester to use a different port than the default 50052.

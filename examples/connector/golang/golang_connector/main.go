@@ -12,7 +12,7 @@ import (
     "google.golang.org/grpc"
     _ "google.golang.org/grpc/encoding/gzip"
 
-	pb "fivetran.com/fivetran_sdk/proto"
+	pb "fivetran.com/partner_sdk/proto"
 )
 
 var port = flag.Int("port", 50051, "The server port")

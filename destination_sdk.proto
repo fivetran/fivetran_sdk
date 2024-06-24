@@ -1,8 +1,8 @@
 syntax = "proto3";
 option optimize_for = SPEED;
 option java_multiple_files = true;
-option go_package = "fivetran.com/fivetran_sdk";
-package fivetran_sdk;
+option go_package = "fivetran.com/partner_sdk";
+package partner_sdk;
 
 import "google/protobuf/timestamp.proto";
 import "common.proto";
