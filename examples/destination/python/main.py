@@ -17,49 +17,34 @@ from sdk_pb2 import destination_sdk_v2_pb2_grpc as destination_sdk_pb2_grpc
 class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
     def ConfigurationForm(self, request, context):
 
-        response = common_pb2.ConfigurationFormResponse(schema_selection_supported=True,
-                                                        table_selection_supported=True)
-
-        response.fields.add(
+        host = common_pb2.FormField(
             single=common_pb2.Field(name="host", label="Host", required=True, placeholder="my.example.host",
                                     text_field=common_pb2.TextField.PlainText))
 
-        response.fields.add(
+        password = common_pb2.FormField(
             single=common_pb2.Field(name="password", label="Password", required=True, placeholder="my_password",
                                     text_field=common_pb2.TextField.Password))
 
-        response.fields.add(
+        region = common_pb2.FormField(
             single=common_pb2.Field(name="region", label="AWS Region", required=False, default_value="US-EAST",
                                     dropdown_field=common_pb2.DropdownField(dropdown_field=["US-EAST", "US-WEST"])))
 
-        response.fields.add(
+        hidden = common_pb2.FormField(
             single=common_pb2.Field(name="hidden", label="my-hidden-value", text_field=common_pb2.TextField.Hidden))
 
-        response.fields.add(
+        is_public = common_pb2.FormField(
             single=common_pb2.Field(name="isPublic", label="Public?", description="Is this public?",
                                     toggle_field=common_pb2.ToggleField()))
 
-        fields = [
-            common_pb2.FormField(single=common_pb2.Field(name="ssh_tunnel_host", label="SSH Host", required=True,
-                                                         placeholder="127.0.0.0",
-                                                         text_field=common_pb2.TextField.PlainText)),
-            common_pb2.FormField(
-                single=common_pb2.Field(name="ssh_tunnel_user", label="SSH User", required=True,
-                                        placeholder="user_name",
-                                        text_field=common_pb2.TextField.PlainText))
-        ]
-
-        response.fields.add(
-            field_set=common_pb2.FieldSet(
-                fields=fields,
-                condition=common_pb2.VisibilityCondition(field_name="isPublic", has_string_value="false"),
-            )
+        connect_test = common_pb2.ConfigurationTest(name="connect", label="Tests connection")
+        select_test = common_pb2.ConfigurationTest(name="select", label="Tests selection")
+        return common_pb2.ConfigurationFormResponse(
+            schema_selection_supported=True,
+            table_selection_supported=True,
+            fields=[host, password, region, hidden,
+                    is_public],
+            tests=[connect_test, select_test]
         )
-
-        response.tests.add(name="connect", label="Tests connection")
-        response.tests.add(name="select", label="Tests selection")
-
-        return response
 
     def Test(self, request, context):
         test_name = request.name
