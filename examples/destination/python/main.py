@@ -136,10 +136,10 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
         print("\nData loading completed for table " + request.table.name + "\n")
 
         print("----------\nPrinting file Params for batch files:\n")
-        print("\nCompression: " + request.file_params.compression)
-        print("\nEncryption: " + request.file_params.encryption)
-        print("\nValue for null_string: " + request.file_params.null_string)
-        print("\nValue for unmodified_string: " + request.file_params.unmodified_string)
+        print("\nCompression: " + str(request.file_params.compression))
+        print("\nEncryption: " + str(request.file_params.encryption))
+        print("\nValue for null_string: " + str(request.file_params.null_string))
+        print("\nValue for unmodified_string: " + str(request.file_params.unmodified_string))
         print("\n----------\n")
 
         res: destination_sdk_pb2.WriteBatchResponse = destination_sdk_pb2.WriteBatchResponse(success=True)
