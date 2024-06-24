@@ -150,6 +150,14 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
         for (String file : request.getDeleteFilesList()) {
             System.out.println("Delete files: " + file);
         }
+
+        System.out.println("-------------\nPrinting file Params for batch files:");
+        System.out.println("Compression: " + request.getFileParams().getCompression());
+        System.out.println("Encryption: " + request.getFileParams().getEncryption());
+        System.out.println("Value for null_string: " + request.getFileParams().getNullString());
+        System.out.println("Value for unmodified_string: " + request.getFileParams().getUnmodifiedString());
+        System.out.println("-------------");
+
         responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
