@@ -143,14 +143,21 @@ message WriteBatchRequest {
     repeated string replace_files = 6;
     repeated string update_files = 7;
     repeated string delete_files = 8;
-    FileParams file_params = 9;
+    oneof file_params {
+        CsvFileParams csv = 9;
+        ParquetFileParams parquet = 10;
+    }
 }
 
-message FileParams {
+message CsvFileParams {
     Compression compression = 1;
     Encryption encryption = 2;
     string null_string = 3;
     string unmodified_string = 4;
+}
+
+message ParquetFileParams {
+    Encryption encryption = 1;
 }
 
 enum Encryption {
