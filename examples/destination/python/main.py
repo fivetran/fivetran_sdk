@@ -1,65 +1,37 @@
-import datetime
-import sys
 from concurrent import futures
-
 import grpc
-from google.protobuf.timestamp_pb2 import Timestamp
-
 import read_csv
-
+import sys
 sys.path.append('sdk_pb2')
 
-from sdk_pb2 import destination_sdk_v2_pb2 as destination_sdk_pb2
-from sdk_pb2 import common_v2_pb2 as common_pb2
-from sdk_pb2 import destination_sdk_v2_pb2_grpc as destination_sdk_pb2_grpc
+from sdk_pb2 import destination_sdk_pb2
+from sdk_pb2 import common_pb2
+from sdk_pb2 import destination_sdk_pb2_grpc
 
 
-class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
+class DestinationImpl(destination_sdk_pb2_grpc.DestinationServicer):
     def ConfigurationForm(self, request, context):
 
-        response = common_pb2.ConfigurationFormResponse(schema_selection_supported=True,
-                                                        table_selection_supported=True)
+        host = common_pb2.FormField(name="host", label="Host", required=True,
+                                     text_field=common_pb2.TextField.PlainText)
+        password = common_pb2.FormField(name="password", label="Password", required=True,
+                                         text_field=common_pb2.TextField.Password)
+        region = common_pb2.FormField(name="region", label="AWS Region", required=False,
+                                       dropdown_field=common_pb2.DropdownField(dropdown_field=["US-EAST", "US-WEST"]))
+        hidden = common_pb2.FormField(name="hidden", label="my-hidden-value", text_field=common_pb2.TextField.Hidden)
+        is_public = common_pb2.FormField(name="isPublic", label="Public?", description="Is this public?",
+                                          toggle_field=common_pb2.ToggleField())
 
-        response.fields.add(
-            single=common_pb2.Field(name="host", label="Host", required=True, placeholder="my.example.host",
-                                    text_field=common_pb2.TextField.PlainText))
+        connect_test = common_pb2.ConfigurationTest(name="connect", label="Tests connection")
+        select_test = common_pb2.ConfigurationTest(name="select", label="Tests selection")
+        return common_pb2.ConfigurationFormResponse(
+            schema_selection_supported=True,
+            table_selection_supported=True,
+            fields=[host, password, region, hidden,
+                    is_public],
+            tests=[connect_test, select_test]
 
-        response.fields.add(
-            single=common_pb2.Field(name="password", label="Password", required=True, placeholder="my_password",
-                                    text_field=common_pb2.TextField.Password))
-
-        response.fields.add(
-            single=common_pb2.Field(name="region", label="AWS Region", required=False, default_value="US-EAST",
-                                    dropdown_field=common_pb2.DropdownField(dropdown_field=["US-EAST", "US-WEST"])))
-
-        response.fields.add(
-            single=common_pb2.Field(name="hidden", label="my-hidden-value", text_field=common_pb2.TextField.Hidden))
-
-        response.fields.add(
-            single=common_pb2.Field(name="isPublic", label="Public?", description="Is this public?",
-                                    toggle_field=common_pb2.ToggleField()))
-
-        fields = [
-            common_pb2.FormField(single=common_pb2.Field(name="ssh_tunnel_host", label="SSH Host", required=True,
-                                                         placeholder="127.0.0.0",
-                                                         text_field=common_pb2.TextField.PlainText)),
-            common_pb2.FormField(
-                single=common_pb2.Field(name="ssh_tunnel_user", label="SSH User", required=True,
-                                        placeholder="user_name",
-                                        text_field=common_pb2.TextField.PlainText))
-        ]
-
-        response.fields.add(
-            field_set=common_pb2.FieldSet(
-                fields=fields,
-                condition=common_pb2.VisibilityCondition(field_name="isPublic", has_string_value="false"),
             )
-        )
-
-        response.tests.add(name="connect", label="Tests connection")
-        response.tests.add(name="select", label="Tests selection")
-
-        return response
 
     def Test(self, request, context):
         test_name = request.name
@@ -67,71 +39,17 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
         return common_pb2.TestResponse(success=True)
 
     def CreateTable(self, request, context):
-        print("[CreateTable] :" + str(request.schema_name) + " | " + str(request.table.name) + " | " + str(
-            request.table.columns))
+        print("[CreateTable] :" + str(request.schema_name) + " | " + str(request.table.name) + " | " + str(request.table.columns))
         return destination_sdk_pb2.CreateTableResponse(success=True)
 
     def AlterTable(self, request, context):
-        changes_list = request.changes
-        change_strings = [str(change) for change in changes_list]
-        result = ", ".join(change_strings)
-        print("[AlterTable]: " + str(request.schema_name) + " | " + str(request.table_name) + " | " + str(
-            result))
+        res: destination_sdk_pb2.AlterTableResponse
+
+        print("[AlterTable]: " + str(request.schema_name) + " | " + str(request.table.name) + " | " + str(request.table.columns))
         return destination_sdk_pb2.AlterTableResponse(success=True)
 
-    def Capabilities(self, request, context):
-        max_int_value = 2 ** 31 - 1  # 32-bit signed int
-        max_string_length = int(1e6)
-        max_binary_length = int(1e6)
-        max_decimal_param = common_pb2.DecimalParams(precision=16, scale=16)
-
-        max_timestamp = datetime.datetime(2999, 12, 31, 23, 59, 59, 99999).timestamp()
-        timestamp_seconds = int(max_timestamp)
-        timestamp_nanos = int(max_timestamp % 1 * 1e9)
-        max_timestamp_param = Timestamp(seconds=timestamp_seconds, nanos=timestamp_nanos)
-
-        destination_map_to_1 = destination_sdk_pb2.DestinationType(name="VARCHAR",
-                                                                   map_to=common_pb2.DataType.STRING,
-                                                                   max_value=destination_sdk_pb2.MaxValue(numeric_param=max_string_length))
-        data_type_mapping_1 = destination_sdk_pb2.DataTypeMappingEntry(
-            fivetran_type=common_pb2.DataType.STRING,
-            map_to=destination_map_to_1)
-
-        destination_map_to_2 = destination_sdk_pb2.DestinationType(name="NUMBER",
-                                                                   map_to=common_pb2.DataType.INT,
-                                                                   max_value=destination_sdk_pb2.MaxValue(numeric_param=max_int_value))
-        data_type_mapping_2 = destination_sdk_pb2.DataTypeMappingEntry(
-            fivetran_type=common_pb2.DataType.FLOAT,
-            map_to=destination_map_to_2)
-
-        destination_map_to_3 = destination_sdk_pb2.DestinationType(name="DATE",
-                                                                   map_to=common_pb2.DataType.UTC_DATETIME,
-                                                                   max_value=destination_sdk_pb2.MaxValue(date_param=max_timestamp_param))
-        data_type_mapping_3 = destination_sdk_pb2.DataTypeMappingEntry(
-            fivetran_type=common_pb2.DataType.UTC_DATETIME,
-            map_to=destination_map_to_3)
-
-        destination_map_to_4 = destination_sdk_pb2.DestinationType(name="BLOB",
-                                                                   map_to=common_pb2.DataType.BINARY,
-                                                                   max_value=destination_sdk_pb2.MaxValue(numeric_param=max_binary_length))
-        data_type_mapping_4 = destination_sdk_pb2.DataTypeMappingEntry(
-            fivetran_type=common_pb2.DataType.BINARY,
-            map_to=destination_map_to_4)
-
-        destination_map_to_5 = destination_sdk_pb2.DestinationType(name="DECIMAL",
-                                                                   map_to=common_pb2.DataType.FLOAT,
-                                                                   max_value=destination_sdk_pb2.MaxValue(decimal_param=max_decimal_param))
-        data_type_mapping_5 = destination_sdk_pb2.DataTypeMappingEntry(
-            fivetran_type=common_pb2.DataType.FLOAT,
-            map_to=destination_map_to_5)
-
-        return destination_sdk_pb2.CapabilitiesResponse(
-            data_type_mappings=[data_type_mapping_1, data_type_mapping_2, data_type_mapping_3, data_type_mapping_4, data_type_mapping_5],
-            supports_history_mode=True)
-
     def Truncate(self, request, context):
-        print("[TruncateTable]: " + str(request.schema_name) + " | " + str(request.schema_name) + " | soft" + str(
-            request.soft))
+        print("[TruncateTable]: " + str(request.schema_name) + " | " + str(request.schema_name) + " | soft" + str(request.soft))
         return destination_sdk_pb2.TruncateResponse(success=True)
 
     def WriteBatch(self, request, context):
@@ -150,13 +68,6 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
             read_csv.decrypt_file(key, value)
         print("\nData loading completed for table " + request.table.name + "\n")
 
-        print("----------\nPrinting file Params for batch files:\n")
-        print("\nCompression: " + str(request.file_params.compression))
-        print("\nEncryption: " + str(request.file_params.encryption))
-        print("\nValue for null_string: " + str(request.file_params.null_string))
-        print("\nValue for unmodified_string: " + str(request.file_params.unmodified_string))
-        print("\n----------\n")
-
         res: destination_sdk_pb2.WriteBatchResponse = destination_sdk_pb2.WriteBatchResponse(success=True)
         return res
 
@@ -170,7 +81,7 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
 if __name__ == '__main__':
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
     server.add_insecure_port('[::]:50052')
-    destination_sdk_pb2_grpc.add_DestinationConnectorServicer_to_server(DestinationImpl(), server)
+    destination_sdk_pb2_grpc.add_DestinationServicer_to_server(DestinationImpl(), server)
     server.start()
     print("Destination gRPC server started...")
     server.wait_for_termination()

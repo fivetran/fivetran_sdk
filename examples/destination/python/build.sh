@@ -6,9 +6,11 @@ python3 -m venv destination_run
 #Activate virtual environment
 source destination_run/bin/activate
 
-# copying protos present in the root of directory to `protos` folder
+# Make a directory protos
 mkdir -p protos
-cp ../../../*_v2.proto protos/
+
+# Copy proto files t oprotos directory
+cp ../../../*.proto protos/
 
 # Install the required packages
 pip install -r requirements.txt

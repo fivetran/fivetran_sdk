@@ -53,6 +53,7 @@ message TestResponse {
   oneof response {
     bool success = 1;
     string failure = 2;
+    // potential future warning
   }
 }
 
