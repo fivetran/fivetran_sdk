@@ -170,4 +170,4 @@ This option disables encryption and compression of batch files for debugging pur
 The tester by default reads all input files from local data folder and executes them in the alphabetical order they appear. You can specify a single input file to be read and executed using this option. Providing just the filename is sufficient.
 
 #### --batch-file-type
-We support generating batch files in both CSV and Parquet formats. By default, tester uses CSV for batch file generation, but you can specify the desired format using this CLI argument.
+We support generating batch files in both CSV and Parquet formats. By default, tester uses CSV, but you can also specify PARQUET using this CLI argument.
