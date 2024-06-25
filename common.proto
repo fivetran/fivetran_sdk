@@ -79,14 +79,13 @@ enum DataType {
   DECIMAL = 5;
   FLOAT = 6;
   DOUBLE = 7;
-  NAIVE_TIME = 8;
-  NAIVE_DATE = 9;
-  NAIVE_DATETIME = 10;
-  UTC_DATETIME = 11;
-  BINARY = 12;
-  XML = 13;
-  STRING = 14;
-  JSON = 15;
+  NAIVE_DATE = 8;
+  NAIVE_DATETIME = 9;
+  UTC_DATETIME = 10;
+  BINARY = 11;
+  XML = 12;
+  STRING = 13;
+  JSON = 14;
 }
 
 message DecimalParams {
@@ -110,15 +109,14 @@ message ValueType {
     int64 long = 5;
     float float = 6;
     double double = 7;
-    google.protobuf.Timestamp naive_time = 8;
-    google.protobuf.Timestamp naive_date = 9;
-    google.protobuf.Timestamp naive_datetime = 10;
-    google.protobuf.Timestamp utc_datetime = 11;
-    string decimal = 12;
-    bytes binary = 13;
-    string string = 14;
-    string json = 15;
-    string xml = 16;
+    google.protobuf.Timestamp naive_date = 8;
+    google.protobuf.Timestamp naive_datetime = 9;
+    google.protobuf.Timestamp utc_datetime = 10;
+    string decimal = 11;
+    bytes binary = 12;
+    string string = 13;
+    string json = 14;
+    string xml = 15;
   }
 }
 
