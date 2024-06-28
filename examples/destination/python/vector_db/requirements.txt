@@ -1,0 +1,9 @@
+pandas
+weaviate-client
+langchain
+langchain-community
+langchain-openai
+pycrypto
+pycryptodome
+zstandard
+grpcio
