@@ -7,7 +7,7 @@ package fivetran_sdk.r2;
 import "google/protobuf/timestamp.proto";
 import "common.proto";
 
-// Fivetran (grpc client) <> Destination (grpc server)
+// Fivetran (grpc client) <> DestinationConnector (grpc server)
 service DestinationConnector {
     rpc ConfigurationForm (ConfigurationFormRequest) returns (ConfigurationFormResponse) {}
     rpc Capabilities (CapabilitiesRequest) returns (CapabilitiesResponse) {}

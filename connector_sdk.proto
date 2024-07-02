@@ -6,7 +6,7 @@ package fivetran_sdk.r2;
 
 import "common.proto";
 
-// Fivetran (grpc client) <> Connector (grpc server)
+// Fivetran (grpc client) <> SourceConnector (grpc server)
 service SourceConnector {
     rpc ConfigurationForm (ConfigurationFormRequest) returns (ConfigurationFormResponse) {}
     rpc Test (TestRequest) returns (TestResponse) {}
