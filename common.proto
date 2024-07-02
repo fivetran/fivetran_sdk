@@ -1,8 +1,8 @@
 syntax = "proto3";
 option optimize_for = SPEED;
 option java_multiple_files = true;
-option go_package = "fivetran.com/fivetran_sdk";
-package fivetran_sdk;
+option go_package = "fivetran.com/fivetran_sdk_v2";
+package fivetran_sdk.v2;
 
 import "google/protobuf/timestamp.proto";
 
@@ -16,14 +16,37 @@ message ConfigurationFormResponse {
 }
 
 message FormField {
+  oneof field {
+      Field single = 1;
+      FieldSet field_set = 2;
+  }
+}
+
+message Field {
   string name = 1;
   string label = 2;
   bool required = 3;
   optional string description = 4;
+  optional string default_value = 5;
+  optional string placeholder = 6;
   oneof type {
-    TextField text_field = 5;
-    DropdownField dropdown_field = 6;
-    ToggleField toggle_field = 7;
+    TextField text_field = 7;
+    DropdownField dropdown_field = 8;
+    ToggleField toggle_field = 9;
+  }
+}
+
+message FieldSet {
+  repeated FormField fields = 1;
+  optional VisibilityCondition condition = 2;
+}
+
+message VisibilityCondition {
+  string field_name = 1;
+  oneof condition {
+    bool has_bool_value = 2;
+    string has_string_value = 3;
+    bool has_any_value = 4;
   }
 }
 
@@ -53,7 +76,6 @@ message TestResponse {
   oneof response {
     bool success = 1;
     string failure = 2;
-    // potential future warning
   }
 }
 
@@ -79,13 +101,21 @@ enum DataType {
   DECIMAL = 5;
   FLOAT = 6;
   DOUBLE = 7;
-  NAIVE_DATE = 8;
-  NAIVE_DATETIME = 9;
-  UTC_DATETIME = 10;
-  BINARY = 11;
-  XML = 12;
-  STRING = 13;
-  JSON = 14;
+  NAIVE_TIME = 8;
+  NAIVE_DATE = 9;
+  NAIVE_DATETIME = 10;
+  UTC_DATETIME = 11;
+  BINARY = 12;
+  XML = 13;
+  STRING = 14;
+  JSON = 15;
+}
+
+message DataTypeParams {
+  oneof params {
+    DecimalParams decimal = 1;
+    int32 string_byte_length = 2;
+  }
 }
 
 message DecimalParams {
@@ -93,7 +123,7 @@ message DecimalParams {
   uint32 scale = 2;
 }
 
-enum OpType {
+enum RecordType {
   UPSERT = 0;
   UPDATE = 1;
   DELETE = 2;
@@ -109,14 +139,15 @@ message ValueType {
     int64 long = 5;
     float float = 6;
     double double = 7;
-    google.protobuf.Timestamp naive_date = 8;
-    google.protobuf.Timestamp naive_datetime = 9;
-    google.protobuf.Timestamp utc_datetime = 10;
-    string decimal = 11;
-    bytes binary = 12;
-    string string = 13;
-    string json = 14;
-    string xml = 15;
+    google.protobuf.Timestamp naive_time = 8;
+    google.protobuf.Timestamp naive_date = 9;
+    google.protobuf.Timestamp naive_datetime = 10;
+    google.protobuf.Timestamp utc_datetime = 11;
+    string decimal = 12;
+    bytes binary = 13;
+    string string = 14;
+    string json = 15;
+    string xml = 16;
   }
 }
 
@@ -129,5 +160,5 @@ message Column {
   string name = 1;
   DataType type = 2;
   bool primary_key = 3;
-  optional DecimalParams decimal = 4;
+  optional DataTypeParams params = 4;
 }
