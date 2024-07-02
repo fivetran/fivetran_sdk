@@ -9,7 +9,7 @@ import (
 	"net"
 	"strconv"
 
-	pb "fivetran.com/fivetran_sdk/proto"
+	pb "fivetran.com/partner_sdk/proto"
 	"google.golang.org/grpc"
 )
 
