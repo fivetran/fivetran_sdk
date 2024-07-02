@@ -7,8 +7,7 @@ pip install -r requirements.txt
 
 # copying protos present in the root of directory to `protos` folder
 mkdir -p protos
-cp ../../../*_v2.proto protos/
-
+cp ../../../*.proto protos/
 # Generates the required gRPC Python files using protos into `sdk_pb2` folder
 mkdir -p sdk_pb2
 python -m grpc_tools.protoc \

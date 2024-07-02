@@ -9,10 +9,8 @@ import (
 	"net"
 	"strconv"
 
-    "google.golang.org/grpc"
-    _ "google.golang.org/grpc/encoding/gzip"
-
-	pb "fivetran.com/partner_sdk/proto"
+	pb "fivetran.com/fivetran_sdk/proto"
+	"google.golang.org/grpc"
 )
 
 var port = flag.Int("port", 50051, "The server port")
@@ -22,10 +20,10 @@ type MyState struct {
 }
 
 type server struct {
-	pb.UnimplementedSourceConnectorServer
+	pb.UnimplementedConnectorServer
 }
 
-func (s *server) Update(in *pb.UpdateRequest, stream pb.SourceConnector_UpdateServer) error {
+func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) error {
 	config := in.Configuration
 	selection := in.Selection
 	state_json := in.GetStateJson()
@@ -35,25 +33,31 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.SourceConnector_UpdateSe
 	log.Println("config: ", config, "selection: ", selection, "state_json: ", state_json, "mystate: ", state)
 
 	// -- Send a log message
-	logEntry := map[string]interface{}{
-		"level":   "INFO",
-		"message": "Sync STARTING",
-	}
-	logJSON, _ := json.Marshal(logEntry)
-	fmt.Println(string(logJSON))
+	stream.Send(&pb.UpdateResponse{
+		Response: &pb.UpdateResponse_LogEntry{
+			LogEntry: &pb.LogEntry{
+				Level:   pb.LogLevel_INFO,
+				Message: "Sync STARTING",
+			},
+		},
+	})
 
 	// -- Send UPSERT records
 	schemaName := "schema1"
 	for i := 0; i < 3; i++ {
 		stream.Send(&pb.UpdateResponse{
-			Operation: &pb.UpdateResponse_Record{
-				Record: &pb.Record{
-					SchemaName: &schemaName,
-					TableName:  "table1",
-					Type:       pb.RecordType_UPSERT,
-					Data: map[string]*pb.ValueType{
-						"a1": {Inner: &pb.ValueType_String_{String_: "a-" + strconv.Itoa(i)}},
-						"a2": {Inner: &pb.ValueType_Double{Double: float64(i) * float64(0.234)}},
+			Response: &pb.UpdateResponse_Operation{
+				Operation: &pb.Operation{
+					Op: &pb.Operation_Record{
+						Record: &pb.Record{
+							SchemaName: &schemaName,
+							TableName:  "table1",
+							Type:       pb.OpType_UPSERT,
+							Data: map[string]*pb.ValueType{
+								"a1": {Inner: &pb.ValueType_String_{String_: "a-" + strconv.Itoa(i)}},
+								"a2": {Inner: &pb.ValueType_Double{Double: float64(i) * float64(0.234)}},
+							},
+						},
 					},
 				},
 			},
@@ -64,14 +68,18 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.SourceConnector_UpdateSe
 
 	// -- Send UPDATE record
 	stream.Send(&pb.UpdateResponse{
-		Operation: &pb.UpdateResponse_Record{
-			Record: &pb.Record{
-				SchemaName: &schemaName,
-				TableName:  "table1",
-				Type:       pb.RecordType_UPDATE,
-				Data: map[string]*pb.ValueType{
-					"a1": {Inner: &pb.ValueType_String_{String_: "a-0"}},
-					"a2": {Inner: &pb.ValueType_Double{Double: float64(110.234)}},
+		Response: &pb.UpdateResponse_Operation{
+			Operation: &pb.Operation{
+				Op: &pb.Operation_Record{
+					Record: &pb.Record{
+						SchemaName: &schemaName,
+						TableName:  "table1",
+						Type:       pb.OpType_UPDATE,
+						Data: map[string]*pb.ValueType{
+							"a1": {Inner: &pb.ValueType_String_{String_: "a-0"}},
+							"a2": {Inner: &pb.ValueType_Double{Double: float64(110.234)}},
+						},
+					},
 				},
 			},
 		},
@@ -80,13 +88,17 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.SourceConnector_UpdateSe
 
 	// -- Send DELETE record
 	stream.Send(&pb.UpdateResponse{
-		Operation: &pb.UpdateResponse_Record{
-			Record: &pb.Record{
-				SchemaName: &schemaName,
-				TableName:  "table1",
-				Type:       pb.RecordType_DELETE,
-				Data: map[string]*pb.ValueType{
-					"a1": {Inner: &pb.ValueType_String_{String_: "a-2"}},
+		Response: &pb.UpdateResponse_Operation{
+			Operation: &pb.Operation{
+				Op: &pb.Operation_Record{
+					Record: &pb.Record{
+						SchemaName: &schemaName,
+						TableName:  "table1",
+						Type:       pb.OpType_DELETE,
+						Data: map[string]*pb.ValueType{
+							"a1": {Inner: &pb.ValueType_String_{String_: "a-2"}},
+						},
+					},
 				},
 			},
 		},
@@ -100,20 +112,26 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.SourceConnector_UpdateSe
 
 	// -- Send Checkpoint
 	stream.Send(&pb.UpdateResponse{
-		Operation: &pb.UpdateResponse_Checkpoint{
-			Checkpoint: &pb.Checkpoint{
-				StateJson: new_state,
+		Response: &pb.UpdateResponse_Operation{
+			Operation: &pb.Operation{
+				Op: &pb.Operation_Checkpoint{
+					Checkpoint: &pb.Checkpoint{
+						StateJson: new_state,
+					},
+				},
 			},
 		},
 	})
 
 	// -- Send a log message
-	syncEndLog := map[string]interface{}{
-		"level":   "INFO",
-		"message": "Sync DONE",
-	}
-	syncEndLogJson, _ := json.Marshal(syncEndLog)
-	fmt.Println(string(syncEndLogJson))
+	stream.Send(&pb.UpdateResponse{
+		Response: &pb.UpdateResponse_LogEntry{
+			LogEntry: &pb.LogEntry{
+				Level:   pb.LogLevel_INFO,
+				Message: "Sync DONE",
+			},
+		},
+	})
 
 	// End the RPC call
 	return nil
@@ -171,107 +189,49 @@ func (s *server) ConfigurationForm(ctx context.Context, in *pb.ConfigurationForm
 		TableSelectionSupported:  true,
 		Fields: []*pb.FormField{
 			{
-				Field: &pb.FormField_Single{
-					Single: &pb.Field{
-						Name:     "apikey",
-						Label:    "API key",
-						Required: true,
-						Type: &pb.Field_TextField{
-							TextField: pb.TextField_PlainText,
+				Name:     "apikey",
+				Label:    "API key",
+				Required: true,
+				Type: &pb.FormField_TextField{
+					TextField: pb.TextField_PlainText,
+				},
+			},
+			{
+				Name:     "password",
+				Label:    "User password",
+				Required: true,
+				Type: &pb.FormField_TextField{
+					TextField: pb.TextField_Password,
+				},
+			},
+			{
+				Name:  "hidden",
+				Label: "my-hidden-value",
+				Type: &pb.FormField_TextField{
+					TextField: pb.TextField_Hidden,
+				},
+			},
+			{
+				Name:     "isPublic",
+				Label:    "Public?",
+				Description: &toggleDescription,
+				Required: false,
+				Type: &pb.FormField_ToggleField{
+					ToggleField: &pb.ToggleField{},
+				},
+			},
+			{
+				Name:     "region",
+				Label:    "Region",
+				Required: true,
+				Type: &pb.FormField_DropdownField{
+					DropdownField: &pb.DropdownField{
+						DropdownField: []string{
+							"US-EAST", "US-WEST",
 						},
 					},
 				},
 			},
-			{
-				Field: &pb.FormField_Single{
-					Single: &pb.Field{
-						Name:     "password",
-						Label:    "User password",
-						Required: true,
-						Type: &pb.Field_TextField{
-							TextField: pb.TextField_Password,
-						},
-					},
-				},
-			},
-			{
-				Field: &pb.FormField_Single{
-					Single: &pb.Field{
-						Name:  "hidden",
-						Label: "my-hidden-value",
-						Type: &pb.Field_TextField{
-							TextField: pb.TextField_Hidden,
-						},
-					},
-				},
-			},
-			{
-				Field: &pb.FormField_Single{
-					Single: &pb.Field{
-						Name:        "isPublic",
-						Label:       "Public?",
-						Description: &toggleDescription,
-						Required:    false,
-						Type: &pb.Field_ToggleField{
-							ToggleField: &pb.ToggleField{},
-						},
-					},
-				},
-			},
-			{
-				Field: &pb.FormField_Single{
-					Single: &pb.Field{
-						Name:     "region",
-						Label:    "Region",
-						Required: true,
-						Type: &pb.Field_DropdownField{
-							DropdownField: &pb.DropdownField{
-								DropdownField: []string{
-									"US-EAST", "US-WEST",
-								},
-							},
-						},
-					},
-				},
-			},
-			{
-                Field: &pb.FormField_FieldSet{
-                    FieldSet: &pb.FieldSet{
-                        Fields: []*pb.FormField{
-                            {
-                                Field: &pb.FormField_Single{
-                                    Single: &pb.Field{
-                                        Name:     "connectionString",
-                                        Label:    "ConnectionString",
-                                        Required: false,
-                                        Type: &pb.Field_TextField{
-                                            TextField: pb.TextField_Password,
-                                        },
-                                    },
-                                },
-                            },
-                            {
-                                Field: &pb.FormField_Single{
-                                    Single: &pb.Field{
-                                        Name:     "sshTunnel",
-                                        Label:    "SSH Tunnel",
-                                        Required: false,
-                                        Type: &pb.Field_TextField{
-                                            TextField: pb.TextField_PlainText,
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                        Condition: &pb.VisibilityCondition{
-                            FieldName: "isPublic",
-                            Condition: &pb.VisibilityCondition_HasStringValue{
-                                HasStringValue: "false",
-                            },
-                        },
-                    },
-                },
-            },
 		},
 		Tests: []*pb.ConfigurationTest{
 			{
@@ -305,7 +265,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterSourceConnectorServer(s, &server{})
+	pb.RegisterConnectorServer(s, &server{})
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
