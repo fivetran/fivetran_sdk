@@ -8,7 +8,7 @@ import "google/protobuf/timestamp.proto";
 import "common.proto";
 
 // Fivetran (grpc client) <> Destination (grpc server)
-service Destination {
+service DestinationConnector {
     rpc ConfigurationForm (ConfigurationFormRequest) returns (ConfigurationFormResponse) {}
     rpc Capabilities (CapabilitiesRequest) returns (CapabilitiesResponse) {}
     rpc Test (TestRequest) returns (TestResponse) {}
