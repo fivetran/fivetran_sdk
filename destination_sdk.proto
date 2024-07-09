@@ -23,6 +23,29 @@ message CapabilitiesRequest {}
 
 message CapabilitiesResponse {
     BatchFileFormat batch_file_format = 1;
+    repeated DataTypeMappingEntry data_type_mappings = 2;
+}
+
+message DataTypeMappingEntry {
+    DataType fivetran_data_type = 1;
+    oneof mapping {
+        bool unsupported = 2;
+        DestinationType destination_type = 3;
+    }
+}
+
+message DestinationType {
+    string name = 1;
+    DataType destination_data_type = 2;
+    optional MaxValue max_value = 3;
+}
+
+message MaxValue {
+    oneof max_param {
+        int32 length_param = 1;
+        DecimalParams decimal_param = 2;
+        google.protobuf.Timestamp date_param = 3;
+    }
 }
 
 message DescribeTableRequest {
