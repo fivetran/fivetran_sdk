@@ -153,3 +153,9 @@ This option disables encryption and compression of batch files for debugging pur
 
 #### --input-file
 The tester by default reads all input files from local data folder and executes them in the alphabetical order they appear. You can specify a single input file to be read and executed using this option. Providing just the filename is sufficient.
+
+#### --schema-name
+The tester by default creates `tester` named schema. This option tells the tester to create a different schema name than the default.
+
+#### --disable-operation-delay
+The tester by default delays operations to simulate a real sync. This boolean option tells the tester to not simulate a real sync.
