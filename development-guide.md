@@ -51,8 +51,8 @@ Partners should not add the proto files to their repos. Proto files should be pu
 
 ### User Tasks
 
-- Partners can throw alerts on dashboard to notify customers when there is a problem in their Fivetran account, such as a broken connector or an incomplete sync, and tells you how to resolve that problem.
-- Currently we allow only throwing [errors](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#errors).
+- Partners can throw alerts on the Fivetran dashboard to notify customers when there is a problem in their connector, such as a broken connector or an incomplete sync, and tell how to resolve that problem.
+- Currently, we allow only throwing [errors](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#errors).
 - Partner code should use [gRPC built-in error mechanism](https://grpc.io/docs/guides/error/#language-support) to relay errors and pass the message in the following json format to the error description:
 ```
 {
@@ -60,13 +60,11 @@ Partners should not add the proto files to their repos. Proto files should be pu
     "alert_type": "TASK"
 }
 ```
-
 - Usage example:
 ```
 responseObserver.onError(Status.UNAVAILABLE.withDescription(jsonMessage).asException());
 ```
-
-- The error description would be converted to a SEVERE log if it is not in the correct JSON format.
+- We convert the error description to a SEVERE log if it is not in the correct JSON format and fail the sync.
 
 ### Retries
 - Partner code should retry transient problems internally
