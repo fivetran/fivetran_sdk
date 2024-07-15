@@ -45,6 +45,10 @@ Partners should not add the proto files to their repos. Proto files should be pu
     - **Repeating errors** - For instance, if you log an exception trace before each retry, you might end up logging the exception trace unnecessarily or too many times
 - Consider Logging The Timing Data: Logging the time taken for time-sensitive operations like network calls can make it easier to debug performance issues in production. Consider if logging timing data can be useful in your connector.
 
+### Error Handling
+- Partner code should handle any source/destination errors, retry any transient errors internally without deferring them to Fivetran.
+- Partner code should use [gRPC built-in error mechanism](https://grpc.io/docs/guides/error/#language-support) to relay errors instead of throwing exceptions and abruptly closing the connection.
+
 ### User Tasks
 
 - Partners can throw alerts on dashboard to notify customers when there is a problem in their Fivetran account, such as a broken connector or an incomplete sync, and tells you how to resolve that problem.
@@ -56,11 +60,13 @@ Partners should not add the proto files to their repos. Proto files should be pu
     "alert_type": "TASK"
 }
 ```
-- The error description would be converted to a SEVERE log if it is not in the correct JSON format.
 
-### Error Handling
-- Partner code should handle any source/destination errors, retry any transient errors internally without deferring them to Fivetran.
-- Partner code should use [gRPC built-in error mechanism](https://grpc.io/docs/guides/error/#language-support) to relay errors instead of throwing exceptions and abruptly closing the connection.
+- Usage example:
+```
+responseObserver.onError(Status.UNAVAILABLE.withDescription(jsonMessage).asException());
+```
+
+- The error description would be converted to a SEVERE log if it is not in the correct JSON format.
 
 ### Retries
 - Partner code should retry transient problems internally
