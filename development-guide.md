@@ -54,7 +54,7 @@ Partners should not add the proto files to their repos. Proto files should be pu
 - Partners can throw alerts on the Fivetran dashboard to notify customers about potential issues with their connector.
 - These issues could include bad source data or connection problems with the source itself. Where applicable, the alerts should also provide guidance to customers on how to resolve the problem.
 - Currently, we allow only throwing [errors](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#errors).
-- Partner code should use [gRPC built-in error mechanism](https://grpc.io/docs/guides/error/#language-support) to relay errors and pass the message in the following json format to the error description:
+- Partner code should use [gRPC built-in error mechanism](https://grpc.io/docs/guides/error/#language-support) to relay errors and pass the message in the following JSON format to the error description:
 ```
 {
     "message": "Your task message goes here"
