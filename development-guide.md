@@ -65,7 +65,7 @@ Partners should not add the proto files to their repos. Proto files should be pu
 ```
 responseObserver.onError(Status.UNAVAILABLE.withDescription(jsonMessage).asException());
 ```
-- We convert the error description to a SEVERE log if it is not in the correct JSON format and fail the sync.
+- We convert the error description to a SEVERE log if it is not in the correct JSON format and the error causes the sync to fail.
 
 ### Retries
 - Partner code should retry transient problems internally
