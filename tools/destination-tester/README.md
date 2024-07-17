@@ -155,7 +155,7 @@ This option disables encryption and compression of batch files for debugging pur
 The tester by default reads all input files from local data folder and executes them in the alphabetical order they appear. You can specify a single input file to be read and executed using this option. Providing just the filename is sufficient.
 
 #### --schema-name
-The tester by default creates `tester` named schema. This option allows the tester to run with different schema name.
+The tester by default creates a schema named `tester`. This option allows the tester to run with a custom schema name by specifying `--schema-name <custom_schema_name>` where `<custom_schema_name>` is your custom schema name.
 
 #### --disable-operation-delay
-The tester by default adds delay to operation for real time simulation, set this boolean to disable delay.
+The tester by default adds a delay to operation for real-time simulation. Specifying this argument disables the delay.
