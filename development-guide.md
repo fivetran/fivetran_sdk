@@ -123,12 +123,14 @@ This operation should report all columns in the destination table, including Fiv
 - This operation might be requested for a table that does not exist in the destination. In that case, it should NOT fail, simply ignore the request and return `success = true`.
 - `utc_delete_before` has millisecond precision.
 
-#### WriteBatchRequest
+#### WriteBatchRequest 
 - `replace_files` is for `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row will always provide values for all columns. Set the `_fivetran_synced` column in the destination with the values coming in from the csv files.
 
 - `update_files` is for `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `CsvFileParams`. Soft-deleted rows will arrive in here as well. Update the `_fivetran_synced` column in the destination with the values coming in from the csv files.
 
-- `delete_files` is for `hard delete` operation. Use primary key columns (or `_fivetran_id` system column for primary-keyless tables) to perform `DELETE FROM`.
+- `delete_files` is for `hard delete` operation. Use primary key columns (or `_fivetran_id` system column for primary-keyless tables) to perform `DELETE FROM`.   
+
+> Note: To handle history mode `replace_files`, `update_files` and `delete_files`, follow [How to Handle History Mode Batch Files](how-to-handle-history-mode-batch-files.md) guide.
 
 Also, Fivetran will deduplicate operations such that each primary key will show up only once in any of the operations
 
