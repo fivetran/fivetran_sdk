@@ -10,7 +10,7 @@
 2. Run a container using the image with the following command. Make sure to map a local directory for the tool by replacing `<local-data-folder>` placeholders in the command, and replace `<version>` with the version of the image you pulled.
 
 ```
-docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e WORKING_DIR=<local-data-folder> -e GRPC_HOSTNAME=host.docker.internal --network=host fivetrandocker/sdk-destination-tester:<version> 
+docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e WORKING_DIR=<local-data-folder> -e GRPC_HOSTNAME=host.docker.internal --network=host fivetrandocker/fivetran-sdk-tester:<version>  --tester-type destination --port <port>
 ```
 
 3. To rerun the container from step #2, use the following command:
@@ -144,9 +144,6 @@ Here is an example input file named `input_1.json`:
 ## CLI Arguments
 
 The tester supports the following optional CLI arguments to alter its default behavior. You can append these options to the end of the `docker run` command provided in step 2 of [How To Run](https://github.com/fivetran/fivetran_sdk/tree/main/tools/destination-tester#how-to-run) section above.
-
-#### --port
-This option tells the tester to use a different port than the default 50052.
 
 #### --plain-text
 This option disables encryption and compression of batch files for debugging purposes.
