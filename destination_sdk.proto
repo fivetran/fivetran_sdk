@@ -55,26 +55,7 @@ message CreateTableResponse {
 message AlterTableRequest {
     map<string, string> configuration = 1;
     string schema_name = 2;
-    string table_name = 3;
-    repeated SchemaDiff changes = 4;
-}
-
-message SchemaDiff {
-    oneof change {
-        Column add_column = 1;
-        ChangeType change_column_type = 2;
-        PrimaryKey update_primary_keys = 3;
-    }
-}
-
-message PrimaryKey {
-    repeated string column_name = 1;
-}
-
-message ChangeType {
-    string column_name = 1;
-    DataType new_type = 2;
-    optional DataTypeParams params = 3;
+    Table table = 3;
 }
 
 message AlterTableResponse {
