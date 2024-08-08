@@ -1,6 +1,6 @@
 package destination;
 
-import fivetran_sdk.*;
+import partner_sdk.*;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Arrays;
