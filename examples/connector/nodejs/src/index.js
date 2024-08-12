@@ -1,5 +1,5 @@
 const grpc = require("@grpc/grpc-js");
-const PROTO_PATH_CONNECTOR = "./protos/connector_sdk.proto";
+const PROTO_PATH_CONNECTOR = "./src/protos/connector_sdk.proto";
 var protoLoader = require("@grpc/proto-loader");
 
 const options = {
@@ -156,13 +156,18 @@ const configurationForm = (call, callback) => {
   };
 
 
-server.addService(connectorSdkProto.Connector.service, {configurationForm, test, schema, update})
+function main(){
+  server.addService(connectorSdkProto.Connector.service, {configurationForm, test, schema, update})
 
-server.bindAsync(
-  '0.0.0.0'.concat(':').concat(50051),
-  grpc.ServerCredentials.createInsecure(),
-  (error, port) => {
-    console.log("Server running at http://127.0.0.1:50051");
-    !error ? server.start() : console.log("Server failed with error: " + error)
-  }
-);
+  server.bindAsync(
+    '0.0.0.0'.concat(':').concat(50051),
+    grpc.ServerCredentials.createInsecure(),
+    (error, port) => {
+      console.log("Server running at http://127.0.0.1:50051");
+      !error ? server.start() : console.log("Server failed with error: " + error)
+    }
+  );
+}
+
+// module.exports = {main}
+main()
