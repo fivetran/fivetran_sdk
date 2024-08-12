@@ -156,7 +156,6 @@ const configurationForm = (call, callback) => {
   };
 
 
-function main(){
   server.addService(connectorSdkProto.Connector.service, {configurationForm, test, schema, update})
 
   server.bindAsync(
@@ -167,7 +166,3 @@ function main(){
       !error ? server.start() : console.log("Server failed with error: " + error)
     }
   );
-}
-
-// module.exports = {main}
-main()
