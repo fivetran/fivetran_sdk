@@ -159,10 +159,10 @@ const configurationForm = (call, callback) => {
 server.addService(connectorSdkProto.Connector.service, {configurationForm, test, schema, update})
 
 server.bindAsync(
-  "127.0.0.1:50051",
+  '0.0.0.0'.concat(':').concat(50051),
   grpc.ServerCredentials.createInsecure(),
   (error, port) => {
     console.log("Server running at http://127.0.0.1:50051");
-    server.start();
+    !error ? server.start() : console.log("Server failed with error: " + error)
   }
 );
