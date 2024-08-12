@@ -24,7 +24,7 @@ const configurationForm = (call, callback) => {
       fields: [
         { name: "apikey", label: "API key", required: true, text_field: "PlainText" },
         { name: "password", label: "User Password", required: true, text_field: "Password" },
-        // { name: "region", label: "AWS Region", required: false, dropdown_field: [ "US-EAST", "US-WEST" ] },
+        { name: "region", label: "AWS Region", required: false, dropdown_field: { dropdown_field : ["US-EAST","US-WEST"]} },
         { name: "hidden", label: "my-hidden-value", text_field:"Hidden" },
         { name: "isPublic", label: "Public?", description: "Is this public?", toggle_field: {} }
       ],
