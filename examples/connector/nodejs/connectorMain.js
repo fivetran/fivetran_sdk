@@ -1,5 +1,4 @@
 const grpc = require("@grpc/grpc-js");
-const PROTO_PATH_COMMON = "./protos/common.proto";
 const PROTO_PATH_CONNECTOR = "./protos/connector_sdk.proto";
 var protoLoader = require("@grpc/proto-loader");
 
@@ -10,10 +9,8 @@ const options = {
   defaults: true,
   oneofs: true,
 };
-var packageDefinitionCommon = protoLoader.loadSync(PROTO_PATH_COMMON, options);
 var packageDefinitionConnector = protoLoader.loadSync(PROTO_PATH_CONNECTOR, options);
 
-const commonProto = grpc.loadPackageDefinition(packageDefinitionCommon);
 const protoDescriptor = grpc.loadPackageDefinition(packageDefinitionConnector);
 
 const connectorSdkProto = protoDescriptor.fivetran_sdk;
@@ -98,7 +95,7 @@ const configurationForm = (call, callback) => {
     try {
       // Send a log message
       sendLogEntry("Sync STARTING");
-  
+
       // Send UPSERT records
       for (let i = 0; i < 3; i++) {
         sendOperation({
@@ -106,8 +103,8 @@ const configurationForm = (call, callback) => {
             table_name: "table1",
             type: "UPSERT",
             data: {
-              a1: { string_value: `a-${i}` },
-              a2: { double_value: i * 0.234 }
+              "a1": {"string": `a-${i}`},
+              "a2": {"double": i*0.234}
             }
           }
         });
@@ -120,8 +117,8 @@ const configurationForm = (call, callback) => {
           table_name: "table1",
           type: "UPDATE",
           data: {
-            a1: { string_value: "a-0" },
-            a2: { double_value: 110.234 }
+            "a1": { "string": "a-0" },
+            "a2": { "double": 110.234} 
           }
         }
       });
@@ -133,7 +130,7 @@ const configurationForm = (call, callback) => {
           table_name: "table1",
           type: "DELETE",
           data: {
-            a1: { string_value: "a-2" }
+            "a1": { "string" : "a-2" }
           }
         }
       });
