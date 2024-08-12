@@ -14,5 +14,4 @@ destination_run/
 connector_run/
 **/__pycache__/
 examples/**/node_modules/
-examples/**/package.json
 examples/**/package-lock.json
