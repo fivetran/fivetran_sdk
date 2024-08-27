@@ -107,7 +107,7 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd).
 ### Batch Files
 - Each batch file is limited in size to 100MB.
 - Number of records in each batch file can vary depending on row size.
-- We only support CSV file format.
+- We only support .CSV file format.
 
 #### CSV
 - Fivetran creates batch files using `com.fasterxml.jackson.dataformat.csv.CsvSchema`, which by default doesn't consider backslash '\' an escape character. If you are reading the batch file then make sure that you do not consider backslash '\' an escape character.
@@ -140,15 +140,15 @@ Do not assume order of columns in the batch files. Always read the .CSV file hea
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
 
 ### Examples of Data Types
-Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in CSV batch files are as follows:
+Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in .CSV batch files are as follows:
 - UNSPECIFIED: This data type never appears in batch files
 - BOOLEAN: "true", "false"
 - SHORT: -32768 .. 32767
 - INT: -2147483648 .. 2147483647
 - LONG: -9223372036854776000 .. 9223372036854775999
 - DECIMAL: Floating point values with max precision of 38 and max scale of 37
-- FLOAT: Single-precision 32-bit IEEE 754 values, e.g., 3.4028237E+38
-- DOUBLE: Double-precision 64-bit IEEE 754 values, e.g., -2.2250738585072014E-308
+- FLOAT: Single-precision 32-bit IEEE 754 values, e.g. 3.4028237E+38
+- DOUBLE: Double-precision 64-bit IEEE 754 values, e.g. -2.2250738585072014E-308
 - NAIVE_TIME: Time without a timezone in the ISO-8601 calendar system, e.g. 10:15:30 
 - NAIVE_DATE: Date without a timezone in the ISO-8601 calendar system, e.g. 2007-12-03
 - NAIVE_DATETIME: A date-time without timezone in the ISO-8601 calendar system, e.g. 2007-12-03T10:15:30
@@ -169,9 +169,9 @@ The following is a list of test scenarios we recommend you consider:
 ### Destination
 In addition to the suggestions above, consider the following as well:
 - Make sure to test with at least one of each of the following source connector types:
-    - [Database](https://fivetran.com/docs/databases) (Postgres, MongoDB, etc)
-    - [Application](https://fivetran.com/docs/applications) (Github, Hubspot, Google Sheets, etc)
-    - [File](https://fivetran.com/docs/files) (S3, Google Drive, etc)
+    - [Database](https://fivetran.com/docs/databases) (Postgres, MongoDB, etc.)
+    - [Application](https://fivetran.com/docs/applications) (Github, Hubspot, Google Sheets, etc.)
+    - [File](https://fivetran.com/docs/files) (S3, Google Drive, etc.)
     - [Fivetran Platform connector](https://fivetran.com/docs/logs/fivetran-platform)
 - Exercise `AlterTable` in various ways:
     - Adding one or more columns
