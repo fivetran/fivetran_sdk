@@ -21,7 +21,7 @@ Our READMEs for [connectors](tools/connector-tester/) and [destinations](tools/d
 You can look at the following public repos to see how other partners have built their connectors:
 #### Connectors
 * [PlanetScale](https://github.com/planetscale/fivetran-source)
-* [Convex](https://github.com/get-convex/convex-fivetran-source)
+* [Convex](https://github.com/get-convex/convex-backend/tree/main/crates/fivetran_source)
 #### Destinations
 * [Materialize](https://github.com/MaterializeInc/materialize/tree/main/src/fivetran-destination)
 * [Motherduck](https://github.com/MotherDuck-Open-Source/motherduck-fivetran-connector)
