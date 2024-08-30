@@ -79,13 +79,32 @@ The following are hard requirements to be able to deploy Partner code to Fivetra
 - Encrypt HTTP requests: Things like URLs, URL parameters, and query params are always encrypted for logging, and customer approval is needed to decrypt and examine them.
 
 
-## Connector Guidelines
+## Setup Form Guidelines
+- Keep the form clear and concise, only requesting essential information for successful connector setup.
+- Use clear and descriptive labels for each form field. Avoid technical jargon if possible.
+- Organize the fields in a logical order that reflects the setup process.
+
+### RPC Calls
+#### ConfigurationForm
+This operation retrieves all the setup form fields and tests information. You can provide various parameters for the fields to enhance the user experience, such as descriptions, optional fields, and more.
+
+#### Test
+The previous RPC call retrieves the tests that need to be executed during connection setup. This operation then invokes the test with the customer's credentials as parameters. Finally, it should return a success or failure indication for the test execution.
+
+## Source Connector Guidelines
 
 - Don't push anything other than source data to the destination. State will be saved to production DB and returned in `UpdateRequest`.
 - Don't forget to handle new schemas/tables/columns per the information and user choices in `UpdateRequest#selection`.
 - Make sure you checkpoint at least once an hour. The more frequently you do it, the better.
 
-## Destination Guidelines
+### RPC Calls
+#### Schema
+This operation retrieves the customer's schemas, tables, and columns. It also includes an optional `selection_not_supported` field that indicates whether customers can select or deselect tables and columns within the Fivetran dashboard.
+
+#### Update
+This operation should retrieve data from the source. We send a request using the `UpdateRequest` message, which includes the customer's state, credentials, and schema information. The response, streaming through the `UpdateResponse` message, can contain data records and other supported operations.
+
+## Destination Connector Guidelines
 
 - Do not push anything other than source data to the destination.
 
@@ -106,7 +125,7 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd)
 ### Batch Files
 - Each batch file is size limited to 100MB
 - Number of records in each batch file can vary depending on row size
-- Currently we only support CSV file format
+- Currently we support CSV and PARQUET file format
 
 #### CSV
 - Fivetran creates batch files using `com.fasterxml.jackson.dataformat.csv.CsvSchema` which by default doesn't consider backslash as escape character. If you are reading the batch file then make sure that you do not consider backslash as escape character.
@@ -123,12 +142,17 @@ This operation should report all columns in the destination table, including Fiv
 - This operation might be requested for a table that does not exist in the destination. In that case, it should NOT fail, simply ignore the request and return `success = true`.
 - `utc_delete_before` has millisecond precision.
 
-#### WriteBatchRequest
-- `replace_files` is for `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row will always provide values for all columns. Set the `_fivetran_synced` column in the destination with the values coming in from the csv files.
+#### WriteBatch
+This operation provides details about the batch files containing the records to be pushed to the destination. We provide the `WriteBatchRequest` parameter that contains all the information required for you to read the batch files. Here are some of the fields included in the request message:
+- `replace_files` is for the `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row will always provide values for all columns. Set the `_fivetran_synced` column in the destination with the values coming in from the batch files.
 
-- `update_files` is for `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `CsvFileParams`. Soft-deleted rows will arrive in here as well. Update the `_fivetran_synced` column in the destination with the values coming in from the csv files.
+- `update_files` is for the `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `FileParams`. Soft-deleted rows will arrive in here as well. Update the `_fivetran_synced` column in the destination with the values coming in from the batch files.
 
 - `delete_files` is for `hard delete` operation. Use primary key columns (or `_fivetran_id` system column for primary-keyless tables) to perform `DELETE FROM`.
+
+- `keys` is a map that provides a list of secret keys, one for each batch file, that can be used to decrypt them.
+
+- `file_params` provides information about the file type and any configurations applied to it, such as encryption or compression.
 
 Also, Fivetran will deduplicate operations such that each primary key will show up only once in any of the operations
 
@@ -137,6 +161,19 @@ Do not assume order of columns in the batch files. Always read the CSV file head
 - `CsvFileParams`:
     - `null_string` value is used to represent `NULL` value in all batch files.
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
+
+#### Capabilities
+This operation offers the ability for the partner code to declare its choices for capabilities listed below:
+
+- Datatype Mappings: Provides the option to map destination data types to Fivetran data types.
+- Max value for columns: Provides an option to specify the maximum value for each data type.
+
+#### AlterTable
+This operation is used to communicate changes to a table as specific update operations. The `SchemaDiff` message within the `AlterTableRequest` parameter provides the details:
+- Adding a column (`add_column`): Fivetran uses this field to provide information about a new column to be added in a destination table.
+- Update Column type (`change_column_type`): This field provides information on updated type of a column in the source that needs to be reflected in a destination table.
+- Primary key updates (`update_primary_keys`):  If the primary key has changed, this field lists all the columns used in the updated primary key.
+
 
 ### Examples of Data Types
 Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in CSV batch files are as follows:
