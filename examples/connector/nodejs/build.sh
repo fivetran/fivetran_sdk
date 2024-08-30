@@ -45,3 +45,6 @@ codesign --sign - binary
 rm sea-config.json
 rm sea-prep.blob
 rm bundle.js
+
+# Please note that all commands in this file are specific to MacOS.
+# For instructions on creating executables for other operating systems, please see: https://nodejs.org/api/single-executable-applications.html#single-executable-applications
