@@ -107,7 +107,7 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd).
 ### Batch Files
 - Each batch file is limited in size to 100MB.
 - Number of records in each batch file can vary depending on row size.
-- We only support .CSV file format.
+- We only support CSV file format.
 
 #### CSV
 - Fivetran creates batch files using `com.fasterxml.jackson.dataformat.csv.CsvSchema`, which by default doesn't consider backslash '\' an escape character. If you are reading the batch file then make sure that you do not consider backslash '\' an escape character.
@@ -125,22 +125,22 @@ This operation should report all columns in the destination table, including Fiv
 - `utc_delete_before` has millisecond precision.
 
 #### WriteBatchRequest
-- `replace_files` is for the `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row always provides values for all columns. Populate the `_fivetran_synced` column in the destination with the values coming in from the .CSV files.
+- `replace_files` is for the `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row always provides values for all columns. Populate the `_fivetran_synced` column in the destination with the values coming in from the CSV files.
 
-- `update_files` is for the `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `CsvFileParams`. Soft-deleted rows arrive in here as well. Update the `_fivetran_synced` column in the destination with the values coming in from the .CSV files.
+- `update_files` is for the `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `CsvFileParams`. Soft-deleted rows arrive in here as well. Update the `_fivetran_synced` column in the destination with the values coming in from the CSV files.
 
 - `delete_files` is for the `hard delete` operation. Use primary key columns (or `_fivetran_id` system column for primary-keyless tables) to perform `DELETE FROM`.
 
 Also, Fivetran deduplicates operations such that each primary key shows up only once in any of the operations.
 
-Do not assume order of columns in the batch files. Always read the .CSV file header to determine the column order.
+Do not assume order of columns in the batch files. Always read the CSV file header to determine the column order.
 
 - `CsvFileParams`:
     - `null_string` value is used to represent `NULL` value in all batch files.
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
 
 ### Examples of Data Types
-Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in .CSV batch files are as follows:
+Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in CSV batch files are as follows:
 - UNSPECIFIED: This data type never appears in batch files
 - BOOLEAN: "true", "false"
 - SHORT: -32768 .. 32767
@@ -186,4 +186,4 @@ In addition to the suggestions above, consider the following as well:
 Sort of. We will email you the logs for a failed sync through support but the number of log messages is limited and this is a slow process for debugging in general. What you need to do is add your own logging for your own platform of choice so you are not reliant on us for logs. Plus, that way, you can implement alerts, monitoring, etc.
 
 ### Is it normal that, for a sync, there is an upsert event followed by a truncate event?
-Yes, definitely. This is most likely an initial sync where there is nothing but upsert operations, all followed by a truncate, which is meant to (soft) delete any rows that may have existed prior to the initial sync starting. This is done to make sure all rows that may have existed prior to the initial sync are marked as deleted (since we cannot be sure the initial sync will necessarily overwrite them all). The "before timestamp" is key to the truncate operation so you don't just mark the entire table deleted. It should pick out the rows that existed prior to the sync starting, in other words, `_fivetran_synced` < "truncate before timestamp".
+Yes, definitely. This is most likely an initial sync where there is nothing but upsert operations, all followed by a truncate, which is meant to (soft) delete any rows that may have existed prior to the initial sync starting. This is done to make sure all rows that may have existed prior to the initial sync are marked as deleted (since we cannot be sure the initial sync will necessarily overwrite them all). The "before timestamp" is key to the truncate operation so you don't just mark the entire table deleted. It should pick out the rows that existed prior to the sync starting, in other words, where `_fivetran_synced` < "truncate before timestamp".
