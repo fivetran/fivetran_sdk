@@ -5,7 +5,7 @@
 - gRPC server is running for the particular example (see [example readme's](/examples/destination/))
 
 ## How To Run
-1. Pull the latest docker image from [fivetrandocker/sdk-destination-tester](https://hub.docker.com/repository/docker/fivetrandocker/sdk-destination-tester/general) on Docker Hub.
+1. Pull the latest docker image from [fivetrandocker/fivetran-sdk-tester](https://hub.docker.com/repository/docker/fivetrandocker/fivetran-sdk-tester/general) on Docker Hub.
 
 2. Run a container using the image with the following command. Make sure to map a local directory for the tool by replacing `<local-data-folder>` placeholders in the command, and replace `<version>` with the version of the image you pulled.
 
