@@ -39,13 +39,17 @@ jobs:
       working-directory: examples/connector/python
       run: ./build.sh
 
-    - name: Install Python destination requirements
-      working-directory: examples/destination/python
+    - name: Install Python simple destination requirements
+      working-directory: examples/destination/python/simple
       run: pip install -r requirements.txt
 
-    - name: Run Python destination build script
-      working-directory: examples/destination/python
+    - name: Run Python simple destination build script
+      working-directory: examples/destination/python/simple
       run: ./build.sh
+    
+    - name: Install Python vector_db destination requirements
+      working-directory: examples/destination/python/vector_db
+      run: pip install -r requirements.txt
 
     - name: Set up Go
       uses: actions/setup-go@v4
