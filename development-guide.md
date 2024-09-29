@@ -121,9 +121,14 @@ This operation should fail if it is asked to create a table that already exists.
 #### DescribeTable
 This operation should report all columns in the destination table, including Fivetran system columns such as `_fivetran_synced` and `_fivetran_deleted`. It should also provide other additional information as applicable such as data type, `primary_key`, and `DecimalParams`.
 
-#### Truncate
+#### TruncateRequest
 - This operation might be requested for a table that does not exist in the destination. In that case, it should NOT fail, simply ignore the request and return `success = true`.
-- `utc_delete_before` has millisecond precision.
+- `SoftTruncate`: This optional field can be configured to either regular `soft-truncate` mode by setting the `deleted_column` field or history `soft-truncate` mode by setting the `history_mode` field to TRUE. Both modes keep the rows in the destination and update relevant system columns to mark any matching rows as deleted. If optional `SoftTruncate` field is not configured, then perform a `hard-truncate` operation where matching rows are actually removed from the destination.
+- `utc_delete_before`: This timestamp field has millisecond precision and used to DELETE/UPDATE the rows in destination table as per the following:
+  - **Soft-Truncate:** Set `deleted_column` to TRUE where `_fivetran_synced` column value is less than `utc_delete_before`.
+  - **History Truncate:** Set `_fivetran_active` column value to FALSE, `_fivetran_end` column value to `utc_delete_before` value, where `_fivetran_synced` column value is less than `utc_delete_before` and `_fivetran_active` is TRUE.
+  - **Hard Truncate:** DELETE the record where `_fivetran_synced` column value is less than `utc_delete_before`
+
 
 #### WriteBatchRequest
 - `replace_files` is for the `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row always provides values for all columns. Populate the `_fivetran_synced` column in the destination with the values coming in from the CSV files.
