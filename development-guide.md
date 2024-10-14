@@ -127,7 +127,7 @@ This operation should report all columns in the destination table, including Fiv
 
 #### AlterTable
 - This operation should exercise change of primary key columns, addition of columns, change of data types, etc. 
-- However, this operation should not drop any columns even if the alter table request has a table with a different set of columns. Dropping of columns could lead to unexpected data loss for customers and is against Fivetran's general approach to data movement.
+- However, this operation should not drop any columns even if the AlterTable request has a table with a different set of columns. Dropping columns could lead to unexpected customer data loss and is against Fivetran's general approach to data movement.
 
 #### WriteBatchRequest
 - `replace_files` is for the `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row always provides values for all columns. Populate the `_fivetran_synced` column in the destination with the values coming in from the CSV files.
