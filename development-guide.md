@@ -80,14 +80,37 @@ The following are hard requirements to be able to deploy partner code to Fivetra
 - Do not log sensitive data. Ensure only necessary information is kept in logs, and never log any sensitive data. Such data may include credentials (passwords, tokens, keys, etc.), customer data, payment information, or PII.
 - Encrypt HTTP requests. Entities like URLs, URL parameters, and query parameters are always encrypted for logging, and customer approval is needed to decrypt and examine them.
 
+## Setup Form Guidelines
+- Keep the form clear and concise, only requesting essential information for successful connector setup.
+- Use clear and descriptive labels for each form field. Avoid technical jargon if possible.
+- Organize the fields in a logical order that reflects the setup process.
 
-## Connector guidelines
+### RPC Calls
+#### ConfigurationForm
+This operation retrieves all the setup form fields and tests information. You can provide various parameters for the fields to enhance the user experience, such as descriptions, optional fields, and more.
+
+#### Test
+The previous RPC call retrieves the tests that need to be executed during connection setup. This operation then invokes the test with the customer's credentials as parameters. Finally, it should return a success or failure indication for the test execution.
+
+### Supported setup form fields 
+- Text Field: A standard text input field for user text entry.
+- Dropdown: A dropdown selection menu that allows users to choose one option from the list provided by you.
+- Toggle Field: A toggle switch for binary options (e.g., on/off or yes/no).
+
+## Source Connector guidelines
 
 - Don't push anything other than source data to the destination. State data is saved to production database and returned in `UpdateRequest`.
 - Don't forget to handle new schemas/tables/columns per the information and user choices in `UpdateRequest#selection`.
 - Make sure you checkpoint at least once an hour. In general, the more frequently you do it, the better.
 
-## Destination guidelines
+### RPC Calls
+#### Schema
+This operation retrieves the customer's schemas, tables, and columns. It also includes an optional `selection_not_supported` field that indicates whether customers can select or deselect tables and columns within the Fivetran dashboard.
+
+#### Update
+This operation should retrieve data from the source. We send a request using the `UpdateRequest` message, which includes the customer's state, credentials, and schema information. The response, streaming through the `UpdateResponse` message, can contain data records and other supported operations.
+
+## Destination Connector guidelines
 
 - Do not push anything other than source data to the destination.
 
@@ -130,11 +153,17 @@ This operation should report all columns in the destination table, including Fiv
 - However, this operation should not drop any columns even if the `AlterTable` request has a table with a different set of columns. Dropping columns could lead to unexpected customer data loss and is against Fivetran's general approach to data movement.
 
 #### WriteBatchRequest
-- `replace_files` is for the `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row always provides values for all columns. Populate the `_fivetran_synced` column in the destination with the values coming in from the CSV files.
+This operation provides details about the batch files containing the records to be pushed to the destination. We provide the `WriteBatchRequest` parameter that contains all the information required for you to read the batch files. Here are some of the fields included in the request message:
 
-- `update_files` is for the `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `CsvFileParams`. Soft-deleted rows arrive in here as well. Update the `_fivetran_synced` column in the destination with the values coming in from the CSV files.
+- `replace_files` is for the `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row will always provide values for all columns. Set the `_fivetran_synced` column in the destination with the values coming in from the batch files.
+
+- `update_files` is for the `update` operation where modified columns have actual values whereas unmodified columns have the special value `unmodified_string` in `FileParams`. Soft-deleted rows will arrive in here as well. Update the `_fivetran_synced` column in the destination with the values coming in from the batch files.
 
 - `delete_files` is for the `hard delete` operation. Use primary key columns (or `_fivetran_id` system column for primary-keyless tables) to perform `DELETE FROM`.
+
+- `keys` is a map that provides a list of secret keys, one for each batch file, that can be used to decrypt them.
+
+- `file_params` provides information about the file type and any configurations applied to it, such as encryption or compression.
 
 Also, Fivetran deduplicates operations such that each primary key shows up only once in any of the operations.
 
