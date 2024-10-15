@@ -125,6 +125,10 @@ This operation should report all columns in the destination table, including Fiv
 - This operation might be requested for a table that does not exist in the destination. In that case, it should NOT fail, simply ignore the request and return `success = true`.
 - `utc_delete_before` has millisecond precision.
 
+#### AlterTable
+- This operation should be used for changing primary key columns, adding columns, and changing data types. 
+- However, this operation should not drop any columns even if the `AlterTable` request has a table with a different set of columns. Dropping columns could lead to unexpected customer data loss and is against Fivetran's general approach to data movement.
+
 #### WriteBatchRequest
 - `replace_files` is for the `upsert` operation where the rows should be inserted if they don't exist or updated if they do. Each row always provides values for all columns. Populate the `_fivetran_synced` column in the destination with the values coming in from the CSV files.
 
