@@ -126,7 +126,7 @@ This operation should report all columns in the destination table, including Fiv
 - `utc_delete_before` has millisecond precision.
 
 #### AlterTable
-- This operation should exercise change of primary key columns, addition of columns, change of data types, etc. 
+- This operation should exercise change of primary key columns, addition of columns and change of data types. 
 - However, this operation should not drop any columns even if the AlterTable request has a table with a different set of columns. Dropping columns could lead to unexpected customer data loss and is against Fivetran's general approach to data movement.
 
 #### WriteBatchRequest
