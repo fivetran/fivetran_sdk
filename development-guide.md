@@ -94,7 +94,7 @@ The [`ConfigurationForm` RPC call](#configurationform) retrieves the tests that 
 
 ### Supported setup form fields 
 - Text Field: A standard text input field for user text entry.
-- Dropdown: A dropdown selection menu that allows users to choose one option from the list provided by you.
+- Dropdown: A drop-down menu that allows users to choose one option from the list provided by you.
 - Toggle Field: A toggle switch for binary options (e.g., on/off or yes/no).
 
 ## Source Connector guidelines
