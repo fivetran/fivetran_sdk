@@ -90,7 +90,7 @@ The following are hard requirements to be able to deploy partner code to Fivetra
 This operation retrieves all the setup form fields and tests information. You can provide various parameters for the fields to enhance the user experience, such as descriptions, optional fields, and more.
 
 #### Test
-The previous RPC call retrieves the tests that need to be executed during connection setup. This operation then invokes the test with the customer's credentials as parameters. Finally, it should return a success or failure indication for the test execution.
+The [`ConfigurationForm` RPC call](#configurationform) retrieves the tests that need to be executed during connection setup. The `Test` call then invokes the test with the customer's credentials as parameters. As a result, it should return a success or failure indication for the test execution.
 
 ### Supported setup form fields 
 - Text Field: A standard text input field for user text entry.
