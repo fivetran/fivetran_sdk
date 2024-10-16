@@ -87,7 +87,7 @@ The following are hard requirements to be able to deploy partner code to Fivetra
 
 ### RPC Calls
 #### ConfigurationForm
-This operation retrieves all the setup form fields and tests information. You can provide various parameters for the fields to enhance the user experience, such as descriptions, optional fields, and more.
+The `ConfigurationForm` RPC call retrieves all the setup form fields and tests information. You can provide various parameters for the fields to enhance the user experience, such as descriptions, optional fields, and more.
 
 #### Test
 The [`ConfigurationForm` RPC call](#configurationform) retrieves the tests that need to be executed during connection setup. The `Test` call then invokes the test with the customer's credentials as parameters. As a result, it should return a success or failure indication for the test execution.
@@ -139,17 +139,17 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd).
 
 ### RPC Calls
 #### CreateTable
-This operation should fail if it is asked to create a table that already exists. However, it should not fail if the target schema is missing. The destination should create the missing schema.
+The `CreateTable` RPC call should fail if it is asked to create a table that already exists. However, it should not fail if the target schema is missing. The destination should create the missing schema.
 
 #### DescribeTable
-This operation should report all columns in the destination table, including Fivetran system columns such as `_fivetran_synced` and `_fivetran_deleted`. It should also provide other additional information as applicable such as data type, `primary_key`, and `DecimalParams`.
+The `DescribeTable` RPC call should report all columns in the destination table, including Fivetran system columns such as `_fivetran_synced` and `_fivetran_deleted`. It should also provide other additional information as applicable such as data type, `primary_key`, and `DecimalParams`.
 
 #### Truncate
-- This operation might be requested for a table that does not exist in the destination. In that case, it should NOT fail, simply ignore the request and return `success = true`.
+- The `Truncate` RPC call might be requested for a table that does not exist in the destination. In that case, it should NOT fail, simply ignore the request and return `success = true`.
 - `utc_delete_before` has millisecond precision.
 
 #### AlterTable
-- This operation should be used for changing primary key columns, adding columns, and changing data types. 
+- The `AlterTable` RPC call should be used for changing primary key columns, adding columns, and changing data types. 
 - However, this operation should not drop any columns even if the `AlterTable` request has a table with a different set of columns. Dropping columns could lead to unexpected customer data loss and is against Fivetran's general approach to data movement.
 
 #### WriteBatchRequest
