@@ -108,7 +108,7 @@ The [`ConfigurationForm` RPC call](#configurationform) retrieves the tests that 
 The `Schema` RPC call retrieves the user's schemas, tables, and columns. It also includes an optional `selection_not_supported` field that indicates whether the user can select or deselect tables and columns within the Fivetran dashboard.
 
 #### Update
-This operation should retrieve data from the source. We send a request using the `UpdateRequest` message, which includes the customer's state, credentials, and schema information. The response, streaming through the `UpdateResponse` message, can contain data records and other supported operations.
+The `Update` RPC call should retrieve data from the source. We send a request using the `UpdateRequest` message, which includes the user's connection state, credentials, and schema information. The response, streaming through the `UpdateResponse` message, can contain data records and other supported operations.
 
 ## Destination Connector guidelines
 
