@@ -13,7 +13,7 @@ Fivetran SDK uses [gRPC](https://grpc.io/) to talk to partner code. The partner 
 At the moment, partner code should be developed in a language that can generate a statically linked binary executable.
 
 ### Command line Arguments
-The executable needs to do following:
+The executable needs to do the following:
 * Accept a `--port` argument that takes an integer as a port number to listen to.
 * Listen on both IPV4 (i.e. 0.0.0.0) and IPV6 (i.e ::0), but if only one is possible, it should listen on IPV4.
 
@@ -93,8 +93,8 @@ The `ConfigurationForm` RPC call retrieves all the setup form fields and tests i
 The [`ConfigurationForm` RPC call](#configurationform) retrieves the tests that need to be executed during connection setup. The `Test` call then invokes the test with the customer's credentials as parameters. As a result, it should return a success or failure indication for the test execution.
 
 ### Supported setup form fields 
-- Text Field: A standard text input field for user text entry. You can provide a `title` displayed above the field. You can indicate whether the field is `required`, and you may also include an optional `description` displayed below the field to help explain what should be completed by the user.
-- Dropdown: A drop-down menu that allows users to choose one option from the list provided by you.
+- Text Field: A standard text input field for user text entry. You can provide a `title` displayed above the field. You can indicate whether the field is `required`, and you may also include an optional `description` displayed below the field to help explain what the user should complete.
+- Dropdown: A drop-down menu that allows users to choose one option from the list you provided.
 - Toggle Field: A toggle switch for binary options (e.g., on/off or yes/no).
 
 ## Source Connector guidelines
