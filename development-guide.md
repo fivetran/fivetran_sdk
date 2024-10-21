@@ -93,7 +93,7 @@ The `ConfigurationForm` RPC call retrieves all the setup form fields and tests i
 The [`ConfigurationForm` RPC call](#configurationform) retrieves the tests that need to be executed during connection setup. The `Test` call then invokes the test with the customer's credentials as parameters. As a result, it should return a success or failure indication for the test execution.
 
 ### Supported setup form fields 
-g- Text Field: A standard text input field for user text entry. You can provide a `title` displayed above the field. You can indicate whether the field is `required`, and you may also include an optional `description` displayed below the field to help explain what should be completed by the user.
+- Text Field: A standard text input field for user text entry. You can provide a `title` displayed above the field. You can indicate whether the field is `required`, and you may also include an optional `description` displayed below the field to help explain what should be completed by the user.
 - Dropdown: A drop-down menu that allows users to choose one option from the list provided by you.
 - Toggle Field: A toggle switch for binary options (e.g., on/off or yes/no).
 
