@@ -1,8 +1,8 @@
 syntax = "proto3";
 option optimize_for = SPEED;
 option java_multiple_files = true;
-option go_package = "fivetran.com/fivetran_sdk";
-package fivetran_sdk;
+option go_package = "fivetran.com/fivetran_sdk_r2";
+package fivetran_sdk.r2;
 
 import "google/protobuf/timestamp.proto";
 
@@ -25,6 +25,8 @@ message FormField {
     DropdownField dropdown_field = 6;
     ToggleField toggle_field = 7;
   }
+  optional string default_value = 8;
+  optional string placeholder = 9;
 }
 
 message DropdownField {
@@ -53,7 +55,6 @@ message TestResponse {
   oneof response {
     bool success = 1;
     string failure = 2;
-    // potential future warning
   }
 }
 
@@ -86,6 +87,14 @@ enum DataType {
   XML = 12;
   STRING = 13;
   JSON = 14;
+  NAIVE_TIME = 15;
+}
+
+message DataTypeParams {
+  oneof params {
+    DecimalParams decimal = 1;
+    int32 string_byte_length = 2;
+  }
 }
 
 message DecimalParams {
@@ -93,7 +102,7 @@ message DecimalParams {
   uint32 scale = 2;
 }
 
-enum OpType {
+enum RecordType {
   UPSERT = 0;
   UPDATE = 1;
   DELETE = 2;
@@ -117,6 +126,7 @@ message ValueType {
     string string = 13;
     string json = 14;
     string xml = 15;
+    google.protobuf.Timestamp naive_time = 16;
   }
 }
 
@@ -129,5 +139,5 @@ message Column {
   string name = 1;
   DataType type = 2;
   bool primary_key = 3;
-  optional DecimalParams decimal = 4;
+  optional DataTypeParams params = 4;
 }
