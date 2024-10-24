@@ -54,8 +54,8 @@ All Fivetran connectors have public documentation. For partner-built connectors,
 * Overview Page [example](https://fivetran.com/docs/databases/cosmos)
 
 To help you produce the documentation, we provide helpful resources:
-* [Source connector templates](source-connector-templates/)
-* [Destination connector templates](destination-connector-templates/)
+* [Source connector templates](doc-templates/source-connector-templates/)
+* [Destination connector templates](doc-templates/destination-connector-templates/)
 * [Fivetran's documentation style guide](https://github.com/fivetran/fivetran_sdk/tree/main/style-guide/style-guide.md)
 * [Fivetran-approved glossary of common terms](https://github.com/fivetran/fivetran_sdk/tree/main/style-guide/common-terms-glossary.md)
 
