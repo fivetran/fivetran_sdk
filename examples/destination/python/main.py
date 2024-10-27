@@ -11,7 +11,7 @@ from sdk_pb2 import destination_sdk_pb2_grpc
 
 class DestinationImpl(destination_sdk_pb2_grpc.DestinationServicer):
     def ConfigurationForm(self, request, context):
-
+        print_log("INFO", "Fetching Configuraiton form")
         host = common_pb2.FormField(name="host", label="Host", required=True,
                                      text_field=common_pb2.TextField.PlainText)
         password = common_pb2.FormField(name="password", label="Password", required=True,
@@ -35,7 +35,7 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationServicer):
 
     def Test(self, request, context):
         test_name = request.name
-        print("test name: " + test_name)
+        print_log("INFO", "test name: " + test_name)
         return common_pb2.TestResponse(success=True)
 
     def CreateTable(self, request, context):
@@ -60,13 +60,13 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationServicer):
         for delete_file in request.delete_files:
             print("replace files: " + str(delete_file))
 
-        print("Data loading started for table " + request.table.name)
+        print_log("INFO", "Data loading started for table " + request.table.name)
         for key, value in request.keys.items():
             print("----------------------------------------------------------------------------")
             print("Decrypting and printing file :" + str(key))
             print("----------------------------------------------------------------------------")
             read_csv.decrypt_file(key, value)
-        print("\nData loading completed for table " + request.table.name + "\n")
+        print_log("INFO", "\nData loading completed for table " + request.table.name + "\n")
 
         res: destination_sdk_pb2.WriteBatchResponse = destination_sdk_pb2.WriteBatchResponse(success=True)
         return res
@@ -77,6 +77,8 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationServicer):
         table: common_pb2.Table = common_pb2.Table(name=request.table_name, columns=[column1, column2])
         return destination_sdk_pb2.DescribeTableResponse(not_found=False, table=table)
 
+def print_log(level, message):
+    print(f'{{"level":"{level}", "message": "{message}", "message-origin": "sdk_destination"}}')
 
 if __name__ == '__main__':
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
