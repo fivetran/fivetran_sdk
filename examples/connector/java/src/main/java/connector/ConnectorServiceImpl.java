@@ -56,7 +56,6 @@ public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
 
         // Name of the test to be run
         String testName = request.getName();
-        System.out.println("test name: " + testName);
         String message = String.format("test name: %s", testName);
         print(INFO, message);
 
@@ -197,10 +196,6 @@ public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
     }
 
     private void print(String level, String message){
-        System.out.printf(String.format("{\n" +
-                "                    \"level\": \"%s\",\n" +
-                "                    \"message\": \"%s\",\n" +
-                "                    \"message-origin\": \"sdk_connector\"\n" +
-                "                }",level, message));
+        System.out.println(String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_connector\"}", level, message));
     }
 }
