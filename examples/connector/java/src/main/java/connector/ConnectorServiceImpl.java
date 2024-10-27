@@ -197,12 +197,10 @@ public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
     }
 
     private void print(String level, String message){
-        System.out.printf("""
-                {
-                    "level": "%s",
-                    "message": "%s",
-                    "message-origin": "sdk_connector"
-                }
-                %n""", level, message);
+        System.out.printf(String.format("{\n" +
+                "                    \"level\": \"%s\",\n" +
+                "                    \"message\": \"%s\",\n" +
+                "                    \"message-origin\": \"sdk_connector\"\n" +
+                "                }",level, message));
     }
 }
