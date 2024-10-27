@@ -18,6 +18,7 @@ const connectorSdkProto = protoDescriptor.fivetran_sdk;
 const server = new grpc.Server();
 
 const configurationForm = (call, callback) => {
+    logMessage("INFO", "Fetching configuration form")
     callback(null, {
       schema_selection_supported: true,
       table_selection_supported: true,
@@ -39,12 +40,13 @@ const configurationForm = (call, callback) => {
   const test = (call, callback) => {
     const configuration = call.request.configuration;
     const testName = call.request.name;
-    console.log(`Test name: ${testName}`);
+    logMessage("INFO", `Test name: ${testName}`)
     callback(null, { success: true });
   };
 
   // Implement the Schema RPC method
   const schema = (call, callback) => {
+    logMessage("INFO", "Fetching the schema from the implemented method")
     const tableList = {
       tables: [
         {
@@ -77,15 +79,6 @@ const configurationForm = (call, callback) => {
       call.write(response);
     };
   
-    const sendLogEntry = (message) => {
-      sendResponse({
-        log_entry: {
-          level: "INFO",
-          message: message
-        }
-      });
-    };
-  
     const sendOperation = (operation) => {
       sendResponse({
         operation: operation
@@ -94,7 +87,7 @@ const configurationForm = (call, callback) => {
   
     try {
       // Send a log message
-      sendLogEntry("Sync STARTING");
+      logMessage("INFO", "Sync STARTING");
 
       // Send UPSERT records
       for (let i = 0; i < 3; i++) {
@@ -145,7 +138,7 @@ const configurationForm = (call, callback) => {
       });
   
       // Send a log message
-      sendLogEntry("Sync DONE");
+      logMessage("SEVERE", "Sample severe message: Sync done")
   
     } catch (error) {
       callback(error);
@@ -154,6 +147,10 @@ const configurationForm = (call, callback) => {
     // End the streaming RPC call
     call.end();
   };
+
+  function logMessage(level, message) {
+      console.log(`{"level":"${level}", "message": "${message}", "message-origin": "sdk_connector"}`);
+  }
 
 
   server.addService(connectorSdkProto.Connector.service, {configurationForm, test, schema, update})
