@@ -13,6 +13,10 @@ import (
 	"google.golang.org/grpc"
 )
 
+const INFO = "INFO"
+const WARNING = "WARNING"
+const SEVERE = "SEVERE"
+
 var port = flag.Int("port", 50051, "The server port")
 
 type MyState struct {
@@ -31,7 +35,7 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 	json.Unmarshal([]byte(state_json), &state)
 
 	message := fmt.Sprintf("config: %s, selection: %s, state_json: %s, mystate: %s", config, selection, state_json, state)
-	LogMessage("INFO", message)
+	LogMessage(INFO, message)
 
 	// -- Send a log message
 	stream.Send(&pb.UpdateResponse{
@@ -67,7 +71,7 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 		state.Cursor++
 	}
 
-	LogMessage("INFO", "Completed sending upsert records")
+	LogMessage(INFO, "Completed sending upsert records")
 
 	// -- Send UPDATE record
 	stream.Send(&pb.UpdateResponse{
@@ -89,7 +93,7 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 	})
 	state.Cursor++
 
-	LogMessage("INFO", "Completed sending update records")
+	LogMessage(INFO, "Completed sending update records")
 
 	// -- Send DELETE record
 	stream.Send(&pb.UpdateResponse{
@@ -110,7 +114,7 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 	})
 	state.Cursor++
 
-	LogMessage("INFO", "Completed sending delete records")
+	LogMessage(WARNING, "Sample warning message: Completed sending delete records")
 
 	// Serialize state from struct to JSON string
 	new_state_json, _ := json.Marshal(state)
@@ -140,7 +144,7 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 		},
 	})
 
-    LogMessage("SEVERE", "Sample severe message: Update call completed")
+    LogMessage(SEVERE, "Sample severe message: Update call completed")
 	// End the RPC call
 	return nil
 }

@@ -8,10 +8,13 @@ from sdk_pb2 import connector_sdk_pb2_grpc
 from sdk_pb2 import common_pb2
 from sdk_pb2 import connector_sdk_pb2
 
+INFO = "INFO"
+WARNING = "WARNING"
+SEVERE = "SEVERE"
 
 class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
     def ConfigurationForm(self, request, context):
-        print_log("INFO", "Fetching configuration form")
+        print_log(INFO, "Fetching configuration form")
         form_fields = common_pb2.ConfigurationFormResponse(schema_selection_supported=True,
                                                            table_selection_supported=True)
         form_fields.fields.add(name="apiKey", label="API Key", required=True, text_field=common_pb2.TextField.PlainText)
@@ -37,7 +40,7 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
         # Name of the test to be run
         test_name = request.name
 
-        print_log("INFO", "Test Name: " + str(test_name))
+        print_log(INFO, "Test Name: " + str(test_name))
         
         return common_pb2.TestResponse(success=True)
 
@@ -116,7 +119,7 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
         yield connector_sdk_pb2.UpdateResponse(operation=operation)
         state["cursor"] += 1
 
-        print_log("WARNING", "Completed sending update records")
+        print_log(WARNING, "Completed sending update records")
 
         # -- Send DELETE record
         operation = connector_sdk_pb2.Operation()
@@ -143,7 +146,7 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
         log.message = "Sync Done"
         yield connector_sdk_pb2.UpdateResponse(log_entry=log)
 
-        print_log("SEVERE", "Sending severe log: Completed Update method")
+        print_log(SEVERE, "Sending severe log: Completed Update method")
 
 
 def print_log(level, message):

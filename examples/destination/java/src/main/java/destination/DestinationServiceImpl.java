@@ -7,9 +7,14 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase {
+
+    private final String INFO = "INFO";
+    private final String WARNING = "WARNING";
+    private final String SEVERE = "SEVERE";
+
     @Override
     public void configurationForm(ConfigurationFormRequest request, StreamObserver<ConfigurationFormResponse> responseObserver) {
-        print("INFO", "Fetching configuration form");
+        logMessage(INFO, "Fetching configuration form");
         responseObserver.onNext(
                 ConfigurationFormResponse.newBuilder()
                         .setSchemaSelectionSupported(true)
@@ -47,7 +52,7 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
         Map<String, String> configuration = request.getConfigurationMap();
         String testName = request.getName();
         String message = String.format("Test Name: %s", testName);
-        print("INFO", message);
+        logMessage(INFO, message);
 
         responseObserver.onNext(TestResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
@@ -68,7 +73,7 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
                         ).build()).build();
 
         responseObserver.onNext(response);
-        print("SEVERE", "Sample Severe log: Completed describe Table method");
+        logMessage(SEVERE, "Sample Severe log: Completed describe Table method");
         responseObserver.onCompleted();
     }
 
@@ -78,7 +83,7 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
 
         String message = "[CreateTable]: "
                 + request.getSchemaName() + " | " + request.getTable().getName() + " | " + request.getTable().getColumnsList();
-        print("INFO", message);
+        logMessage(INFO, message);
         responseObserver.onNext(CreateTableResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
@@ -89,7 +94,7 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
 
         String message = "[AlterTable]: " +
                 request.getSchemaName() + " | " + request.getTable().getName() + " | " + request.getTable().getColumnsList();
-        print("INFO", message);
+        logMessage(INFO, message);
         responseObserver.onNext(AlterTableResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
@@ -104,7 +109,8 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
 
     @Override
     public void writeBatch(WriteBatchRequest request, StreamObserver<WriteBatchResponse> responseObserver) {
-        System.out.println("[WriteBatch]: " + request.getSchemaName() + " | " + request.getTable().getName());
+        String message = "[WriteBatch]: " + request.getSchemaName() + " | " + request.getTable().getName();
+        logMessage(WARNING, String.format("Sample severe message: %s", message));
         for (String file : request.getReplaceFilesList()) {
             System.out.println("Replace files: " + file);
         }
@@ -118,7 +124,7 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
         responseObserver.onCompleted();
     }
 
-    private void print(String level, String message){
+    private void logMessage(String level, String message){
         System.out.println(String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_destination\"}", level, message));
     }
 }

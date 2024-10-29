@@ -11,6 +11,10 @@ const options = {
 };
 var packageDefinitionConnector = protoLoader.loadSync(PROTO_PATH_CONNECTOR, options);
 
+const INFO = "INFO";
+const WARNING = "WARNING";
+const SEVERE = "SEVERE";
+
 const protoDescriptor = grpc.loadPackageDefinition(packageDefinitionConnector);
 
 const connectorSdkProto = protoDescriptor.fivetran_sdk;
@@ -18,7 +22,7 @@ const connectorSdkProto = protoDescriptor.fivetran_sdk;
 const server = new grpc.Server();
 
 const configurationForm = (call, callback) => {
-    logMessage("INFO", "Fetching configuration form")
+    logMessage(INFO, "Fetching configuration form")
     callback(null, {
       schema_selection_supported: true,
       table_selection_supported: true,
@@ -40,13 +44,13 @@ const configurationForm = (call, callback) => {
   const test = (call, callback) => {
     const configuration = call.request.configuration;
     const testName = call.request.name;
-    logMessage("INFO", `Test name: ${testName}`)
+    logMessage(INFO, `Test name: ${testName}`)
     callback(null, { success: true });
   };
 
   // Implement the Schema RPC method
   const schema = (call, callback) => {
-    logMessage("INFO", "Fetching the schema from the implemented method")
+    logMessage(INFO, "Fetching the schema from the implemented method")
     const tableList = {
       tables: [
         {
@@ -87,7 +91,7 @@ const configurationForm = (call, callback) => {
   
     try {
       // Send a log message
-      logMessage("INFO", "Sync STARTING");
+      logMessage(WARNING, "Sample Warning message: Sync STARTING");
 
       // Send UPSERT records
       for (let i = 0; i < 3; i++) {
@@ -138,7 +142,7 @@ const configurationForm = (call, callback) => {
       });
   
       // Send a log message
-      logMessage("SEVERE", "Sample severe message: Sync done")
+      logMessage(SEVERE, "Sample severe message: Sync done")
   
     } catch (error) {
       callback(error);
