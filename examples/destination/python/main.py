@@ -15,7 +15,7 @@ SEVERE = "SEVERE"
 
 class DestinationImpl(destination_sdk_pb2_grpc.DestinationServicer):
     def ConfigurationForm(self, request, context):
-        print_log(INFO, "Fetching Configuraiton form")
+        log_message(INFO, "Fetching Configuraiton form")
         host = common_pb2.FormField(name="host", label="Host", required=True,
                                      text_field=common_pb2.TextField.PlainText)
         password = common_pb2.FormField(name="password", label="Password", required=True,
@@ -39,7 +39,7 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationServicer):
 
     def Test(self, request, context):
         test_name = request.name
-        print_log(INFO, "test name: " + test_name)
+        log_message(INFO, "test name: " + test_name)
         return common_pb2.TestResponse(success=True)
 
     def CreateTable(self, request, context):
@@ -64,13 +64,13 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationServicer):
         for delete_file in request.delete_files:
             print("replace files: " + str(delete_file))
 
-        print_log(WARNING, "Data loading started for table " + request.table.name)
+        log_message(WARNING, "Data loading started for table " + request.table.name)
         for key, value in request.keys.items():
             print("----------------------------------------------------------------------------")
             print("Decrypting and printing file :" + str(key))
             print("----------------------------------------------------------------------------")
             read_csv.decrypt_file(key, value)
-        print_log(INFO, "\nData loading completed for table " + request.table.name + "\n")
+        log_message(INFO, "\nData loading completed for table " + request.table.name + "\n")
 
         res: destination_sdk_pb2.WriteBatchResponse = destination_sdk_pb2.WriteBatchResponse(success=True)
         return res
@@ -79,10 +79,10 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationServicer):
         column1 = common_pb2.Column(name="a1", type=common_pb2.DataType.UNSPECIFIED, primary_key=True)
         column2 = common_pb2.Column(name="a2", type=common_pb2.DataType.DOUBLE)
         table: common_pb2.Table = common_pb2.Table(name=request.table_name, columns=[column1, column2])
-        print_log(SEVERE, "Sample severe message: Completed fetching table info")
+        log_message(SEVERE, "Sample severe message: Completed fetching table info")
         return destination_sdk_pb2.DescribeTableResponse(not_found=False, table=table)
 
-def print_log(level, message):
+def log_message(level, message):
     print(f'{{"level":"{level}", "message": "{message}", "message-origin": "sdk_destination"}}')
 
 if __name__ == '__main__':
