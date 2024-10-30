@@ -7,5 +7,5 @@ Run all commands from the golang folder root
 > scripts/copy_protos.sh
 > scripts/compile_protos.sh
 > scripts/build.sh
-> main
+> ./main
 ```

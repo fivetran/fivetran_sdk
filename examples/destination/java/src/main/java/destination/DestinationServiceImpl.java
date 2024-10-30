@@ -7,8 +7,14 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase {
+
+    private final String INFO = "INFO";
+    private final String WARNING = "WARNING";
+    private final String SEVERE = "SEVERE";
+
     @Override
     public void configurationForm(ConfigurationFormRequest request, StreamObserver<ConfigurationFormResponse> responseObserver) {
+        logMessage(INFO, "Fetching configuration form");
         responseObserver.onNext(
                 ConfigurationFormResponse.newBuilder()
                         .setSchemaSelectionSupported(true)
@@ -45,7 +51,8 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
     public void test(TestRequest request, StreamObserver<TestResponse> responseObserver) {
         Map<String, String> configuration = request.getConfigurationMap();
         String testName = request.getName();
-        System.out.println("test name: " + testName);
+        String message = String.format("Test Name: %s", testName);
+        logMessage(INFO, message);
 
         responseObserver.onNext(TestResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
@@ -66,6 +73,7 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
                         ).build()).build();
 
         responseObserver.onNext(response);
+        logMessage(SEVERE, "Sample Severe log: Completed describe Table method");
         responseObserver.onCompleted();
     }
 
@@ -73,8 +81,9 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
     public void createTable(CreateTableRequest request, StreamObserver<CreateTableResponse> responseObserver) {
         Map<String, String> configuration = request.getConfigurationMap();
 
-        System.out.println("[CreateTable]: "
-                + request.getSchemaName() + " | " + request.getTable().getName() + " | " + request.getTable().getColumnsList());
+        String message = "[CreateTable]: "
+                + request.getSchemaName() + " | " + request.getTable().getName() + " | " + request.getTable().getColumnsList();
+        logMessage(INFO, message);
         responseObserver.onNext(CreateTableResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
@@ -83,8 +92,9 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
     public void alterTable(AlterTableRequest request, StreamObserver<AlterTableResponse> responseObserver) {
         Map<String, String> configuration = request.getConfigurationMap();
 
-        System.out.println("[AlterTable]: " +
-                request.getSchemaName() + " | " + request.getTable().getName() + " | " + request.getTable().getColumnsList());
+        String message = "[AlterTable]: " +
+                request.getSchemaName() + " | " + request.getTable().getName() + " | " + request.getTable().getColumnsList();
+        logMessage(INFO, message);
         responseObserver.onNext(AlterTableResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
@@ -99,7 +109,8 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
 
     @Override
     public void writeBatch(WriteBatchRequest request, StreamObserver<WriteBatchResponse> responseObserver) {
-        System.out.println("[WriteBatch]: " + request.getSchemaName() + " | " + request.getTable().getName());
+        String message = "[WriteBatch]: " + request.getSchemaName() + " | " + request.getTable().getName();
+        logMessage(WARNING, String.format("Sample severe message: %s", message));
         for (String file : request.getReplaceFilesList()) {
             System.out.println("Replace files: " + file);
         }
@@ -111,5 +122,9 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
         }
         responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
+    }
+
+    private void logMessage(String level, String message){
+        System.out.println(String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_destination\"}", level, message));
     }
 }
