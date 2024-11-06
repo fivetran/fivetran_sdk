@@ -11,6 +11,8 @@ import (
 
 	pb "fivetran.com/fivetran_sdk/proto"
 	"google.golang.org/grpc"
+	_ "google.golang.org/grpc/encoding/gzip"
+
 )
 
 const INFO = "INFO"
