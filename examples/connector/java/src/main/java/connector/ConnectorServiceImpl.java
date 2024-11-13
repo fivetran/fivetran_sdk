@@ -9,8 +9,12 @@ import io.grpc.stub.StreamObserver;
 import java.util.*;
 
 public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
+    private final String INFO = "INFO";
+    private final String WARNING = "WARNING";
+    private final String SEVERE = "SEVERE";
     @Override
     public void configurationForm(ConfigurationFormRequest request, StreamObserver<ConfigurationFormResponse> responseObserver) {
+        logMessage(INFO, "Started fetching configuration form");
         responseObserver.onNext(
                 ConfigurationFormResponse.newBuilder()
                         .setSchemaSelectionSupported(true)
@@ -41,16 +45,19 @@ public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
                                 ConfigurationTest.newBuilder().setName("select").setLabel("Tests selection").build()))
                         .build());
 
+        logMessage(INFO, "Fetching configuration form completed");
         responseObserver.onCompleted();
     }
 
     @Override
     public void test(TestRequest request, StreamObserver<TestResponse> responseObserver) {
+
         Map<String, String> configuration = request.getConfigurationMap();
 
         // Name of the test to be run
         String testName = request.getName();
-        System.out.println("test name: " + testName);
+        String message = String.format("test name: %s", testName);
+        logMessage(INFO, message);
 
         responseObserver.onNext(TestResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
@@ -58,6 +65,8 @@ public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
 
     @Override
     public void schema(SchemaRequest request, StreamObserver<SchemaResponse> responseObserver) {
+
+        logMessage(WARNING, "Sample warning message while fetching schema");
         Map<String, String> configuration = request.getConfigurationMap();
 
         TableList tableList = TableList.newBuilder()
@@ -177,10 +186,16 @@ public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
                             .build())
                     .build());
         } catch (JsonProcessingException e) {
+            String message = e.getMessage();
+            logMessage(SEVERE, message);
             responseObserver.onError(e);
         }
 
         // End the streaming RPC call
         responseObserver.onCompleted();
+    }
+
+    private void logMessage(String level, String message) {
+        System.out.println(String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_connector\"}", level, message));
     }
 }

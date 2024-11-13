@@ -11,7 +11,13 @@ import (
 
 	pb "fivetran.com/fivetran_sdk/proto"
 	"google.golang.org/grpc"
+	_ "google.golang.org/grpc/encoding/gzip"
+
 )
+
+const INFO = "INFO"
+const WARNING = "WARNING"
+const SEVERE = "SEVERE"
 
 var port = flag.Int("port", 50051, "The server port")
 
@@ -30,7 +36,8 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 	state := MyState{}
 	json.Unmarshal([]byte(state_json), &state)
 
-	log.Println("config: ", config, "selection: ", selection, "state_json: ", state_json, "mystate: ", state)
+	message := fmt.Sprintf("config: %s, selection: %s, state_json: %s, mystate: %s", config, selection, state_json, state)
+	LogMessage(INFO, message)
 
 	// -- Send a log message
 	stream.Send(&pb.UpdateResponse{
@@ -66,6 +73,8 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 		state.Cursor++
 	}
 
+	LogMessage(INFO, "Completed sending upsert records")
+
 	// -- Send UPDATE record
 	stream.Send(&pb.UpdateResponse{
 		Response: &pb.UpdateResponse_Operation{
@@ -86,6 +95,8 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 	})
 	state.Cursor++
 
+	LogMessage(INFO, "Completed sending update records")
+
 	// -- Send DELETE record
 	stream.Send(&pb.UpdateResponse{
 		Response: &pb.UpdateResponse_Operation{
@@ -104,6 +115,8 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 		},
 	})
 	state.Cursor++
+
+	LogMessage(WARNING, "Sample warning message: Completed sending delete records")
 
 	// Serialize state from struct to JSON string
 	new_state_json, _ := json.Marshal(state)
@@ -133,6 +146,7 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 		},
 	})
 
+    LogMessage(SEVERE, "Sample severe message: Update call completed")
 	// End the RPC call
 	return nil
 }
@@ -256,6 +270,16 @@ func (s *server) Test(ctx context.Context, in *pb.TestRequest) (*pb.TestResponse
 			Success: true,
 		},
 	}, nil
+}
+
+func LogMessage(level string, message string) {
+    log := map[string]interface{}{
+        "level":         level,
+        "message":       message,
+        "message-origin": "sdk_connector",
+    }
+    logJSON, _ := json.Marshal(log)
+    fmt.Println(string(logJSON))
 }
 
 func main() {

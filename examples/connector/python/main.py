@@ -8,9 +8,13 @@ from sdk_pb2 import connector_sdk_pb2_grpc
 from sdk_pb2 import common_pb2
 from sdk_pb2 import connector_sdk_pb2
 
+INFO = "INFO"
+WARNING = "WARNING"
+SEVERE = "SEVERE"
 
 class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
     def ConfigurationForm(self, request, context):
+        log_message(INFO, "Fetching configuration form")
         form_fields = common_pb2.ConfigurationFormResponse(schema_selection_supported=True,
                                                            table_selection_supported=True)
         form_fields.fields.add(name="apiKey", label="API Key", required=True, text_field=common_pb2.TextField.PlainText)
@@ -35,8 +39,9 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
         configuration = request.configuration
         # Name of the test to be run
         test_name = request.name
-        print("Configuration: ", configuration)
-        print("Test name: ", test_name)
+
+        log_message(INFO, "Test Name: " + str(test_name))
+        
         return common_pb2.TestResponse(success=True)
 
     def Schema(self, request, context):
@@ -114,6 +119,8 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
         yield connector_sdk_pb2.UpdateResponse(operation=operation)
         state["cursor"] += 1
 
+        log_message(WARNING, "Completed sending update records")
+
         # -- Send DELETE record
         operation = connector_sdk_pb2.Operation()
         val1 = common_pb2.ValueType()
@@ -138,6 +145,12 @@ class ConnectorService(connector_sdk_pb2_grpc.ConnectorServicer):
         log.level = connector_sdk_pb2.LogLevel.INFO
         log.message = "Sync Done"
         yield connector_sdk_pb2.UpdateResponse(log_entry=log)
+
+        log_message(SEVERE, "Sending severe log: Completed Update method")
+
+
+def log_message(level, message):
+    print(f'{{"level":"{level}", "message": "{message}", "message-origin": "sdk_connector"}}')
 
 
 def start_server():

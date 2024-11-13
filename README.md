@@ -49,11 +49,17 @@ Once we get customers using your connector or destination, they can reach out to
 Our response times are articulated in our [Fivetran Support Policy](https://support.fivetran.com/hc/en-us/articles/5893119459223-Fivetran-Support-Policy) documentation. Bear in mind customers may expect your support response times to be similar. We recommend linking to your own SLAs/Support policies from the documentation you create for Fivetran. 
 
 ### How do we create product documentation?
-All Fivetran connectors have public documentation. For the SDK, we will need you to produce the following:
+All Fivetran connectors have public documentation. For partner-built connectors, we will need you to produce the following:
 * Setup Guide [example](https://fivetran.com/docs/databases/cosmos/setup-guide)
 * Overview Page [example](https://fivetran.com/docs/databases/cosmos)
 
-We’ll consume these docs and our tech-writing team will edit for grammar and style, sending back to your team (TBD on automation) to keep in sync. 
+To help you produce the documentation, we provide helpful resources:
+* [Source connector templates](doc-templates/source-connector-templates/)
+* [Destination connector templates](doc-templates/destination-connector-templates/)
+* [Fivetran's documentation style guide](https://github.com/fivetran/fivetran_sdk/tree/main/style-guide/style-guide.md)
+* [Fivetran-approved glossary of common terms](https://github.com/fivetran/fivetran_sdk/tree/main/style-guide/common-terms-glossary.md)
+
+We’ll review these docs and our Tech Writing team will edit for grammar and style, sending back to your team (TBD on automation) to keep in sync. The documentation is to be hosted in [Fivetran's documentation site](https://fivetran.com/docs/getting-started).
 
 ### How do we go-to-market?
 Fivetran will market through multiple methods:
