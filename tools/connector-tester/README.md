@@ -7,7 +7,16 @@
 ## How To Run
 
 
-1. Pull the latest docker image from [public-docker-us/sdktesters/sdk-tester](https://console.cloud.google.com/artifacts/browse/build-286712/us/public-docker-us/sdktesters%2Fsdk-tester) Google Artifact Registry
+1. Pull the latest docker image from [public-docker-us/sdktesters/sdk-tester](https://console.cloud.google.com/artifacts/browse/build-286712/us/public-docker-us/sdktesters%2Fsdk-tester) Google Artifact Registry, use the following commands:
+
+    - Authenticate Docker to Google Artifact Registry: Run the following command to allow Docker to use your Google credentials
+    ```
+        gcloud auth configure-docker us-docker.pkg.dev
+    ```
+    - Pull the Image:
+    ```
+        docker pull us-docker.pkg.dev/build-286712/public-docker-us/sdktesters/sdk-tester   
+    ```
 
 2. Run a container using the image with the following command. Make sure to map a local directory for storing files that the tool generates by replacing `<local-data-folder>` in the command, and replace <version> with the version of the image you pulled.
 
