@@ -5,7 +5,7 @@
 - gRPC server is running for the particular example (see [example readme's](/examples/destination/))
 
 ## How To Run
-1. Pull the latest docker image from [fivetrandocker/sdk-destination-tester](https://hub.docker.com/repository/docker/fivetrandocker/sdk-destination-tester/general) on Docker Hub.
+1. Pull the latest docker image from [public-docker-us/sdktesters/sdk-tester](https://console.cloud.google.com/artifacts/browse/build-286712/us/public-docker-us/sdktesters%2Fsdk-tester) Google Artifact Registry
 
 2. Run a container using the image with the following command. Make sure to map a local directory for the tool by replacing `<local-data-folder>` placeholders in the command, and replace `<version>` with the version of the image you pulled.
 

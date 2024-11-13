@@ -6,7 +6,7 @@
 
 ## How To Run
 
-1. Pull the latest docker image from [fivetrandocker/sdk-connector-tester](https://hub.docker.com/repository/docker/fivetrandocker/sdk-connector-tester/general) on Docker Hub
+1. Pull the latest docker image from [public-docker-us/sdktesters/sdk-tester](https://console.cloud.google.com/artifacts/browse/build-286712/us/public-docker-us/sdktesters%2Fsdk-tester) Google Artifact Registry
 
 2. Run a container using the image with the following command. Make sure to map a local directory for storing files that the tool generates by replacing `<local-data-folder>` in the command, and replace <version> with the version of the image you pulled.
 
