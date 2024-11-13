@@ -36,7 +36,7 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 	state := MyState{}
 	json.Unmarshal([]byte(state_json), &state)
 
-	message := fmt.Sprintln("config: ", config, "selection: ", selection, "state_json: ", state_json, "mystate: ", state)
+	message := fmt.Sprintf("config: %s, selection: %s, state_json: %s, mystate: %s", config, selection, state_json, state)
 	LogMessage(INFO, message)
 
 	// -- Send a log message
