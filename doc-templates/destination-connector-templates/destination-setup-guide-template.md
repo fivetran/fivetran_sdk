@@ -20,10 +20,10 @@ To connect a {Destination} to Fivetran, you need the following:
 {List what the user needs to know or do before they get started}
 
 - A Fivetran role with the [Create Destinations or Manage Destinations](/docs/using-fivetran/fivetran-dashboard/account-settings/role-based-access-control#rbacpermissions) permissions
-- Administrator account {this is an example}
+- Administrator account {this is an example}*
 - Version 17 of Acme installed {this is an example}
     
-    > NOTE: This section should include the minimum level account tier that is required by the customer to setup a destination 
+    > \*NOTE: If you have an account tier system, this section should specify the minimum account tier required for your customers to set up a destination.
 
 ---
 
