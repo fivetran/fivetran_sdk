@@ -50,6 +50,7 @@ The executable needs to do the following:
 - Partner code should handle any source and destination-related errors.
 - Partner code should retry any transient errors internally without deferring them to Fivetran.
 - Partner code should use [gRPC built-in error mechanism](https://grpc.io/docs/guides/error/#language-support) to relay errors instead of throwing exceptions and abruptly closing the connection.
+- Partner code should capture and relay a clear message when the account permissions are not sufficient.
 
 ### User tasks
 
