@@ -1,14 +1,14 @@
 syntax = "proto3";
 option optimize_for = SPEED;
 option java_multiple_files = true;
-option go_package = "fivetran.com/fivetran_sdk";
-package fivetran_sdk;
+option go_package = "fivetran.com/fivetran_sdk_r2";
+package fivetran_sdk.r2;
 
 import "google/protobuf/timestamp.proto";
 import "common.proto";
 
-// Fivetran (grpc client) <> Destination (grpc server)
-service Destination {
+// Fivetran (grpc client) <> DestinationConnector (grpc server)
+service DestinationConnector {
     rpc ConfigurationForm (ConfigurationFormRequest) returns (ConfigurationFormResponse) {}
     rpc Capabilities (CapabilitiesRequest) returns (CapabilitiesResponse) {}
     rpc Test (TestRequest) returns (TestResponse) {}
@@ -75,7 +75,7 @@ message TruncateRequest {
 }
 
 message SoftTruncate {
-    string deleted_column = 3;
+    string deleted_column = 1;
 }
 
 message TruncateResponse {
