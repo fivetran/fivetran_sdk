@@ -32,7 +32,9 @@ You can look at the following public repos to see how other partners have built 
 You build a connector or destination using our SDK in this repo. We’ll deploy it to our platform, and customers can discover it via the Fivetran website, dashboard, and product documentation. We’ll tag it with a `partner-built` designation and explain the support process to customers. 
 
 ### How do we deploy?
-Right now, we are employing manual processes before getting into automation. You put your code in a public GitHub repo, or provide a couple of our team members access to your private repo, we pull the code, inspect it, and build the executable binary to deploy to our platform. Allow up to a week for us to complete our review and deploy process.
+Right now, we are employing manual processes before getting into automation:
+1. You put your code in a public GitHub repo or provide a couple of our team members access to your private repo. 
+2. We pull the code, inspect it, and build the executable binary to deploy to our platform. Allow up to a week for us to complete our review and deploy process.
 
 ### How do we test?
 We expect testing to ensure your connector or destination is working as expected, either with test data or with a customer who is eager to adopt. We provide [testers](tools/) in this repo you can use locally without connecting to Fivetran platform. We also recommend you think through typical scenarios for testing:
