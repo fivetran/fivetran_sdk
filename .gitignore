@@ -15,3 +15,10 @@ connector_run/
 **/__pycache__/
 v1_examples/**/node_modules/
 v1_examples/**/package-lock.json
+v2_examples/*/**/*.proto
+v2_examples/**/*.pb.go
+v2_examples/**/*pb2.py
+v2_examples/**/*pb2.pyi
+v2_examples/**/*pb2_grpc.py
+v2_examples/**/node_modules/
+v2_examples/**/package-lock.json
