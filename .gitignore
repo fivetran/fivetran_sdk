@@ -5,7 +5,7 @@
 **/build/
 **/golang/main
 bin/*
-v1_examples/**/*.proto
+v1_examples/*/**/*.proto
 v1_examples/**/*.pb.go
 v1_examples/**/*pb2.py
 v1_examples/**/*pb2.pyi
