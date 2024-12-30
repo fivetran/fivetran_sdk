@@ -3,7 +3,7 @@ A way for partners to create connectors and destinations that run on [Fivetranâ€
 
 ## Repo Structure
 This repo consists of example connectors and destinations along with a local testing environment. Connectors and destinations are written in a [gRPC supported language](https://grpc.io/docs/languages/) that can generate a statically linked binary. We recommend Java, Golang, or Rust. 
-* [Examples](examples/)
+* [Examples](v1_examples/)
 * [Local Testing Tools](tools/)
 
 ## Development

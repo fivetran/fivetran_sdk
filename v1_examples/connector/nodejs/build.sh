@@ -11,7 +11,7 @@ mkdir -p protos
 
 # Copy all .proto files from the parent directory (5 levels up) to the 'protos' directory.
 # These files are used for defining the gRPC services and messages.
-cp ../../../../*.proto protos/
+cp ../../../*.proto protos/
 
 # Return to the previous directory (the project root).
 cd ..

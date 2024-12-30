@@ -10,7 +10,7 @@ source destination_run/bin/activate
 mkdir -p protos
 
 # Copy proto files t oprotos directory
-cp ../../../*.proto protos/
+cp ../../*.proto protos/
 
 # Install the required packages
 pip install -r requirements.txt
