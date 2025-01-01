@@ -86,9 +86,9 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
                 .setDefaultValue("v2")
                 .build();
 
-        FormField enableTableReSync = FormField.newBuilder()
-                .setName("shouldEnableTableResync")
-                .setLabel("Enable Table Re-sync?")
+        FormField addMetrics = FormField.newBuilder()
+                .setName("shouldAddMetrics")
+                .setLabel("Enable Metrics?")
                 .setToggleField(ToggleField.newBuilder().build())
                 .build();
 
@@ -152,7 +152,7 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
                                 conditionalField2,
                                 conditionalField3,
                                 apiVersions,
-                                enableTableReSync))
+                                addMetrics))
                 .addAllTests(
                         Arrays.asList(
                                 ConfigurationTest.newBuilder().setName("connect").setLabel("Tests connection").build(),
