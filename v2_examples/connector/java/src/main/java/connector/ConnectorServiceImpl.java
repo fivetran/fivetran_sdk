@@ -142,6 +142,8 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
                 .build();
 
         return ConfigurationFormResponse.newBuilder()
+                .setSchemaSelectionSupported(true)
+                .setTableSelectionSupported(true)
                 .addAllFields(
                         Arrays.asList(
                                 apiBaseURL,
