@@ -1,5 +1,5 @@
 const grpc = require("@grpc/grpc-js");
-const PROTO_PATH_CONNECTOR = "./src/protos/connector_sdk.proto";
+const PROTO_PATH_CONNECTOR = "./src/protos/connector_sdk_v2.proto";
 var protoLoader = require("@grpc/proto-loader");
 
 const options = {
@@ -17,7 +17,7 @@ const SEVERE = "SEVERE";
 
 const protoDescriptor = grpc.loadPackageDefinition(packageDefinitionConnector);
 
-const connectorSdkProto = protoDescriptor.fivetran_sdk;
+const connectorSdkProtoV2 = protoDescriptor.fivetran_sdk.v2;
 
 const server = new grpc.Server();
 
@@ -27,11 +27,101 @@ const configurationForm = (call, callback) => {
       schema_selection_supported: true,
       table_selection_supported: true,
       fields: [
-        { name: "apikey", label: "API key", required: true, text_field: "PlainText" },
-        { name: "password", label: "User Password", required: true, text_field: "Password" },
-        { name: "region", label: "AWS Region", required: false, dropdown_field: { dropdown_field : ["US-EAST","US-WEST"]} },
-        { name: "hidden", label: "my-hidden-value", text_field:"Hidden" },
-        { name: "isPublic", label: "Public?", description: "Is this public?", toggle_field: {} }
+        {
+          name: "apiBaseURL",
+          label: "API base URL",
+          description: "Enter the base URL for the API you're connecting to",
+          required: true,
+          text_field: "PlainText",
+          placeholder: "api_base_url"
+        },
+        {
+          name: "authenticationMethod",
+          label: "Authentication Method",
+          description: "Choose the preferred authentication method to securely access the API",
+          dropdown_field: {
+            dropdown_field: ["OAuth2.0", "API Key", "Basic Auth", "None"]
+          },
+          default_value: "None"
+        },
+        {
+          name: "doesNotMatter",
+          label: "It won't be used",
+          conditional_fields: {
+            condition: {
+              condition_field: "authenticationMethod",
+              string_value: "OAuth2.0"
+            },
+            fields: [
+              {
+              name: "clientId",
+              label: "Client Id",
+              text_field: "Password",
+              placeholder: "your_client_id_here"
+              },
+              {
+                name: "clientSecret",
+                label: "Client Secret",
+                text_field: "Password",
+                placeholder: "your_client_secret_here"
+              }]
+          }
+        },
+        {
+          name: "doesNotMatter",
+          label: "It won't be used",
+          conditional_fields: {
+            condition: {
+              condition_field: "authenticationMethod",
+              string_value: "API Key"
+            },
+            fields: [
+              {
+                name: "apiKey",
+                label: "API Key",
+                text_field: "Password",
+                placeholder: "your_api_key_here"
+              }
+            ]
+          }
+        },
+        {
+          name: "doesNotMatter",
+          label: "It won't be used",
+          conditional_fields: {
+            condition: {
+              condition_field: "authenticationMethod",
+              string_value: "Basic Auth"
+            },
+            fields: [
+              {
+              name: "username",
+              label: "Username",
+              text_field: "PlainText",
+              placeholder: "your_username_here"
+              },
+              {
+                name: "password",
+                label: "Password",
+                text_field: "Password",
+                placeholder: "your_password_here"
+              },
+          ]
+          }
+        },
+        {
+          name: "apiVersion",
+          label: "API Version",
+          dropdown_field: {
+            dropdown_field: ["v1", "v2", "v3"]
+          },
+          default_value: "v2"
+        },
+        {
+          name: "shouldAddMetrics",
+          label: "Enable Metrics?",
+          toggle_field: {}
+        }
       ],
       tests: [
         { name: "connect", label: "Tests connection" },
@@ -83,19 +173,13 @@ const configurationForm = (call, callback) => {
       call.write(response);
     };
   
-    const sendOperation = (operation) => {
-      sendResponse({
-        operation: operation
-      });
-    };
-  
     try {
       // Send a log message
       logMessage(WARNING, "Sample Warning message: Sync STARTING");
 
       // Send UPSERT records
       for (let i = 0; i < 3; i++) {
-        sendOperation({
+        sendResponse({
           record: {
             table_name: "table1",
             type: "UPSERT",
@@ -109,7 +193,7 @@ const configurationForm = (call, callback) => {
       }
   
       // Send UPDATE record
-      sendOperation({
+      sendResponse({
         record: {
           table_name: "table1",
           type: "UPDATE",
@@ -122,7 +206,7 @@ const configurationForm = (call, callback) => {
       state.cursor = (state.cursor || 0) + 1;
   
       // Send DELETE record
-      sendOperation({
+      sendResponse({
         record: {
           table_name: "table1",
           type: "DELETE",
@@ -135,7 +219,7 @@ const configurationForm = (call, callback) => {
   
       // Send checkpoint
       const newState = JSON.stringify(state);
-      sendOperation({
+      sendResponse({
         checkpoint: {
           state_json: newState
         }
@@ -157,7 +241,7 @@ const configurationForm = (call, callback) => {
   }
 
 
-  server.addService(connectorSdkProto.Connector.service, {configurationForm, test, schema, update})
+  server.addService(connectorSdkProtoV2.SourceConnector.service, {configurationForm, test, schema, update})
 
   server.bindAsync(
     '0.0.0.0'.concat(':').concat(50051),
