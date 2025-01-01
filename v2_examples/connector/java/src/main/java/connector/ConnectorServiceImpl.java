@@ -3,11 +3,12 @@ package connector;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fivetran_sdk.v2.*;
+import fivetran_sdk.v2.Record;
 import io.grpc.stub.StreamObserver;
 
 import java.util.*;
 
-public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
+public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImplBase {
     private final String INFO = "INFO";
     private final String WARNING = "WARNING";
     private final String SEVERE = "SEVERE";
@@ -99,21 +100,13 @@ public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
             State state = mapper.readValue(state_json, State.class);
 
             // -- Send a log message
-            responseBuilder.clear();
-            responseObserver.onNext(responseBuilder
-                    .setLogEntry(LogEntry.newBuilder()
-                            .setLevel(LogLevel.INFO)
-                            .setMessage("Sync STARTING")
-                            .build())
-                    .build());
+            logMessage(WARNING, "Sync STARTING");
 
             // -- Send UPSERT records
-            Operation.Builder operationBuilder = Operation.newBuilder();
             Record.Builder recordBuilder = Record.newBuilder();
             Map<String, ValueType> row = new HashMap<>();
             for (int i=0; i<3; i++) {
                 responseBuilder.clear();
-                operationBuilder.clear();
                 recordBuilder.clear();
 
                 row.clear();
@@ -121,69 +114,52 @@ public class ConnectorServiceImpl extends ConnectorGrpc.ConnectorImplBase {
                 row.put("a2", ValueType.newBuilder().setDouble(i * 0.234d).build());
 
                 responseObserver.onNext(responseBuilder
-                        .setOperation(operationBuilder
-                                .setRecord(recordBuilder
+                        .setRecord(recordBuilder
                                         .setTableName("table1")
-                                        .setType(OpType.UPSERT)
+                                        .setType(RecordType.UPSERT)
                                         .putAllData(row)
                                         .build())
-                                .build())
-                        .build());
+                                .build());
 
                 state.cursor += 1;
             }
 
             // -- Send UPDATE record
             responseBuilder.clear();
-            operationBuilder.clear();
             recordBuilder.clear();
             row.clear();
             row.put("a1", ValueType.newBuilder().setString("a-0").build());
             row.put("a2", ValueType.newBuilder().setDouble(110.234d).build());
             responseObserver.onNext(responseBuilder
-                    .setOperation(operationBuilder
-                            .setRecord(recordBuilder
+                    .setRecord(recordBuilder
                                     .setTableName("table1")
-                                    .setType(OpType.UPDATE)
+                                    .setType(RecordType.UPDATE)
                                     .putAllData(row)
                                     .build())
-                            .build())
-                    .build());
+                            .build());
             state.cursor += 1;
 
             // -- Send DELETE record
             responseBuilder.clear();
-            operationBuilder.clear();
             recordBuilder.clear();
             row.clear();
             row.put("a1", ValueType.newBuilder().setString("a-2").build());
             responseObserver.onNext(responseBuilder
-                    .setOperation(operationBuilder
-                            .setRecord(recordBuilder
+                    .setRecord(recordBuilder
                                     .setTableName("table1")
-                                    .setType(OpType.DELETE)
+                                    .setType(RecordType.DELETE)
                                     .putAllData(row)
                                     .build())
-                            .build())
-                    .build());
+                            .build());
             state.cursor += 1;
 
             // -- Send checkpoint
             String newState = mapper.writeValueAsString(state);
             Checkpoint checkpoint = Checkpoint.newBuilder().setStateJson(newState).build();
-            operationBuilder.clear();
-            responseObserver.onNext(responseBuilder
-                    .setOperation(operationBuilder
-                            .setCheckpoint(checkpoint).build()).build());
+            responseObserver.onNext(responseBuilder.setCheckpoint(checkpoint).build());
 
             // -- Send a log message
-            responseBuilder.clear();
-            responseObserver.onNext(responseBuilder
-                    .setLogEntry(LogEntry.newBuilder()
-                            .setLevel(LogLevel.INFO)
-                            .setMessage("Sync DONE")
-                            .build())
-                    .build());
+            logMessage(WARNING, "Sync DONE");
         } catch (JsonProcessingException e) {
             String message = e.getMessage();
             logMessage(SEVERE, message);
