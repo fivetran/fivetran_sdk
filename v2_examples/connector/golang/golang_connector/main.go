@@ -12,7 +12,7 @@ import (
 	pb "fivetran.com/fivetran_sdk/proto"
 	"google.golang.org/grpc"
 	_ "google.golang.org/grpc/encoding/gzip"
-
+	"google.golang.org/protobuf/proto"
 )
 
 const INFO = "INFO"
@@ -26,45 +26,34 @@ type MyState struct {
 }
 
 type server struct {
-	pb.UnimplementedConnectorServer
+	pb.UnimplementedSourceConnectorServer
 }
 
-func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) error {
+func (s *server) Update(in *pb.UpdateRequest, stream pb.SourceConnector_UpdateServer) error {
 	config := in.Configuration
 	selection := in.Selection
 	state_json := in.GetStateJson()
 	state := MyState{}
 	json.Unmarshal([]byte(state_json), &state)
 
-	message := fmt.Sprintf("config: %s, selection: %s, state_json: %s, mystate: %s", config, selection, state_json, state)
+	message := fmt.Sprintf("config: %s, selection: %s, state_json: %s, mystate: %+v", config, selection, state_json, state)
 	LogMessage(INFO, message)
 
 	// -- Send a log message
-	stream.Send(&pb.UpdateResponse{
-		Response: &pb.UpdateResponse_LogEntry{
-			LogEntry: &pb.LogEntry{
-				Level:   pb.LogLevel_INFO,
-				Message: "Sync STARTING",
-			},
-		},
-	})
+	LogMessage(WARNING, "Sync STARTING")
 
 	// -- Send UPSERT records
 	schemaName := "schema1"
 	for i := 0; i < 3; i++ {
 		stream.Send(&pb.UpdateResponse{
-			Response: &pb.UpdateResponse_Operation{
-				Operation: &pb.Operation{
-					Op: &pb.Operation_Record{
-						Record: &pb.Record{
-							SchemaName: &schemaName,
-							TableName:  "table1",
-							Type:       pb.OpType_UPSERT,
-							Data: map[string]*pb.ValueType{
-								"a1": {Inner: &pb.ValueType_String_{String_: "a-" + strconv.Itoa(i)}},
-								"a2": {Inner: &pb.ValueType_Double{Double: float64(i) * float64(0.234)}},
-							},
-						},
+			Operation: &pb.UpdateResponse_Record{
+				Record: &pb.Record{
+					SchemaName: &schemaName,
+					TableName:  "table1",
+					Type:       pb.RecordType_UPSERT,
+					Data: map[string]*pb.ValueType{
+						"a1": {Inner: &pb.ValueType_String_{String_: "a-" + strconv.Itoa(i)}},
+						"a2": {Inner: &pb.ValueType_Double{Double: float64(i) * float64(0.234)}},
 					},
 				},
 			},
@@ -77,18 +66,14 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 
 	// -- Send UPDATE record
 	stream.Send(&pb.UpdateResponse{
-		Response: &pb.UpdateResponse_Operation{
-			Operation: &pb.Operation{
-				Op: &pb.Operation_Record{
-					Record: &pb.Record{
-						SchemaName: &schemaName,
-						TableName:  "table1",
-						Type:       pb.OpType_UPDATE,
-						Data: map[string]*pb.ValueType{
-							"a1": {Inner: &pb.ValueType_String_{String_: "a-0"}},
-							"a2": {Inner: &pb.ValueType_Double{Double: float64(110.234)}},
-						},
-					},
+		Operation: &pb.UpdateResponse_Record{
+			Record: &pb.Record{
+				SchemaName: &schemaName,
+				TableName:  "table1",
+				Type:       pb.RecordType_UPDATE,
+				Data: map[string]*pb.ValueType{
+					"a1": {Inner: &pb.ValueType_String_{String_: "a-0"}},
+					"a2": {Inner: &pb.ValueType_Double{Double: float64(110.234)}},
 				},
 			},
 		},
@@ -99,17 +84,13 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 
 	// -- Send DELETE record
 	stream.Send(&pb.UpdateResponse{
-		Response: &pb.UpdateResponse_Operation{
-			Operation: &pb.Operation{
-				Op: &pb.Operation_Record{
-					Record: &pb.Record{
-						SchemaName: &schemaName,
-						TableName:  "table1",
-						Type:       pb.OpType_DELETE,
-						Data: map[string]*pb.ValueType{
-							"a1": {Inner: &pb.ValueType_String_{String_: "a-2"}},
-						},
-					},
+		Operation: &pb.UpdateResponse_Record{
+			Record: &pb.Record{
+				SchemaName: &schemaName,
+				TableName:  "table1",
+				Type:       pb.RecordType_DELETE,
+				Data: map[string]*pb.ValueType{
+					"a1": {Inner: &pb.ValueType_String_{String_: "a-2"}},
 				},
 			},
 		},
@@ -125,28 +106,17 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 
 	// -- Send Checkpoint
 	stream.Send(&pb.UpdateResponse{
-		Response: &pb.UpdateResponse_Operation{
-			Operation: &pb.Operation{
-				Op: &pb.Operation_Checkpoint{
-					Checkpoint: &pb.Checkpoint{
-						StateJson: new_state,
-					},
-				},
+		Operation: &pb.UpdateResponse_Checkpoint{
+			Checkpoint: &pb.Checkpoint{
+				StateJson: new_state,
 			},
 		},
 	})
 
 	// -- Send a log message
-	stream.Send(&pb.UpdateResponse{
-		Response: &pb.UpdateResponse_LogEntry{
-			LogEntry: &pb.LogEntry{
-				Level:   pb.LogLevel_INFO,
-				Message: "Sync DONE",
-			},
-		},
-	})
+	LogMessage(WARNING, "Sync DONE")
 
-    LogMessage(SEVERE, "Sample severe message: Update call completed")
+	LogMessage(SEVERE, "Sample severe message: Update call completed")
 	// End the RPC call
 	return nil
 }
@@ -196,55 +166,125 @@ func (s *server) Schema(ctx context.Context, in *pb.SchemaRequest) (*pb.SchemaRe
 }
 
 func (s *server) ConfigurationForm(ctx context.Context, in *pb.ConfigurationFormRequest) (*pb.ConfigurationFormResponse, error) {
-	toggleDescription := "Is this public?"
 
 	return &pb.ConfigurationFormResponse{
 		SchemaSelectionSupported: true,
 		TableSelectionSupported:  true,
 		Fields: []*pb.FormField{
 			{
-				Name:     "apikey",
-				Label:    "API key",
-				Required: true,
+				Name:        "apiBaseURL",
+				Label:       "API base URL",
+				Description: proto.String("Enter the base URL for the API you're connecting to"),
+				Required:    proto.Bool(true),
 				Type: &pb.FormField_TextField{
 					TextField: pb.TextField_PlainText,
 				},
+				Placeholder: proto.String("api_base_url"),
 			},
 			{
-				Name:     "password",
-				Label:    "User password",
-				Required: true,
-				Type: &pb.FormField_TextField{
-					TextField: pb.TextField_Password,
-				},
-			},
-			{
-				Name:  "hidden",
-				Label: "my-hidden-value",
-				Type: &pb.FormField_TextField{
-					TextField: pb.TextField_Hidden,
-				},
-			},
-			{
-				Name:     "isPublic",
-				Label:    "Public?",
-				Description: &toggleDescription,
-				Required: false,
-				Type: &pb.FormField_ToggleField{
-					ToggleField: &pb.ToggleField{},
-				},
-			},
-			{
-				Name:     "region",
-				Label:    "Region",
-				Required: true,
+				Name:        "authenticationMethod",
+				Label:       "Authentication Method",
+				Description: proto.String("Choose the preferred authentication method to securely access the API"),
+				Required:    proto.Bool(true),
 				Type: &pb.FormField_DropdownField{
 					DropdownField: &pb.DropdownField{
-						DropdownField: []string{
-							"US-EAST", "US-WEST",
+						DropdownField: []string{"OAuth2.0", "API Key", "Basic Auth", "None"},
+					},
+				},
+				DefaultValue: proto.String("None"),
+			},
+			{
+				Name:  "doesNotMatter",
+				Label: "It won't be used",
+				Type: &pb.FormField_ConditionalFields{
+					ConditionalFields: &pb.ConditionalFields{
+						Condition: &pb.VisibilityCondition{
+							ConditionField: "authenticationMethod",
+							VisibleWhen: &pb.VisibilityCondition_StringValue{
+								StringValue: "OAuth2.0",
+							},
+						},
+						Fields: []*pb.FormField{
+							{
+								Name:        "clientId",
+								Label:       "Client Id",
+								Type:        &pb.FormField_TextField{TextField: pb.TextField_Password},
+								Placeholder: proto.String("your_client_id_here"),
+							},
+							{
+								Name:        "clientSecret",
+								Label:       "Client Secret",
+								Type:        &pb.FormField_TextField{TextField: pb.TextField_Password},
+								Placeholder: proto.String("your_client_secret_here"),
+							},
 						},
 					},
 				},
+			},
+			{
+				Name:  "doesNotMatter",
+				Label: "It won't be used",
+				Type: &pb.FormField_ConditionalFields{
+					ConditionalFields: &pb.ConditionalFields{
+						Condition: &pb.VisibilityCondition{
+							ConditionField: "authenticationMethod",
+							VisibleWhen: &pb.VisibilityCondition_StringValue{
+								StringValue: "API Key",
+							},
+						},
+						Fields: []*pb.FormField{
+							{
+								Name:        "apiKey",
+								Label:       "API Key",
+								Type:        &pb.FormField_TextField{TextField: pb.TextField_Password},
+								Placeholder: proto.String("your_api_key_here"),
+							},
+						},
+					},
+				},
+			},
+			{
+				Name:  "doesNotMatter",
+				Label: "It won't be used",
+				Type: &pb.FormField_ConditionalFields{
+					ConditionalFields: &pb.ConditionalFields{
+						Condition: &pb.VisibilityCondition{
+							ConditionField: "authenticationMethod",
+							VisibleWhen: &pb.VisibilityCondition_StringValue{
+								StringValue: "Basic Auth",
+							},
+						},
+						Fields: []*pb.FormField{
+							{
+								Name:        "username",
+								Label:       "Username",
+								Type:        &pb.FormField_TextField{TextField: pb.TextField_PlainText},
+								Placeholder: proto.String("your_username_here"),
+							},
+							{
+								Name:        "password",
+								Label:       "Password",
+								Type:        &pb.FormField_TextField{TextField: pb.TextField_Password},
+								Placeholder: proto.String("your_password_here"),
+							},
+						},
+					},
+				},
+			},
+			{
+				Name:  "apiVersion",
+				Label: "API Version",
+				Type: &pb.FormField_DropdownField{
+					DropdownField: &pb.DropdownField{
+						DropdownField: []string{"v1", "v2", "v3"},
+					},
+				},
+				DefaultValue: proto.String("v2"),
+			},
+			{
+				Name:  "shouldAddMetrics",
+				Label: "Enable Metrics?",
+				Type:  &pb.FormField_ToggleField{ToggleField: &pb.ToggleField{}},
 			},
 		},
 		Tests: []*pb.ConfigurationTest{
@@ -273,13 +313,13 @@ func (s *server) Test(ctx context.Context, in *pb.TestRequest) (*pb.TestResponse
 }
 
 func LogMessage(level string, message string) {
-    log := map[string]interface{}{
-        "level":         level,
-        "message":       message,
-        "message-origin": "sdk_connector",
-    }
-    logJSON, _ := json.Marshal(log)
-    fmt.Println(string(logJSON))
+	log := map[string]interface{}{
+		"level":          level,
+		"message":        message,
+		"message-origin": "sdk_connector",
+	}
+	logJSON, _ := json.Marshal(log)
+	fmt.Println(string(logJSON))
 }
 
 func main() {
@@ -289,7 +329,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterConnectorServer(s, &server{})
+	pb.RegisterSourceConnectorServer(s, &server{})
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
