@@ -1,0 +1,1 @@
+cp ../../*.proto proto/
