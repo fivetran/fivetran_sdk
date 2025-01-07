@@ -20,122 +20,130 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
         responseObserver.onCompleted();
     }
 
-    private ConfigurationFormResponse getConfigurationForm(){
-        FormField apiBaseURL = FormField.newBuilder()
-                .setName("apiBaseURL")
-                .setLabel("API base URL")
-                .setDescription("Enter the base URL for the API you're connecting to")
-                .setRequired(true)
-                .setTextField(TextField.PlainText)
-                .setPlaceholder("api_base_url")
-                .build();
+    private ConfigurationFormResponse getConfigurationForm() {
 
-        FormField authenticationMethods = FormField.newBuilder()
-                .setName("authenticationMethod")
-                .setLabel("Authentication Method")
-                .setDescription("Choose the preferred authentication method to securely access the API")
+        FormField writerType = FormField.newBuilder()
+                .setName("writerType")
+                .setLabel("Writer Type")
+                .setDescription("Choose the destination type")
                 .setDropdownField(
                         DropdownField.newBuilder()
-                                .addAllDropdownField(Arrays.asList("OAuth2.0", "API Key", "Basic Auth", "None"))
+                                .addAllDropdownField(Arrays.asList("Database", "File", "Cloud"))
                                 .build())
-                .setDefaultValue("None")
+                .setDefaultValue("Database")
                 .build();
 
-        FormField apiKey = FormField.newBuilder()
-                .setName("apiKey")
-                .setLabel("Api Key")
-                .setTextField(TextField.Password)
-                .setPlaceholder("your_api_key_here")
-                .build();
-
-        FormField clientId = FormField.newBuilder()
-                .setName("clientId")
-                .setLabel("Client Id")
-                .setTextField(TextField.Password)
-                .setPlaceholder("your_client_id_here")
-                .build();
-
-        FormField clientSecret = FormField.newBuilder()
-                .setName("clientSecret")
-                .setLabel("Client Secret")
-                .setTextField(TextField.Password)
-                .setPlaceholder("your_client_secret_here")
-                .build();
-
-        FormField userName = FormField.newBuilder()
-                .setName("username")
-                .setLabel("Username")
+        FormField host = FormField.newBuilder()
+                .setName("host")
+                .setLabel("Host")
                 .setTextField(TextField.PlainText)
-                .setPlaceholder("your_username_here")
+                .setPlaceholder("your_host_details")
+                .build();
+
+        FormField port = FormField.newBuilder()
+                .setName("port")
+                .setLabel("Port")
+                .setTextField(TextField.PlainText)
+                .setPlaceholder("your_port_details")
+                .build();
+
+        FormField user = FormField.newBuilder()
+                .setName("user")
+                .setLabel("User")
+                .setTextField(TextField.PlainText)
+                .setPlaceholder("user_name")
                 .build();
 
         FormField password = FormField.newBuilder()
                 .setName("password")
-                .setLabel("Password")
+                .setLabel("password")
                 .setTextField(TextField.Password)
-                .setPlaceholder("your_password_here")
+                .setPlaceholder("your_password")
                 .build();
 
-        FormField apiVersions = FormField.newBuilder()
-                .setName("apiVersion")
-                .setLabel("Api Version")
+        FormField database = FormField.newBuilder()
+                .setName("database")
+                .setLabel("Database")
+                .setTextField(TextField.PlainText)
+                .setPlaceholder("your_database_name")
+                .build();
+
+        FormField table = FormField.newBuilder()
+                .setName("table")
+                .setLabel("Table")
+                .setTextField(TextField.PlainText)
+                .setPlaceholder("your_table_name")
+                .build();
+
+        FormField filePath = FormField.newBuilder()
+                .setName("filePath")
+                .setLabel("File Path")
+                .setTextField(TextField.PlainText)
+                .setPlaceholder("your_file_path")
+                .build();
+
+        FormField region = FormField.newBuilder()
+                .setName("region")
+                .setLabel("Cloud Region")
+                .setDescription("Choose the cloud region")
                 .setDropdownField(
-                        DropdownField.newBuilder().addAllDropdownField(Arrays.asList("v1","v2","v3")).build())
-                .setDefaultValue("v2")
+                        DropdownField.newBuilder()
+                                .addAllDropdownField(Arrays.asList("Azure", "AWS", "Google Cloud"))
+                                .build())
+                .setDefaultValue("Azure")
                 .build();
 
-        FormField addMetrics = FormField.newBuilder()
-                .setName("shouldAddMetrics")
-                .setLabel("Enable Metrics?")
+        FormField enableEncryption = FormField.newBuilder()
+                .setName("enableEncryption")
+                .setDescription("To enable/disable encryption for data transfer")
+                .setLabel("Enable Encryption?")
                 .setToggleField(ToggleField.newBuilder().build())
                 .build();
 
 
         // Conditional Field for OAuth
-        VisibilityCondition visibilityCondition1 = VisibilityCondition.newBuilder()
-                .setConditionField("authenticationMethod")
-                .setStringValue("OAuth2.0")
+        VisibilityCondition visibilityConditionForCloud = VisibilityCondition.newBuilder()
+                .setConditionField("writerType")
+                .setStringValue("Cloud")
                 .build();
 
-        FormField conditionalField1 = FormField.newBuilder()
+        VisibilityCondition visibilityConditionForDatabase = VisibilityCondition.newBuilder()
+                .setConditionField("writerType")
+                .setStringValue("Database")
+                .build();
+
+        VisibilityCondition visibilityConditionForFile = VisibilityCondition.newBuilder()
+                .setConditionField("writerType")
+                .setStringValue("File")
+                .build();
+
+        FormField conditionalFieldForCloud = FormField.newBuilder()
                 .setName("doesNotMatter")
                 .setLabel("It won't be used")
                 .setConditionalFields(
                         ConditionalFields.newBuilder()
-                                .setCondition(visibilityCondition1)
-                                .addAllFields(Arrays.asList(clientId, clientSecret))
+                                .setCondition(visibilityConditionForCloud)
+                                .addAllFields(Arrays.asList(host, port, user, password, region))
                                 .build())
                 .build();
 
-        // Conditional Field for API Key authentication method
-        VisibilityCondition visibilityCondition2 = VisibilityCondition.newBuilder()
-                .setConditionField("authenticationMethod")
-                .setStringValue("API Key")
-                .build();
-
-        FormField conditionalField2 = FormField.newBuilder()
+        FormField conditionalFieldForFile = FormField.newBuilder()
                 .setName("doesNotMatter")
                 .setLabel("It won't be used")
                 .setConditionalFields(
                         ConditionalFields.newBuilder()
-                                .setCondition(visibilityCondition2)
-                                .addAllFields(Arrays.asList(apiKey))
+                                .setCondition(visibilityConditionForFile)
+                                .addAllFields(Arrays.asList(host, port, user, password, table, filePath))
                                 .build())
                 .build();
 
-        // Conditional Field for Basic Auth
-        VisibilityCondition visibilityCondition3 = VisibilityCondition.newBuilder()
-                .setConditionField("authenticationMethod")
-                .setStringValue("Basic Auth")
-                .build();
-
-        FormField conditionalField3 = FormField.newBuilder()
+        FormField conditionalFieldForDatabase = FormField.newBuilder()
                 .setName("doesNotMatter")
                 .setLabel("It won't be used")
                 .setConditionalFields(
                         ConditionalFields.newBuilder()
-                                .setCondition(visibilityCondition3)
-                                .addAllFields(Arrays.asList(userName, password))
+                                .setCondition(visibilityConditionForDatabase)
+                                .addAllFields(Arrays.asList(host, port, user, password, database,  table))
                                 .build())
                 .build();
 
@@ -144,13 +152,11 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
                 .setTableSelectionSupported(true)
                 .addAllFields(
                         Arrays.asList(
-                                apiBaseURL,
-                                authenticationMethods,
-                                conditionalField1,
-                                conditionalField2,
-                                conditionalField3,
-                                apiVersions,
-                                addMetrics))
+                                writerType,
+                                conditionalFieldForFile,
+                                conditionalFieldForCloud,
+                                conditionalFieldForDatabase,
+                                enableEncryption))
                 .addAllTests(
                         Arrays.asList(
                                 ConfigurationTest.newBuilder().setName("connect").setLabel("Tests connection").build(),
