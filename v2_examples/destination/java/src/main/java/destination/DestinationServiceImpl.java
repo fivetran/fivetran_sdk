@@ -1,12 +1,12 @@
 package destination;
 
-import fivetran_sdk.*;
+import fivetran_sdk.v2.*;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Arrays;
 import java.util.Map;
 
-public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase {
+public class DestinationServiceImpl extends DestinationConnectorGrpc.DestinationConnectorImplBase {
 
     private final String INFO = "INFO";
     private final String WARNING = "WARNING";
@@ -15,36 +15,147 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
     @Override
     public void configurationForm(ConfigurationFormRequest request, StreamObserver<ConfigurationFormResponse> responseObserver) {
         logMessage(INFO, "Fetching configuration form");
-        responseObserver.onNext(
-                ConfigurationFormResponse.newBuilder()
-                        .setSchemaSelectionSupported(true)
-                        .setTableSelectionSupported(true)
-                        .addAllFields(Arrays.asList(
-                                FormField.newBuilder()
-                                        .setName("host").setLabel("Host").setRequired(true).setTextField(TextField.PlainText).build(),
-                                FormField.newBuilder()
-                                        .setName("password").setLabel("Password").setRequired(true).setTextField(TextField.Password).build(),
-                                FormField.newBuilder()
-                                        .setName("region").setLabel("AWS Region").setRequired(false).setDropdownField(
-                                                DropdownField.newBuilder().addAllDropdownField(
-                                                        Arrays.asList("US-EAST", "US-WEST")).build()
-                                        ).build(),
-                                FormField.newBuilder()
-                                        .setName("hidden").setLabel("my-hidden-value").setTextField(TextField.Hidden)
-                                        .build(),
-                                FormField.newBuilder()
-                                        .setName("isPublic")
-                                        .setLabel("Public?")
-                                        .setDescription("Is this public?")
-                                        .setToggleField(ToggleField.newBuilder().build())
-                                        .build()
-                        ))
-                        .addAllTests(Arrays.asList(
-                                ConfigurationTest.newBuilder().setName("connect").setLabel("Tests connection").build(),
-                                ConfigurationTest.newBuilder().setName("select").setLabel("Tests selection").build()))
-                        .build());
+        responseObserver.onNext(getConfigurationForm());
 
         responseObserver.onCompleted();
+    }
+
+    private ConfigurationFormResponse getConfigurationForm(){
+        FormField apiBaseURL = FormField.newBuilder()
+                .setName("apiBaseURL")
+                .setLabel("API base URL")
+                .setDescription("Enter the base URL for the API you're connecting to")
+                .setRequired(true)
+                .setTextField(TextField.PlainText)
+                .setPlaceholder("api_base_url")
+                .build();
+
+        FormField authenticationMethods = FormField.newBuilder()
+                .setName("authenticationMethod")
+                .setLabel("Authentication Method")
+                .setDescription("Choose the preferred authentication method to securely access the API")
+                .setDropdownField(
+                        DropdownField.newBuilder()
+                                .addAllDropdownField(Arrays.asList("OAuth2.0", "API Key", "Basic Auth", "None"))
+                                .build())
+                .setDefaultValue("None")
+                .build();
+
+        FormField apiKey = FormField.newBuilder()
+                .setName("apiKey")
+                .setLabel("Api Key")
+                .setTextField(TextField.Password)
+                .setPlaceholder("your_api_key_here")
+                .build();
+
+        FormField clientId = FormField.newBuilder()
+                .setName("clientId")
+                .setLabel("Client Id")
+                .setTextField(TextField.Password)
+                .setPlaceholder("your_client_id_here")
+                .build();
+
+        FormField clientSecret = FormField.newBuilder()
+                .setName("clientSecret")
+                .setLabel("Client Secret")
+                .setTextField(TextField.Password)
+                .setPlaceholder("your_client_secret_here")
+                .build();
+
+        FormField userName = FormField.newBuilder()
+                .setName("username")
+                .setLabel("Username")
+                .setTextField(TextField.PlainText)
+                .setPlaceholder("your_username_here")
+                .build();
+
+        FormField password = FormField.newBuilder()
+                .setName("password")
+                .setLabel("Password")
+                .setTextField(TextField.Password)
+                .setPlaceholder("your_password_here")
+                .build();
+
+        FormField apiVersions = FormField.newBuilder()
+                .setName("apiVersion")
+                .setLabel("Api Version")
+                .setDropdownField(
+                        DropdownField.newBuilder().addAllDropdownField(Arrays.asList("v1","v2","v3")).build())
+                .setDefaultValue("v2")
+                .build();
+
+        FormField addMetrics = FormField.newBuilder()
+                .setName("shouldAddMetrics")
+                .setLabel("Enable Metrics?")
+                .setToggleField(ToggleField.newBuilder().build())
+                .build();
+
+
+        // Conditional Field for OAuth
+        VisibilityCondition visibilityCondition1 = VisibilityCondition.newBuilder()
+                .setConditionField("authenticationMethod")
+                .setStringValue("OAuth2.0")
+                .build();
+
+        FormField conditionalField1 = FormField.newBuilder()
+                .setName("doesNotMatter")
+                .setLabel("It won't be used")
+                .setConditionalFields(
+                        ConditionalFields.newBuilder()
+                                .setCondition(visibilityCondition1)
+                                .addAllFields(Arrays.asList(clientId, clientSecret))
+                                .build())
+                .build();
+
+        // Conditional Field for API Key authentication method
+        VisibilityCondition visibilityCondition2 = VisibilityCondition.newBuilder()
+                .setConditionField("authenticationMethod")
+                .setStringValue("API Key")
+                .build();
+
+        FormField conditionalField2 = FormField.newBuilder()
+                .setName("doesNotMatter")
+                .setLabel("It won't be used")
+                .setConditionalFields(
+                        ConditionalFields.newBuilder()
+                                .setCondition(visibilityCondition2)
+                                .addAllFields(Arrays.asList(apiKey))
+                                .build())
+                .build();
+
+        // Conditional Field for Basic Auth
+        VisibilityCondition visibilityCondition3 = VisibilityCondition.newBuilder()
+                .setConditionField("authenticationMethod")
+                .setStringValue("Basic Auth")
+                .build();
+
+        FormField conditionalField3 = FormField.newBuilder()
+                .setName("doesNotMatter")
+                .setLabel("It won't be used")
+                .setConditionalFields(
+                        ConditionalFields.newBuilder()
+                                .setCondition(visibilityCondition3)
+                                .addAllFields(Arrays.asList(userName, password))
+                                .build())
+                .build();
+
+        return ConfigurationFormResponse.newBuilder()
+                .setSchemaSelectionSupported(true)
+                .setTableSelectionSupported(true)
+                .addAllFields(
+                        Arrays.asList(
+                                apiBaseURL,
+                                authenticationMethods,
+                                conditionalField1,
+                                conditionalField2,
+                                conditionalField3,
+                                apiVersions,
+                                addMetrics))
+                .addAllTests(
+                        Arrays.asList(
+                                ConfigurationTest.newBuilder().setName("connect").setLabel("Tests connection").build(),
+                                ConfigurationTest.newBuilder().setName("select").setLabel("Tests selection").build()))
+                .build();
     }
 
     @Override
