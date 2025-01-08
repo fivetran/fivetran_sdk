@@ -1,8 +1,8 @@
 syntax = "proto3";
 option optimize_for = SPEED;
 option java_multiple_files = true;
-option go_package = "fivetran.com/fivetran_sdk_r2";
-package fivetran_sdk.r2;
+option go_package = "fivetran.com/fivetran_sdk_v2";
+package fivetran_sdk.v2;
 
 import "google/protobuf/timestamp.proto";
 import "common.proto";
@@ -34,8 +34,9 @@ message DescribeTableRequest {
 message DescribeTableResponse {
     oneof response {
         bool not_found = 1;
-        string failure = 2;
-        Table table = 3;
+        Table table = 2;
+        Warning warning = 3;
+        Task task = 4;
     }
 }
 
@@ -48,7 +49,8 @@ message CreateTableRequest {
 message CreateTableResponse {
     oneof response {
         bool success = 1;
-        string failure = 2;
+        Warning warning = 2;
+        Task task = 3;
     }
 }
 
@@ -61,7 +63,8 @@ message AlterTableRequest {
 message AlterTableResponse {
     oneof response {
         bool success = 1;
-        string failure = 2;
+        Warning warning = 2;
+        Task task = 3;
     }
 }
 
@@ -81,7 +84,8 @@ message SoftTruncate {
 message TruncateResponse {
     oneof response {
         bool success = 1;
-        string failure = 2;
+        Warning warning = 2;
+        Task task = 3;
     }
 }
 
@@ -93,21 +97,14 @@ message WriteBatchRequest {
     repeated string replace_files = 5;
     repeated string update_files = 6;
     repeated string delete_files = 7;
-    oneof file_params {
-        CsvFileParams csv = 8;
-        ParquetFileParams parquet = 9;
-    }
+    FileParams file_params = 9;
 }
 
-message CsvFileParams {
+message FileParams {
     Compression compression = 1;
     Encryption encryption = 2;
     string null_string = 3;
     string unmodified_string = 4;
-}
-
-message ParquetFileParams {
-    Encryption encryption = 1;
 }
 
 enum Encryption {
@@ -129,6 +126,7 @@ enum Compression {
 message WriteBatchResponse {
     oneof response {
         bool success = 1;
-        string failure = 2;
+        Warning warning = 2;
+        Task task = 3;
     }
 }

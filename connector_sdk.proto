@@ -1,8 +1,8 @@
 syntax = "proto3";
 option optimize_for = SPEED;
 option java_multiple_files = true;
-option go_package = "fivetran.com/fivetran_sdk_r2";
-package fivetran_sdk.r2;
+option go_package = "fivetran.com/fivetran_sdk_v2";
+package fivetran_sdk.v2;
 
 import "common.proto";
 
@@ -65,10 +65,12 @@ message TableSelection {
 }
 
 message UpdateResponse {
-    oneof op {
+    oneof operation {
         Record record = 1;
         SchemaChange schema_change = 2;
         Checkpoint checkpoint = 3;
+        Warning warning = 4;
+        Task task = 5;
     }
 }
 
