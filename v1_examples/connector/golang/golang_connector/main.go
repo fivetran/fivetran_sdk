@@ -12,7 +12,6 @@ import (
 	pb "fivetran.com/fivetran_sdk/proto"
 	"google.golang.org/grpc"
 	_ "google.golang.org/grpc/encoding/gzip"
-
 )
 
 const INFO = "INFO"
@@ -146,7 +145,7 @@ func (s *server) Update(in *pb.UpdateRequest, stream pb.Connector_UpdateServer) 
 		},
 	})
 
-    LogMessage(SEVERE, "Sample severe message: Update call completed")
+	LogMessage(SEVERE, "Sample severe message: Update call completed")
 	// End the RPC call
 	return nil
 }
@@ -226,10 +225,10 @@ func (s *server) ConfigurationForm(ctx context.Context, in *pb.ConfigurationForm
 				},
 			},
 			{
-				Name:     "isPublic",
-				Label:    "Public?",
+				Name:        "isPublic",
+				Label:       "Public?",
 				Description: &toggleDescription,
-				Required: false,
+				Required:    false,
 				Type: &pb.FormField_ToggleField{
 					ToggleField: &pb.ToggleField{},
 				},
@@ -273,13 +272,13 @@ func (s *server) Test(ctx context.Context, in *pb.TestRequest) (*pb.TestResponse
 }
 
 func LogMessage(level string, message string) {
-    log := map[string]interface{}{
-        "level":         level,
-        "message":       message,
-        "message-origin": "sdk_connector",
-    }
-    logJSON, _ := json.Marshal(log)
-    fmt.Println(string(logJSON))
+	log := map[string]interface{}{
+		"level":          level,
+		"message":        message,
+		"message-origin": "sdk_connector",
+	}
+	logJSON, _ := json.Marshal(log)
+	fmt.Println(string(logJSON))
 }
 
 func main() {
