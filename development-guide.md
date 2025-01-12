@@ -52,23 +52,23 @@ The executable needs to do the following:
 - Partner code should use [gRPC built-in error mechanism](https://grpc.io/docs/guides/error/#language-support) to relay errors instead of throwing exceptions and abruptly closing the connection.
 - Partner code should capture and relay a clear message when the account permissions are not sufficient.
 
-### User tasks
+### User alerts
 
 - Partners can throw alerts on the Fivetran dashboard to notify customers about potential issues with their connector.
 - These issues may include bad source data or connection problems with the source itself. Where applicable, the alerts should also provide guidance to customers on how to resolve the problem.
-- Currently, we allow only throwing [errors](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#errors).
-- Partner code should use [gRPC built-in error mechanism](https://grpc.io/docs/guides/error/#language-support) to relay errors and pass the message in the following JSON format to the error description:
-```
-{
-    "message": "Your task message goes here"
-    "alert_type": "TASK"
-}
-```
+- We allow throwing [errors](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#errors) and [warnings](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#warnings).
+- Partner code should use [Warning](https://github.com/fivetran/fivetran_sdk/blob/main/v2_examples/common_v2.proto#L160) and [Task](https://github.com/fivetran/fivetran_sdk/blob/main/v2_examples/common_v2.proto#L164) messages defined in the proto files to relay information or errors to Fivetran.
 - Usage example:
 ```
-responseObserver.onError(Status.UNAVAILABLE.withDescription(jsonMessage).asException());
+responseObserver.onNext(
+                UpdateResponse.newBuilder()
+                        .setTask(
+                                Task.newBuilder()
+                                        .setMessage("Unable to connect to the database. Please provide the correct credentials.")
+                                        .build()
+                        )
+                        .build());
 ```
-- We convert the error description to a SEVERE log if it is not in the correct JSON format and the error causes the sync to fail.
 
 ### Retries
 - Partner code should retry transient problems internally
