@@ -1,6 +1,6 @@
 FROM openjdk:11-jre-slim
 
-EXPOSE 50051
+EXPOSE 50052
 
 RUN mkdir /app
 
