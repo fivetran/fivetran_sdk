@@ -141,20 +141,20 @@ class DestinationImpl(destination_sdk_v2_pb2_grpc.DestinationConnectorServicer):
 
         # Add conditional fields to the form
         conditional_field_for_cloud = common_v2_pb2.FormField(
-            name="doesNotMatterCloud",
-            label="It won't be used",
+            name="conditional_field_for_cloud",
+            label="Conditional field for cloud",
             conditional_fields=conditional_fields_for_cloud
         )
 
         conditional_field_for_file = common_v2_pb2.FormField(
-            name="doesNotMatterFile",
-            label="It won't be used",
+            name="conditional_field_for_file",
+            label="Conditional field for File",
             conditional_fields=conditional_fields_for_file
         )
 
         conditional_field_for_database = common_v2_pb2.FormField(
-            name="doesNotMatterDatabase",
-            label="It won't be used",
+            name="conditional_field_for_database",
+            label="Conditional field for Database",
             conditional_fields=conditional_fields_for_database
         )
 

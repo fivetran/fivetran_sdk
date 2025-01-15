@@ -118,8 +118,8 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
                 .build();
 
         FormField conditionalFieldForCloud = FormField.newBuilder()
-                .setName("doesNotMatter")
-                .setLabel("It won't be used")
+                .setName("conditionalFieldForCloud")
+                .setLabel("Conditional Field for Cloud")
                 .setConditionalFields(
                         ConditionalFields.newBuilder()
                                 .setCondition(visibilityConditionForCloud)
@@ -128,8 +128,8 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
                 .build();
 
         FormField conditionalFieldForFile = FormField.newBuilder()
-                .setName("doesNotMatter")
-                .setLabel("It won't be used")
+                .setName("conditionalFieldForFile")
+                .setLabel("Conditional Field for File")
                 .setConditionalFields(
                         ConditionalFields.newBuilder()
                                 .setCondition(visibilityConditionForFile)
@@ -138,8 +138,8 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
                 .build();
 
         FormField conditionalFieldForDatabase = FormField.newBuilder()
-                .setName("doesNotMatter")
-                .setLabel("It won't be used")
+                .setName("conditionalFieldForDatabase")
+                .setLabel("Conditional Field for Database")
                 .setConditionalFields(
                         ConditionalFields.newBuilder()
                                 .setCondition(visibilityConditionForDatabase)
