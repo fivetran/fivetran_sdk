@@ -148,6 +148,7 @@ The `DescribeTable` RPC call should report all columns in the destination table,
 #### Truncate
 - The `Truncate` RPC call might be requested for a table that does not exist in the destination. In that case, it should NOT fail, simply ignore the request and return `success = true`.
 - `utc_delete_before` has millisecond precision.
+- `soft` indicates that the truncate operation is a soft truncate operation and instead of removing the rows the specified `delete_column` needs to be marked as true. 
 
 #### AlterTable
 - The `AlterTable` RPC call should be used for changing primary key columns, adding columns, and changing data types. 
