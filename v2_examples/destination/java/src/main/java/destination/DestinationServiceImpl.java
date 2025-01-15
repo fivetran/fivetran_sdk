@@ -100,8 +100,7 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
                 .setToggleField(ToggleField.newBuilder().build())
                 .build();
 
-
-        // Conditional Field for OAuth
+        // List of Visibility Conditions
         VisibilityCondition visibilityConditionForCloud = VisibilityCondition.newBuilder()
                 .setConditionField("writerType")
                 .setStringValue("Cloud")
@@ -117,6 +116,8 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
                 .setStringValue("File")
                 .build();
 
+        // List of conditional fields
+        // Note: The 'name' and 'label' parameters in the FormField for conditional fields are not used.
         FormField conditionalFieldForCloud = FormField.newBuilder()
                 .setName("conditionalFieldForCloud")
                 .setLabel("Conditional Field for Cloud")

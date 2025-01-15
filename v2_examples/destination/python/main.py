@@ -121,6 +121,9 @@ class DestinationImpl(destination_sdk_v2_pb2_grpc.DestinationConnectorServicer):
             string_value="File"
         )
 
+        # List of conditional fields
+        # Note: The 'name' and 'label' parameters in the FormField for conditional fields are not used.
+
         # Create conditional fields for Cloud
         conditional_fields_for_cloud = common_v2_pb2.ConditionalFields(
             condition=visibility_condition_for_cloud,
