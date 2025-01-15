@@ -97,6 +97,7 @@ The [`ConfigurationForm` RPC call](#configurationform) retrieves the tests that 
 - Text Field: A standard text input field for user text entry. You can provide a `title` displayed above the field. You can indicate whether the field is `required`, and you may also include an optional `description` displayed below the field to help explain what the user should complete.
 - Dropdown: A drop-down menu that allows users to choose one option from the list you provided.
 - Toggle Field: A toggle switch for binary options (e.g., on/off or yes/no).
+- Conditional Fields: This feature allows you to define fields that are dependent on the value of a specific parent field. The message consists of two nested-messages: VisibilityCondition and a list of dependent form fields. The VisibilityCondition specifies the parent field and its expected value. The list of dependent fields defines the fields that will be shown when the value of the parent field provided in the setup form matches the Condition defined.
 
 ## Source Connector guidelines
 
@@ -132,11 +133,16 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd).
 ### Batch Files
 - Each batch file is limited in size to 100MB.
 - Number of records in each batch file can vary depending on row size.
-- We only support CSV file format.
+- We support CSV and PARQUET file format.
 
 #### CSV
 - Fivetran creates batch files using `com.fasterxml.jackson.dataformat.csv.CsvSchema`, which by default doesn't consider backslash '\' an escape character. If you are reading the batch file then make sure that you do not consider backslash '\' an escape character.
 - BINARY data is written to batch files using base64 encoding. You need to decode it to get back the original byte array.
+
+#### PARQUET
+- Apache Avro schema is used to define the structure of the data in the batch files. When writing data, ensure that the schema is correctly defined and matches the data format to prevent issues during deserialization.
+- Parquet files are written using `AvroParquetWriter`.
+- BINARY data written is converted to byte array. Ensure that when reading from Parquet files, this byte array is properly handled and reconstructed as needed.
 
 ### RPC Calls
 #### CreateTable
@@ -168,9 +174,9 @@ The `WriteBatchRequest` RPC call provides details about the batch files containi
 
 Also, Fivetran deduplicates operations such that each primary key shows up only once in any of the operations.
 
-Do not assume order of columns in the batch files. Always read the CSV file header to determine the column order.
+> Note: For CSV batch files, do not assume the order of columns. Always read the CSV file header to determine the column order.
 
-- `CsvFileParams`:
+- `FileParams`:
     - `null_string` value is used to represent `NULL` value in all batch files.
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
 
