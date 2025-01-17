@@ -174,7 +174,7 @@ The `WriteBatchRequest` RPC call provides details about the batch files containi
 
 Also, Fivetran deduplicates operations such that each primary key shows up only once in any of the operations.
 
-> Note: For CSV batch files, do not assume the order of columns. Always read the CSV file header to determine the column order.
+> NOTE: For CSV batch files, do not assume the order of columns. Always read the CSV file header to determine the column order.
 
 - `FileParams`:
     - `null_string` value is used to represent `NULL` value in all batch files.
