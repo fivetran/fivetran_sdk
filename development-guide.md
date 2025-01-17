@@ -97,7 +97,7 @@ The [`ConfigurationForm` RPC call](#configurationform) retrieves the tests that 
 - Text Field: A standard text input field for user text entry. You can provide a `title` displayed above the field. You can indicate whether the field is `required`, and you may also include an optional `description` displayed below the field to help explain what the user should complete.
 - Dropdown: A drop-down menu that allows users to choose one option from the list you provided.
 - Toggle Field: A toggle switch for binary options (e.g., on/off or yes/no).
-- Conditional Fields: This feature allows you to define fields that are dependent on the value of a specific parent field. The message consists of two nested-messages: VisibilityCondition and a list of dependent form fields. The VisibilityCondition specifies the parent field and its expected value. The list of dependent fields defines the fields that will be shown when the value of the parent field provided in the setup form matches the Condition defined.
+- Conditional Fields: This feature allows you to define fields that are dependent on the value of a specific parent field. The message consists of two nested-messages: `VisibilityCondition` and a list of dependent form fields. The `VisibilityCondition` message specifies the parent field and its condition value. The list of dependent fields defines the fields that are shown when the value of the parent field provided in the setup form matches the specified condition field.
 
 ## Source Connector guidelines
 
