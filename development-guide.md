@@ -180,6 +180,13 @@ Also, Fivetran deduplicates operations such that each primary key shows up only 
     - `null_string` value is used to represent `NULL` value in all batch files.
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
 
+#### WriteHistoryBatchRequest
+The `WriteHistoryBatchRequest` RPC call provides details about the batch files containing the records to be pushed to the destination for **History Mode**. In addition to the parameters of `WriteBatchRequest`, this request also contains following batch file
+
+- `earliest_start_files` is for updating history mode specific columns for the existing rows in the destination.
+
+> Note: To handle history mode `earliest_start_files`, `replace_files`, `update_files` and `delete_files`, follow [How to Handle History Mode Batch Files](how-to-handle-history-mode-batch-files.md) guide.
+
 ### Examples of Data Types
 Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in CSV batch files are as follows:
 - UNSPECIFIED: This data type never appears in batch files
