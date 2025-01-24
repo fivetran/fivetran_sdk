@@ -181,7 +181,7 @@ Also, Fivetran deduplicates operations such that each primary key shows up only 
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
 
 #### WriteHistoryBatchRequest
-The `WriteHistoryBatchRequest` RPC call provides details about the batch files containing the records to be pushed to the destination for **History Mode**. In addition to the parameters of `WriteBatchRequest`, this request also contains following batch file
+The `WriteHistoryBatchRequest` RPC call provides details about the batch files containing the records to be pushed to the destination for **History Mode**. In addition to the parameters of `WriteBatchRequest`, this request also contains the `earliest_start_files` file used for updating history mode-specific columns for the existing rows in the destination.
 
 - `earliest_start_files` is for updating history mode specific columns for the existing rows in the destination.
 
