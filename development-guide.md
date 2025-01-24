@@ -185,7 +185,7 @@ The `WriteHistoryBatchRequest` RPC call provides details about the batch files c
 
 - `earliest_start_files` is for updating history mode specific columns for the existing rows in the destination.
 
-> Note: To handle history mode `earliest_start_files`, `replace_files`, `update_files` and `delete_files`, follow [How to Handle History Mode Batch Files](how-to-handle-history-mode-batch-files.md) guide.
+> NOTE: To handle history mode `earliest_start_files`, `replace_files`, `update_files` and `delete_files`, follow [How to Handle History Mode Batch Files](how-to-handle-history-mode-batch-files.md) guide.
 
 ### Examples of Data Types
 Examples of each [DataType](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L73C6-L73C14) as they would appear in CSV batch files are as follows:
