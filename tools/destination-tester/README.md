@@ -16,6 +16,9 @@
     ```
         docker pull us-docker.pkg.dev/build-286712/public-docker-us/sdktesters/sdk-tester   
     ```
+
+> NOTE: If using V2 proto versions, use the latest docker image of the [public-docker-us/sdktesters-v2/sdk-tester](https://console.cloud.google.com/artifacts/docker/build-286712/us/public-docker-us/sdktesters-v2%2Fsdk-tester?invt=Abm4dQ&inv=1) artifact in Google Artifact Registry.
+
 2. Run a container using the image with the following command. Make sure to map a local directory for the tool by replacing `<local-data-folder>` placeholders in the command, and replace `<version>` with the version of the image you pulled.
 
 ```
@@ -168,3 +171,6 @@ The tester by default creates a schema named `tester`. This option allows the te
 
 #### --disable-operation-delay
 The tester by default adds a delay to operation for real-time simulation. Specifying this argument disables the delay.
+
+#### --batch-file-type
+We now support both CSV and PARQUET batch files. If this argument is not provided, testers will generate CSV batch files.

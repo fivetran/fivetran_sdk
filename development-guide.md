@@ -52,23 +52,23 @@ The executable needs to do the following:
 - Partner code should use [gRPC built-in error mechanism](https://grpc.io/docs/guides/error/#language-support) to relay errors instead of throwing exceptions and abruptly closing the connection.
 - Partner code should capture and relay a clear message when the account permissions are not sufficient.
 
-### User tasks
+### User alerts
 
 - Partners can throw alerts on the Fivetran dashboard to notify customers about potential issues with their connector.
 - These issues may include bad source data or connection problems with the source itself. Where applicable, the alerts should also provide guidance to customers on how to resolve the problem.
-- Currently, we allow only throwing [errors](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#errors).
-- Partner code should use [gRPC built-in error mechanism](https://grpc.io/docs/guides/error/#language-support) to relay errors and pass the message in the following JSON format to the error description:
-```
-{
-    "message": "Your task message goes here"
-    "alert_type": "TASK"
-}
-```
+- We allow throwing [errors](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#errors) and [warnings](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#warnings).
+- Partner code should use [Warning](https://github.com/fivetran/fivetran_sdk/blob/main/v2_examples/common_v2.proto#L160) and [Task](https://github.com/fivetran/fivetran_sdk/blob/main/v2_examples/common_v2.proto#L164) messages defined in the proto files to relay information or errors to Fivetran.
 - Usage example:
 ```
-responseObserver.onError(Status.UNAVAILABLE.withDescription(jsonMessage).asException());
+responseObserver.onNext(
+                UpdateResponse.newBuilder()
+                        .setTask(
+                                Task.newBuilder()
+                                        .setMessage("Unable to connect to the database. Please provide the correct credentials.")
+                                        .build()
+                        )
+                        .build());
 ```
-- We convert the error description to a SEVERE log if it is not in the correct JSON format and the error causes the sync to fail.
 
 ### Retries
 - Partner code should retry transient problems internally
@@ -97,6 +97,7 @@ The [`ConfigurationForm` RPC call](#configurationform) retrieves the tests that 
 - Text Field: A standard text input field for user text entry. You can provide a `title` displayed above the field. You can indicate whether the field is `required`, and you may also include an optional `description` displayed below the field to help explain what the user should complete.
 - Dropdown: A drop-down menu that allows users to choose one option from the list you provided.
 - Toggle Field: A toggle switch for binary options (e.g., on/off or yes/no).
+- Conditional Fields: This feature allows you to define fields that are dependent on the value of a specific parent field. The message consists of two nested-messages: `VisibilityCondition` and a list of dependent form fields. The `VisibilityCondition` message specifies the parent field and its condition value. The list of dependent fields defines the fields that are shown when the value of the parent field provided in the setup form matches the specified condition field.
 
 ## Source Connector guidelines
 
@@ -132,11 +133,16 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd).
 ### Batch Files
 - Each batch file is limited in size to 100MB.
 - Number of records in each batch file can vary depending on row size.
-- We only support CSV file format.
+- We support CSV and PARQUET file format.
 
 #### CSV
-- Fivetran creates batch files using `com.fasterxml.jackson.dataformat.csv.CsvSchema`, which by default doesn't consider backslash '\' an escape character. If you are reading the batch file then make sure that you do not consider backslash '\' an escape character.
+- Fivetran creates batch files using `com.fasterxml.jackson.dataformat.csv.CsvSchema`, which by default doesn't consider backslash '\\' an escape character. If you are reading the batch file then make sure that you do not consider backslash '\\' an escape character.
 - BINARY data is written to batch files using base64 encoding. You need to decode it to get back the original byte array.
+
+#### PARQUET
+- Apache Avro schema is used to define the structure of the data in the batch files. When writing data, ensure that the schema is correctly defined and matches the data format to prevent issues during deserialization.
+- Parquet files are written using `AvroParquetWriter`.
+- BINARY data written is converted to byte array. Ensure that when reading from Parquet files, this byte array is properly handled and reconstructed as needed.
 
 ### RPC Calls
 #### CreateTable
@@ -168,9 +174,9 @@ The `WriteBatchRequest` RPC call provides details about the batch files containi
 
 Also, Fivetran deduplicates operations such that each primary key shows up only once in any of the operations.
 
-Do not assume order of columns in the batch files. Always read the CSV file header to determine the column order.
+> NOTE: For CSV batch files, do not assume the order of columns. Always read the CSV file header to determine the column order.
 
-- `CsvFileParams`:
+- `FileParams`:
     - `null_string` value is used to represent `NULL` value in all batch files.
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
 
