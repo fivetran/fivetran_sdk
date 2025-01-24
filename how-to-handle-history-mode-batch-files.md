@@ -94,3 +94,4 @@ We set unmodified columns' values to the values of the active records. In this e
 - We set the `_fivetran_active` column value to FALSE for the active record and set the `_fivetran_end` column value in destination to value of the `_fivetran_end` in the batch file of the specified primary key in the row.
 
 
+![History Mode Batch File](./history_mode.png) 
