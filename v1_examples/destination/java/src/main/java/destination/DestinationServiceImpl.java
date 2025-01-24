@@ -3,6 +3,9 @@ package destination;
 import fivetran_sdk.*;
 import io.grpc.stub.StreamObserver;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -111,20 +114,34 @@ public class DestinationServiceImpl extends DestinationGrpc.DestinationImplBase 
     public void writeBatch(WriteBatchRequest request, StreamObserver<WriteBatchResponse> responseObserver) {
         String message = "[WriteBatch]: " + request.getSchemaName() + " | " + request.getTable().getName();
         logMessage(WARNING, String.format("Sample severe message: %s", message));
-        for (String file : request.getReplaceFilesList()) {
-            System.out.println("Replace files: " + file);
-        }
-        for (String file : request.getUpdateFilesList()) {
-            System.out.println("Update files: " + file);
-        }
-        for (String file : request.getDeleteFilesList()) {
-            System.out.println("Delete files: " + file);
+        try {
+            for (String file : request.getReplaceFilesList()) {
+                logMessage(INFO, "Replace files: " + file);
+                logMessage(WARNING, fileContents(file));
+            }
+            for (String file : request.getUpdateFilesList()) {
+                logMessage(INFO, "Update files: " + file);
+                logMessage(WARNING, fileContents(file));
+            }
+            for (String file : request.getDeleteFilesList()) {
+                logMessage(INFO, "Delete files: " + file);
+                logMessage(WARNING, fileContents(file));
+            }
+        } catch (Exception e) {
+            logMessage(SEVERE, e.getMessage());
+            responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(false).build());
+            responseObserver.onCompleted();
+            return;
         }
         responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
 
-    private void logMessage(String level, String message){
-        System.out.println(String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_destination\"}", level, message));
+    static void logMessage(String level, String message){
+        System.out.println(String.format("%s message: %s, message-origin: \"sdk_destination\"", level, message));
+    }
+
+    static String fileContents(String path) throws IOException {
+        return Files.readString(Paths.get(path));
     }
 }
