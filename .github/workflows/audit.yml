@@ -69,17 +69,13 @@ jobs:
       working-directory: v1_examples/connector/golang
       run: export PATH="$PATH:$(go env GOPATH)/bin"
 
-    - name: Build Go connector
-      working-directory: v1_examples/connector/golang
-      run: scripts/build.sh
-
-    - name: Set up dependencies for Go
-      working-directory: v1_examples/connector/golang
-      run: go mod tidy
-
     - name: Verify dependencies
       working-directory: v1_examples/connector/golang
       run: go mod verify
+
+    - name: Build Go connector
+      working-directory: v1_examples/connector/golang
+      run: scripts/build.sh
 
     - name: Run go vet
       working-directory: v1_examples/connector/golang
