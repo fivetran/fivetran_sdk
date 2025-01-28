@@ -1,1 +1,3 @@
-cp ../../*.proto proto/
+#!/bin/bash
+mkdir ../proto
+cp ../../../*.proto ../proto/

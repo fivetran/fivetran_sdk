@@ -57,6 +57,14 @@ jobs:
       with:
         version: "23.2"
 
+    - name: Set up protobuf for Go
+      working-directory: v1_examples/connector/golang
+      run: go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+
+    - name: Set up protoc-gen-go
+      working-directory: v1_examples/connector/golang
+      run: go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
     - name: Set up Go protoc path
       working-directory: v1_examples/connector/golang
       run: export PATH="$PATH:$(go env GOPATH)/bin"
