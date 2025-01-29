@@ -29,7 +29,7 @@ For this file, the following operations must be implemented in the exact order a
 3. Updating of the values of the history mode-specific system columns `fivetran_active` and `fivetran_end` in the destination. 
     
   ```sql
-  UPDATE <schema.table> SET fivetran_active = FALSE, _fivetran_end = t1 - 1 WHERE _fivetran_active = TRUE AND pk1 = <val> {AND  pk2 = <val>.....}`
+  UPDATE <schema.table> SET fivetran_active = FALSE, _fivetran_end = earliest_fivetran_start - 1 msec WHERE _fivetran_active = TRUE AND pk1 = <val> {AND  pk2 = <val>.....}`
   ```
 
 #### `update_files`
