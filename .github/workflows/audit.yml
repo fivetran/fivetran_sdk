@@ -59,11 +59,11 @@ jobs:
 
     - name: Set up protobuf for Go
       working-directory: v1_examples/connector/golang
-      run: go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+      run: go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 
     - name: Set up protoc-gen-go
       working-directory: v1_examples/connector/golang
-      run: go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
+      run: go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
     - name: Set up Go protoc path
       working-directory: v1_examples/connector/golang
