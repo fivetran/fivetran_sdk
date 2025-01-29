@@ -17,7 +17,7 @@ The following types of files are a part of the `WriteHistoryBatchRequest` gRPC c
 
 #### `earliest_start_files`
 
-In `WriteHistoryBatchRequest`, we pass a new field, `earliest_start_files`. This file contains a list of records, where for each primary key in the incoming batch, only the record with the earliest `_fivetran_start` value is included, even if multiple records with the same primary key exist in the batch.
+In `WriteHistoryBatchRequest`, we pass a new field, `earliest_start_files`. This file contains a single record for each primary key in the incoming batch, with the earliest `_fivetran_start`.
 
 For this file, the following operations must be implemented in the exact order as they are listed:
 1. Removing any overlapping records where existing `_fivetran_start` is greater than the `earliest_fivetran_start` timestamp value in the `earliest_start_files` file:
