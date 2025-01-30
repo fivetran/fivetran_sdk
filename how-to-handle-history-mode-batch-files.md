@@ -23,7 +23,7 @@ For this file, the following operations must be implemented in the exact order a
 1. Removing any overlapping records where existing `_fivetran_start` is greater than the `earliest_fivetran_start` timestamp value in the `earliest_start_files` file:
   
    ```sql
-   DELETE FROM <schema.table> WHERE pk1 = <val> {AND  pk2 = <val>.....} AND _fivetran_start >= val(_earliest_fivetran_start);
+   DELETE FROM <schema.table> WHERE pk1 = <val> {AND  pk2 = <val>.....} AND _fivetran_start >= val<_earliest_fivetran_start>;
    ```
 
 3. Updating of the values of the history mode-specific system columns `fivetran_active` and `fivetran_end` in the destination. 
