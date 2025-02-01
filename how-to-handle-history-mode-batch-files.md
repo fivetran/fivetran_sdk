@@ -1,6 +1,6 @@
 # What is History Mode
 
-[History mode](/docs/using-fivetran/features#historymode) allows to capture every available version of each record from Fivetran source connectors.
+[History mode](https://fivetran.com/docs/using-fivetran/features#historymode) allows to capture every available version of each record from Fivetran source connectors.
 In order to keep all versions of the records, the following new system columns are added to tables with history mode enabled:
 
 
