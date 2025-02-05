@@ -18,7 +18,7 @@ Once you have your code ready to run:
 
 Our READMEs for [source connectors](tools/source-connector-tester/) and [destination connectors](tools/destination-connector-tester/) will take you through setting up the local test environment. 
 
-> To run an example connector from `examples` directory, follow the README specific to the example. 
+> NOTE: To run an example connector from the `examples` directory, follow the README specific to the example. 
 
 ### Other Examples
 You can look at the following public repos to see how other partners have built their connectors:
