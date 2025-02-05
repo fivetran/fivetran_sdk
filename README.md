@@ -14,7 +14,7 @@ Once you have your code ready to run:
 1. Start up your connector running on port 50051 (for destination code, use port 50052).
 2. Run the local test environment.
 
-Our READMEs for [connectors](tools/connector-tester/) and [destinations](tools/destination-tester/) will take you through setting up the local test environment. 
+Our READMEs for [connectors](tools/source-connector-tester/) and [destinations](tools/destination-connector-tester/) will take you through setting up the local test environment. 
 
 > To run an example connector or destination from `examples` directory, follow the README specific to the example. 
 
