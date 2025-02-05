@@ -2,7 +2,7 @@
 
 ## Pre-requisites
 - Docker Desktop >= 4.23.0 or [Rancher Desktop](https://rancherdesktop.io/) >= 1.12.1
-- gRPC server is running for the particular example (see [example readme's](/v1_examples/destination/))
+- gRPC server is running for the particular example (see [example readme's](/v1/destination/))
 
 ## How To Run
 
