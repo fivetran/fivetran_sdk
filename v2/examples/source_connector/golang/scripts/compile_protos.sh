@@ -5,4 +5,4 @@ PATH="${PATH}:${HOME}/go/bin" protoc \
     --go-grpc_out=proto \
     --go-grpc_opt=paths=source_relative \
     common_v2.proto \
-    connector_sdk_v2.proto
+    source_connector_sdk_v2.proto
