@@ -21,10 +21,12 @@ The executable needs to do the following:
 
 * Partners should not add the proto files to their repos. Proto files should be pulled in from this repo at build time and added to `.gitignore` so they are excluded.
 * Always use proto files from latest release and update you're code if necessary. Older releases proto files can be considered deprecated and will be expired at later date.
+* New partners that just started working with the Connector SDK should use [V2 protos](v2). Only partners that have already used [V1 protos](v1) to build SDK connectors should continue using them. 
+
 
 ### Logging
 
-- Write logs out to STDOUT in the following JSON format. Accepted levels are INFO, WARNING, and SEVERE. `Message-origin` can be `sdk_connector` or `sdk_destination`.
+- Write logs out to STDOUT in the following JSON format. Accepted levels are INFO, WARNING, and SEVERE. `message-origin` can be `sdk_connector` or `sdk_destination`.
 
 ```
 {
@@ -53,11 +55,11 @@ The executable needs to do the following:
 - Partner code should capture and relay a clear message when the account permissions are not sufficient.
 
 ### User alerts
-
+> NOTE: Available in V2 only.
 - Partners can throw alerts on the Fivetran dashboard to notify customers about potential issues with their connector.
 - These issues may include bad source data or connection problems with the source itself. Where applicable, the alerts should also provide guidance to customers on how to resolve the problem.
 - We allow throwing [errors](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#errors) and [warnings](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#warnings).
-- Partner code should use [Warning](https://github.com/fivetran/fivetran_sdk/blob/main/v2_examples/common_v2.proto#L160) and [Task](https://github.com/fivetran/fivetran_sdk/blob/main/v2_examples/common_v2.proto#L164) messages defined in the proto files to relay information or errors to Fivetran.
+- Partner code should use [Warning](https://github.com/fivetran/fivetran_sdk/blob/main/v2/common_v2.proto#L160) and [Task](https://github.com/fivetran/fivetran_sdk/blob/main/v2/common_v2.proto#L164) messages defined in the proto files to relay information or errors to Fivetran.
 - Usage example:
 ```
 responseObserver.onNext(
@@ -94,10 +96,10 @@ The `ConfigurationForm` RPC call retrieves all the setup form fields and tests i
 The [`ConfigurationForm` RPC call](#configurationform) retrieves the tests that need to be executed during connection setup. The `Test` call then invokes the test with the customer's credentials as parameters. As a result, it should return a success or failure indication for the test execution.
 
 ### Supported setup form fields 
-- Text Field: A standard text input field for user text entry. You can provide a `title` displayed above the field. You can indicate whether the field is `required`, and you may also include an optional `description` displayed below the field to help explain what the user should complete.
+- Text field: A standard text input field for user text entry. You can provide a `title` displayed above the field. You can indicate whether the field is `required`, and you may also include an optional `description` displayed below the field to help explain what the user should complete.
 - Dropdown: A drop-down menu that allows users to choose one option from the list you provided.
-- Toggle Field: A toggle switch for binary options (e.g., on/off or yes/no).
-- Conditional Fields: This feature allows you to define fields that are dependent on the value of a specific parent field. The message consists of two nested-messages: `VisibilityCondition` and a list of dependent form fields. The `VisibilityCondition` message specifies the parent field and its condition value. The list of dependent fields defines the fields that are shown when the value of the parent field provided in the setup form matches the specified condition field.
+- Toggle field: A toggle switch for binary options (e.g., on/off or yes/no).
+- Conditional fields (Available in V2): This feature allows you to define fields that are dependent on the value of a specific parent field. The message consists of two nested-messages: `VisibilityCondition` and a list of dependent form fields. The `VisibilityCondition` message specifies the parent field and its condition value. The list of dependent fields defines the fields that are shown when the value of the parent field provided in the setup form matches the specified condition field.
 
 ## Source Connector guidelines
 
@@ -121,6 +123,7 @@ The `Update` RPC call should retrieve data from the source. We send a request us
     - `_fivetran_synced`: This is a `UTC_DATETIME` column that represents the start of sync. Every table has this system column.
     - `_fivetran_deleted`: This column is used to indicate whether a given row is deleted at the source or not. If the source soft-deletes a row or a table, this system column is added to the table.
     - `_fivetran_id`: Fivetran supports primary-keyless source tables by adding this column as a stand-in pseudo primary key column so that all destination tables have a primary key.
+    - `_fivetran_active`, `_fivetran_start`, `_fivetran_end`: These columns are used in history mode. For more information, refer [here](how-to-handle-history-mode-batch-files.md).
 
 ### Compression
 Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd).  
@@ -139,7 +142,7 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd).
 - Fivetran creates batch files using `com.fasterxml.jackson.dataformat.csv.CsvSchema`, which by default doesn't consider backslash '\\' an escape character. If you are reading the batch file then make sure that you do not consider backslash '\\' an escape character.
 - BINARY data is written to batch files using base64 encoding. You need to decode it to get back the original byte array.
 
-#### PARQUET
+#### PARQUET (Available in V2)
 - Apache Avro schema is used to define the structure of the data in the batch files. When writing data, ensure that the schema is correctly defined and matches the data format to prevent issues during deserialization.
 - Parquet files are written using `AvroParquetWriter`.
 - BINARY data written is converted to byte array. Ensure that when reading from Parquet files, this byte array is properly handled and reconstructed as needed.
@@ -182,6 +185,8 @@ Also, Fivetran deduplicates operations such that each primary key shows up only 
     - `unmodified_string` value is used to indicate columns in `update_files` where the values did not change.
 
 #### WriteHistoryBatchRequest
+> NOTE: This RPC call is available in V2 only.
+
 The `WriteHistoryBatchRequest` RPC call provides details about the batch files containing the records to be written to the destination for [**History Mode**](https://fivetran.com/docs/using-fivetran/features#historymode). In addition to the parameters of the [`WriteBatchRequest`](#writebatchrequest), this request also contains the `earliest_start_files` parameter used for updating history mode-specific columns for the existing rows in the destination.
 
 > NOTE: To learn how to handle `earliest_start_files`, `replace_files`, `update_files` and `delete_files` in history mode, follow the [How to Handle History Mode Batch Files](how-to-handle-history-mode-batch-files.md) guide.

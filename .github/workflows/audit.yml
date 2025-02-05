@@ -32,19 +32,19 @@ jobs:
       run: python -m pip install --upgrade pip setuptools wheel
 
     - name: Install Python connector requirements
-      working-directory: v1_examples/connector/python
+      working-directory: v1/examples/source_connector/python
       run: pip install -r requirements.txt
 
     - name: Run Python connector build script
-      working-directory: v1_examples/connector/python
+      working-directory: v1/examples/source_connector/python
       run: ./build.sh
 
     - name: Install Python destination requirements
-      working-directory: v1_examples/destination/python
+      working-directory: v1/examples/destination_connector/python
       run: pip install -r requirements.txt
 
     - name: Run Python destination build script
-      working-directory: v1_examples/destination/python
+      working-directory: v1/examples/destination_connector/python
       run: ./build.sh
 
     - name: Set up Go
@@ -58,45 +58,45 @@ jobs:
         version: "23.2"
 
     - name: Set up protobuf for Go
-      working-directory: v1_examples/connector/golang
+      working-directory: v1/examples/source_connector/golang
       run: go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 
     - name: Set up protoc-gen-go
-      working-directory: v1_examples/connector/golang
+      working-directory: v1/examples/source_connector/golang
       run: go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
     - name: Set up Go protoc path
-      working-directory: v1_examples/connector/golang
+      working-directory: v1/examples/source_connector/golang
       run: export PATH="$PATH:$(go env GOPATH)/bin"
 
     - name: Verify dependencies
-      working-directory: v1_examples/connector/golang
+      working-directory: v1/examples/source_connector/golang
       run: go mod verify
 
     - name: Build Go connector
-      working-directory: v1_examples/connector/golang
+      working-directory: v1/examples/source_connector/golang
       run: scripts/build.sh
 
     - name: Run go vet
-      working-directory: v1_examples/connector/golang
+      working-directory: v1/examples/source_connector/golang
       run: go vet ./...
 
     - name: Install staticcheck
       run: go install honnef.co/go/tools/cmd/staticcheck@latest
 
     - name: Run staticcheck
-      working-directory: v1_examples/connector/golang
+      working-directory: v1/examples/source_connector/golang
       run: staticcheck ./...
 
     - name: Install golint
       run: go install golang.org/x/lint/golint@latest
 
     - name: Run golint
-      working-directory: v1_examples/connector/golang
+      working-directory: v1/examples/source_connector/golang
       run: golint ./...
 
     - name: Run tests
-      working-directory: v1_examples/connector/golang
+      working-directory: v1/examples/source_connector/golang
       run: go test -race -vet=off ./...
 
     - name: Setup Gradle
@@ -105,17 +105,17 @@ jobs:
         gradle-version: 8.5
 
     - name: Run Java connector copyProtos
-      working-directory: v1_examples/connector/java
+      working-directory: v1/examples/source_connector/java
       run: gradle copyProtos
 
     - name: Run Java connector test with Gradle Wrapper
-      working-directory: v1_examples/connector/java
+      working-directory: v1/examples/source_connector/java
       run: gradle build
 
     - name: Run Java destination copyProtos
-      working-directory: v1_examples/destination/java
+      working-directory: v1/examples/destination_connector/java
       run: gradle copyProtos
 
     - name: Run Java destination test with Gradle Wrapper
-      working-directory: v1_examples/destination/java
+      working-directory: v1/examples/destination_connector/java
       run: gradle build
