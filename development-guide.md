@@ -123,6 +123,7 @@ The `Update` RPC call should retrieve data from the source. We send a request us
     - `_fivetran_synced`: This is a `UTC_DATETIME` column that represents the start of sync. Every table has this system column.
     - `_fivetran_deleted`: This column is used to indicate whether a given row is deleted at the source or not. If the source soft-deletes a row or a table, this system column is added to the table.
     - `_fivetran_id`: Fivetran supports primary-keyless source tables by adding this column as a stand-in pseudo primary key column so that all destination tables have a primary key.
+    - `_fivetran_active`, `_fivetran_start`, `_fivetran_end`: These columns are used in history mode. For more information, refer [here](how-to-handle-history-mode-batch-files.md).
 
 ### Compression
 Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd).  
