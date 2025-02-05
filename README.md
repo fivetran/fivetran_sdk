@@ -49,7 +49,7 @@ We expect testing to ensure your source or destination connector is working as e
 * Wide fact tables
 
 ### How do we collaborate on support?
-Once we get customers using your connector or destination, they can reach out to either Fivetran or you via support portals. Whoever receives a support ticket triages it and either fixes the issue and emails the customer back or passes it to the other side for handling.
+Once we get customers using your source or destination connector, they can reach out to either Fivetran or you via support portals. Whoever receives a support ticket triages it and either fixes the issue and emails the customer back or passes it to the other side for handling.
 
 Our response times are articulated in our [Fivetran Support Policy](https://support.fivetran.com/hc/en-us/articles/5893119459223-Fivetran-Support-Policy) documentation. Bear in mind customers may expect your support response times to be similar. We recommend linking to your own SLAs/Support policies from the documentation you create for Fivetran. 
 
