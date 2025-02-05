@@ -10,7 +10,7 @@ This repo consists of example source and destination connectors along with a loc
 ## Development
 You can follow the [SDK Development Guide](development-guide.md) for guidance on how to develop your code. 
 
-> Note: New partners should use [V2 protos](v2), while only old partners should continue using [V1 protos](v1).
+> NOTE: If you're a new partner that just started working with the Connector SDK, use [V2 protos](v2). We will continue to support [V1 protos](v1) for partners that have used them to build their SDK connectors.
 
 Once you have your code ready to run:
 1. Start up your connector running on port 50051 (for destination code, use port 50052).
