@@ -1,5 +1,5 @@
 const grpc = require("@grpc/grpc-js");
-const PROTO_PATH_CONNECTOR = "./src/protos/connector_sdk_v2.proto";
+const PROTO_PATH_CONNECTOR = "./src/protos/source_connector_sdk_v2.proto";
 var protoLoader = require("@grpc/proto-loader");
 
 const options = {
