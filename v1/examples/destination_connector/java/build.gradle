@@ -65,7 +65,7 @@ application {
 }
 
 tasks.register('copyProtos', Copy) {
-    from file("$rootDir/../..")
+    from file("$rootDir/../../..")
     into file("src/main/proto/")
     include "*.proto"
 }
