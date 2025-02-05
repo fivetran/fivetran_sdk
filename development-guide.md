@@ -96,7 +96,7 @@ The `ConfigurationForm` RPC call retrieves all the setup form fields and tests i
 The [`ConfigurationForm` RPC call](#configurationform) retrieves the tests that need to be executed during connection setup. The `Test` call then invokes the test with the customer's credentials as parameters. As a result, it should return a success or failure indication for the test execution.
 
 ### Supported setup form fields 
-- Text Field: A standard text input field for user text entry. You can provide a `title` displayed above the field. You can indicate whether the field is `required`, and you may also include an optional `description` displayed below the field to help explain what the user should complete.
+- Text field: A standard text input field for user text entry. You can provide a `title` displayed above the field. You can indicate whether the field is `required`, and you may also include an optional `description` displayed below the field to help explain what the user should complete.
 - Dropdown: A drop-down menu that allows users to choose one option from the list you provided.
 - Toggle field: A toggle switch for binary options (e.g., on/off or yes/no).
 - Conditional fields (Available in V2): This feature allows you to define fields that are dependent on the value of a specific parent field. The message consists of two nested-messages: `VisibilityCondition` and a list of dependent form fields. The `VisibilityCondition` message specifies the parent field and its condition value. The list of dependent fields defines the fields that are shown when the value of the parent field provided in the setup form matches the specified condition field.
