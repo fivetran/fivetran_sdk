@@ -14,7 +14,7 @@
     ```
     - Pull the Image: 
     ```
-        docker pull us-docker.pkg.dev/build-286712/public-docker-us/sdktesters-v2/sdk-tester   
+        docker pull us-docker.pkg.dev/build-286712/public-docker-us/sdktesters-v2/sdk-tester:<version> 
     ```
 
 > NOTE: If using V1 proto versions, use the latest docker image of the [public-docker-us/sdktesters/sdk-tester](https://console.cloud.google.com/artifacts/browse/build-286712/us/public-docker-us/sdktesters%2Fsdk-tester) artifact in Google Artifact Registry.
@@ -22,7 +22,7 @@
 2. Run a container using the image with the following command. Make sure to map a local directory for the tool by replacing `<local-data-folder>` placeholders in the command, and replace `<version>` with the version of the image you pulled.
 
 ```
-docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e WORKING_DIR=<local-data-folder> -e GRPC_HOSTNAME=host.docker.internal --network=host fivetrandocker/fivetran-sdk-tester:<version>  --tester-type destination --port <port>
+docker run --mount type=bind,source=<local-data-folder>,target=/data -a STDIN -a STDOUT -a STDERR -it -e GRPC_HOSTNAME=host.docker.internal --network=host us-docker.pkg.dev/build-286712/public-docker-us/sdktesters-v2/sdk-tester:<version> --tester-type source --port <port>
 ```
 
 3. To rerun the container from step #2, use the following command:
