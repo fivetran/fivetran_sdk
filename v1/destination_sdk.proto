@@ -1,14 +1,14 @@
 syntax = "proto3";
 option optimize_for = SPEED;
 option java_multiple_files = true;
-option go_package = "fivetran.com/fivetran_sdk";
-package fivetran_sdk;
+option go_package = "fivetran.com/fivetran_sdk_v2";
+package fivetran_sdk.v2;
 
 import "google/protobuf/timestamp.proto";
-import "common.proto";
+import "common_v2.proto";
 
-// Fivetran (grpc client) <> Destination (grpc server)
-service Destination {
+// Fivetran (grpc client) <> DestinationConnector (grpc server)
+service DestinationConnector {
     rpc ConfigurationForm (ConfigurationFormRequest) returns (ConfigurationFormResponse) {}
     rpc Capabilities (CapabilitiesRequest) returns (CapabilitiesResponse) {}
     rpc Test (TestRequest) returns (TestResponse) {}
@@ -17,6 +17,7 @@ service Destination {
     rpc AlterTable(AlterTableRequest) returns (AlterTableResponse) {}
     rpc Truncate(TruncateRequest) returns (TruncateResponse) {}
     rpc WriteBatch (WriteBatchRequest) returns (WriteBatchResponse) {}
+    rpc WriteHistoryBatch (WriteHistoryBatchRequest) returns (WriteBatchResponse) {}
 }
 
 message CapabilitiesRequest {}
@@ -34,8 +35,9 @@ message DescribeTableRequest {
 message DescribeTableResponse {
     oneof response {
         bool not_found = 1;
-        string failure = 2;
-        Table table = 3;
+        Table table = 2;
+        Warning warning = 3;
+        Task task = 4;
     }
 }
 
@@ -48,7 +50,8 @@ message CreateTableRequest {
 message CreateTableResponse {
     oneof response {
         bool success = 1;
-        string failure = 2;
+        Warning warning = 2;
+        Task task = 3;
     }
 }
 
@@ -61,7 +64,8 @@ message AlterTableRequest {
 message AlterTableResponse {
     oneof response {
         bool success = 1;
-        string failure = 2;
+        Warning warning = 2;
+        Task task = 3;
     }
 }
 
@@ -75,13 +79,14 @@ message TruncateRequest {
 }
 
 message SoftTruncate {
-    string deleted_column = 3;
+    string deleted_column = 1;
 }
 
 message TruncateResponse {
     oneof response {
         bool success = 1;
-        string failure = 2;
+        Warning warning = 2;
+        Task task = 3;
     }
 }
 
@@ -93,21 +98,26 @@ message WriteBatchRequest {
     repeated string replace_files = 5;
     repeated string update_files = 6;
     repeated string delete_files = 7;
-    oneof file_params {
-        CsvFileParams csv = 8;
-        ParquetFileParams parquet = 9;
-    }
+    FileParams file_params = 8;
 }
 
-message CsvFileParams {
+message WriteHistoryBatchRequest {
+    map<string, string> configuration = 1;
+    string schema_name = 2;
+    Table table = 3;
+    map<string, bytes> keys = 4;
+    repeated string earliest_start_files = 5;
+    repeated string replace_files = 6;
+    repeated string update_files = 7;
+    repeated string delete_files = 8;
+    FileParams file_params = 9;
+}
+
+message FileParams {
     Compression compression = 1;
     Encryption encryption = 2;
     string null_string = 3;
     string unmodified_string = 4;
-}
-
-message ParquetFileParams {
-    Encryption encryption = 1;
 }
 
 enum Encryption {
@@ -129,6 +139,7 @@ enum Compression {
 message WriteBatchResponse {
     oneof response {
         bool success = 1;
-        string failure = 2;
+        Warning warning = 2;
+        Task task = 3;
     }
 }
