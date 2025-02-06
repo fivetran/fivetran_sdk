@@ -1,5 +1,3 @@
-from sys import api_version
-
 import grpc
 from concurrent import futures
 import json

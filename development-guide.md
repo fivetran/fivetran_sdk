@@ -21,7 +21,7 @@ The executable needs to do the following:
 
 * Partners should not add the proto files to their repos. Proto files should be pulled in from this repo at build time and added to `.gitignore` so they are excluded.
 * Always use proto files from latest release and update you're code if necessary. Older releases proto files can be considered deprecated and will be expired at later date.
-* New partners that just started working with the Connector SDK should use [V2 protos](v2). Only partners that have already used [V1 protos](v1) to build SDK connectors should continue using them. 
+* New partners that just started working with the Connector SDK should use V2 release. We will continue to support V1 release for partners that have used them to build their SDK connectors, and these will be removed once the migration to V2 is complete.
 
 
 ### Logging

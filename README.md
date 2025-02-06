@@ -3,14 +3,13 @@ A way for partners to create source and destination connectors that run on [Five
 
 ## Repo Structure
 This repo consists of example source and destination connectors along with a local testing environment. Both connectors are written in a [gRPC supported language](https://grpc.io/docs/languages/) that can generate a statically linked binary. We recommend Java, Golang, or Rust. 
-* [V2 Examples](v2/examples)
-* [V1 Examples](v1/examples)
+* [V2 Examples](examples)
 * [Local Testing Tools](tools/)
 
 ## Development
 You can follow the [SDK Development Guide](development-guide.md) for guidance on how to develop your code. 
 
-> NOTE: If you're a new partner that just started working with the Connector SDK, use [V2 protos](v2). We will continue to support [V1 protos](v1) for partners that have used them to build their SDK connectors, and these will be removed once the migration to V2 is complete.
+> NOTE: If you're a new partner that just started working with the Connector SDK, use V2 release. We will continue to support V1 release for partners that have used them to build their SDK connectors, and these will be removed once the migration to V2 is complete.
 
 Once you have your code ready to run:
 1. Start up your connector running on port 50051 (for destination code, use port 50052).

@@ -1,1 +1,0 @@
-go run golang_connector/main.go
