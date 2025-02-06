@@ -3,7 +3,7 @@ A way for partners to create source and destination connectors that run on [Five
 
 ## Repo Structure
 This repo consists of example source and destination connectors along with a local testing environment. Both connectors are written in a [gRPC supported language](https://grpc.io/docs/languages/) that can generate a statically linked binary. We recommend Java, Golang, or Rust. 
-* [V2 Examples](v2/examples)
+* [V2 Examples](examples)
 * [V1 Examples](v1/examples)
 * [Local Testing Tools](tools/)
 
