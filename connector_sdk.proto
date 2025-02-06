@@ -4,7 +4,7 @@ option java_multiple_files = true;
 option go_package = "fivetran.com/fivetran_sdk_v2";
 package fivetran_sdk.v2;
 
-import "common_v2.proto";
+import "common.proto";
 
 // Fivetran (grpc client) <> SourceConnector (grpc server)
 service SourceConnector {

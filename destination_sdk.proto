@@ -5,7 +5,7 @@ option go_package = "fivetran.com/fivetran_sdk_v2";
 package fivetran_sdk.v2;
 
 import "google/protobuf/timestamp.proto";
-import "common_v2.proto";
+import "common.proto";
 
 // Fivetran (grpc client) <> DestinationConnector (grpc server)
 service DestinationConnector {
