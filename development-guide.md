@@ -21,8 +21,6 @@ The executable needs to do the following:
 
 * Partners should not add the proto files to their repos. Proto files should be pulled in from this repo at build time and added to `.gitignore` so they are excluded.
 * Always use proto files from latest release and update you're code if necessary. Older releases proto files can be considered deprecated and will be expired at later date.
-* New partners that just started working with the Connector SDK should use V2 release. We will continue to support V1 release for partners that have used them to build their SDK connectors, and these will be removed once the migration to V2 is complete.
-
 
 ### Logging
 
@@ -59,7 +57,7 @@ The executable needs to do the following:
 - Partners can throw alerts on the Fivetran dashboard to notify customers about potential issues with their connector.
 - These issues may include bad source data or connection problems with the source itself. Where applicable, the alerts should also provide guidance to customers on how to resolve the problem.
 - We allow throwing [errors](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#errors) and [warnings](https://fivetran.com/docs/using-fivetran/fivetran-dashboard/alerts#warnings).
-- Partner code should use [Warning](https://github.com/fivetran/fivetran_sdk/blob/main/v2/common_v2.proto#L160) and [Task](https://github.com/fivetran/fivetran_sdk/blob/main/v2/common_v2.proto#L164) messages defined in the proto files to relay information or errors to Fivetran.
+- Partner code should use [Warning](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L160) and [Task](https://github.com/fivetran/fivetran_sdk/blob/main/common.proto#L164) messages defined in the proto files to relay information or errors to Fivetran.
 - Usage example:
 ```
 responseObserver.onNext(
