@@ -34,7 +34,7 @@ docker start -i <container-id>
 
 ## CLI Arguments
 
-The tester supports the following optional CLI arguments to alter its default behavior. You can append these options to the end of the docker run command provided in step 2 of [How To Run](https://github.com/fivetran/fivetran_sdk/blob/main/tools/connector-tester/README.md#how-to-run) section above.
+The tester supports the following optional CLI arguments to alter its default behavior. You can append these options to the end of the docker run command provided in step 2 of [How To Run](https://github.com/fivetran/fivetran_sdk/tree/main/tools/source-connector-tester#how-to-run) section above.
 
 #### --port
 This option defines the port the tester should run on.
