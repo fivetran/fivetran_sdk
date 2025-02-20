@@ -69,6 +69,7 @@ responseObserver.onNext(
                         )
                         .build());
 ```
+> NOTE: We continue with the sync in case of Warnings, and break execution when Tasks are thrown. 
 
 ### Retries
 - Partner code should retry transient problems internally
