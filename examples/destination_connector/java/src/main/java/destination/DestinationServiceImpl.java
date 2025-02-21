@@ -29,7 +29,7 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
             public String format(LogRecord record) {
                 String level = record.getLevel().getName();
                 String message = record.getMessage();
-                return String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_connector\"}%n",
+                return String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_destination\"}%n",
                         level, message);
             }
         });
