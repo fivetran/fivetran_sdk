@@ -18,13 +18,16 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
         configureLogging();
     }
 
-    private static void configureLogging() {
+    private static void removeExistingConsoleHandlers() {
         Logger rootLogger = Logger.getLogger("");
         for (Handler handler : rootLogger.getHandlers()) {
             if (handler instanceof ConsoleHandler) {
                 rootLogger.removeHandler(handler);
             }
         }
+    }
+
+    private static ConsoleHandler createConsoleHandler() {
         ConsoleHandler stdoutHandler = new ConsoleHandler();
         stdoutHandler.setLevel(Level.ALL);
         stdoutHandler.setFormatter(new Formatter() {
@@ -32,8 +35,15 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
             public String format(LogRecord record) {
                 String level = record.getLevel().getName();
                 String message = record.getMessage();
-                return String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_connector\"}%n",
-                        level, message);
+                ObjectMapper objectMapper = new ObjectMapper();
+                try {
+                    String jsonMessage = objectMapper.writeValueAsString(message);
+                    return String.format("{\"level\":\"%s\", \"message\": %s, \"message-origin\": \"sdk_connector\"}%n",
+                            level, jsonMessage);
+                } catch (JsonProcessingException e) {
+                    return String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_connector\"}%n",
+                            level, message);
+                }
             }
         });
 
@@ -42,6 +52,13 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
             return level == Level.INFO || level == Level.WARNING || level == Level.SEVERE;
         });
 
+        return stdoutHandler;
+    }
+
+    private static void configureLogging() {
+        removeExistingConsoleHandlers();
+        ConsoleHandler stdoutHandler = createConsoleHandler();
+        Logger rootLogger = Logger.getLogger("");
         rootLogger.addHandler(stdoutHandler);
         rootLogger.setLevel(Level.ALL);
     }
