@@ -4,18 +4,18 @@ import json
 import sys
 sys.path.append('sdk_pb2')
 
-from sdk_pb2 import connector_sdk_v2_pb2_grpc
-from sdk_pb2 import common_v2_pb2
-from sdk_pb2 import connector_sdk_v2_pb2
+from sdk_pb2 import connector_sdk_pb2_grpc
+from sdk_pb2 import common_pb2
+from sdk_pb2 import connector_sdk_pb2
 
 INFO = "INFO"
 WARNING = "WARNING"
 SEVERE = "SEVERE"
 
-class ConnectorService(connector_sdk_v2_pb2_grpc.SourceConnectorServicer):
+class ConnectorService(connector_sdk_pb2_grpc.SourceConnectorServicer):
     def ConfigurationForm(self, request, context):
         log_message(INFO, "Fetching configuration form")
-        form_fields = common_v2_pb2.ConfigurationFormResponse(schema_selection_supported=True,
+        form_fields = common_pb2.ConfigurationFormResponse(schema_selection_supported=True,
                                                            table_selection_supported=True)
         # Add the 'apiBaseURL' field
         form_fields.fields.add(
@@ -23,7 +23,7 @@ class ConnectorService(connector_sdk_v2_pb2_grpc.SourceConnectorServicer):
             label="API base URL",
             description="Enter the base URL for the API you're connecting to",
             required=True,
-            text_field=common_v2_pb2.TextField.PlainText,
+            text_field=common_pb2.TextField.PlainText,
             placeholder="api_base_url"
         )
 
@@ -32,60 +32,60 @@ class ConnectorService(connector_sdk_v2_pb2_grpc.SourceConnectorServicer):
             name="authenticationMethod",
             label="Authentication Method",
             description="Choose the preferred authentication method to securely access the API",
-            dropdown_field=common_v2_pb2.DropdownField(dropdown_field=["OAuth2.0", "API Key", "Basic Auth", "None"]),
+            dropdown_field=common_pb2.DropdownField(dropdown_field=["OAuth2.0", "API Key", "Basic Auth", "None"]),
             default_value="None"
         )
 
         # Add the 'api_key' field (for API Key authentication method)
-        api_key = common_v2_pb2.FormField(
+        api_key = common_pb2.FormField(
             name="api_key",
             label="API Key",
-            text_field=common_v2_pb2.TextField.Password,
+            text_field=common_pb2.TextField.Password,
             placeholder="your_api_key_here"
         )
 
         # Add the 'client_id' field (for OAuth authentication method)
-        client_id = common_v2_pb2.FormField(
+        client_id = common_pb2.FormField(
             name="client_id",
             label="Client ID",
-            text_field=common_v2_pb2.TextField.Password,
+            text_field=common_pb2.TextField.Password,
             placeholder="your_client_id_here"
         )
 
         # Add the 'client_secret' field (for OAuth authentication method)
-        client_secret = common_v2_pb2.FormField(
+        client_secret = common_pb2.FormField(
             name="client_secret",
             label="Client Secret",
-            text_field=common_v2_pb2.TextField.Password,
+            text_field=common_pb2.TextField.Password,
             placeholder="your_client_secret_here"
         )
 
         # Add the 'userName' field (for Basic Auth authentication method)
-        username = common_v2_pb2.FormField(
+        username = common_pb2.FormField(
             name="username",
             label="Username",
-            text_field=common_v2_pb2.TextField.PlainText,
+            text_field=common_pb2.TextField.PlainText,
             placeholder="your_username_here"
         )
 
         # Add the 'password' field (for Basic Auth authentication method)
-        password = common_v2_pb2.FormField(
+        password = common_pb2.FormField(
             name="password",
             label="Password",
-            text_field=common_v2_pb2.TextField.Password,
+            text_field=common_pb2.TextField.Password,
             placeholder="your_password_here"
         )
 
         # Define the Visibility Conditions for Conditional Fields
 
         # For OAuth2.0 authentication
-        visibility_condition_oauth = common_v2_pb2.VisibilityCondition(
+        visibility_condition_oauth = common_pb2.VisibilityCondition(
             condition_field="authenticationMethod",
             string_value="OAuth2.0"
         )
 
         # Create conditional fields for OAuth2.0
-        conditional_oauth_fields = common_v2_pb2.ConditionalFields(
+        conditional_oauth_fields = common_pb2.ConditionalFields(
             condition=visibility_condition_oauth,
             fields=[client_id, client_secret]
         )
@@ -98,13 +98,13 @@ class ConnectorService(connector_sdk_v2_pb2_grpc.SourceConnectorServicer):
         )
 
         # For API Key authentication
-        visibility_condition_api_key = common_v2_pb2.VisibilityCondition(
+        visibility_condition_api_key = common_pb2.VisibilityCondition(
             condition_field="authenticationMethod",
             string_value="API Key"
         )
 
         # Create conditional fields for API Key
-        conditional_api_key_fields = common_v2_pb2.ConditionalFields(
+        conditional_api_key_fields = common_pb2.ConditionalFields(
             condition=visibility_condition_api_key,
             fields=[api_key]
         )
@@ -117,13 +117,13 @@ class ConnectorService(connector_sdk_v2_pb2_grpc.SourceConnectorServicer):
         )
 
         # For Basic Auth authentication
-        visibility_condition_basic_auth = common_v2_pb2.VisibilityCondition(
+        visibility_condition_basic_auth = common_pb2.VisibilityCondition(
             condition_field="authenticationMethod",
             string_value="Basic Auth"
         )
 
         # Create conditional fields for Basic Auth
-        conditional_basic_auth_fields = common_v2_pb2.ConditionalFields(
+        conditional_basic_auth_fields = common_pb2.ConditionalFields(
             condition=visibility_condition_basic_auth,
             fields=[username, password]
         )
@@ -139,7 +139,7 @@ class ConnectorService(connector_sdk_v2_pb2_grpc.SourceConnectorServicer):
         form_fields.fields.add(
             name="apiVersion",
             label="API Version",
-            dropdown_field=common_v2_pb2.DropdownField(dropdown_field=["v1", "v2", "v3"]),
+            dropdown_field=common_pb2.DropdownField(dropdown_field=["v1", "v2", "v3"]),
             default_value="v2"
         )
 
@@ -147,7 +147,7 @@ class ConnectorService(connector_sdk_v2_pb2_grpc.SourceConnectorServicer):
         form_fields.fields.add(
             name="shouldEnableMetrics",
             label="Enable Metrics?",
-            toggle_field=common_v2_pb2.ToggleField()
+            toggle_field=common_pb2.ToggleField()
         )
 
         # Add the 'connect' and 'select' tests to the form
@@ -171,19 +171,19 @@ class ConnectorService(connector_sdk_v2_pb2_grpc.SourceConnectorServicer):
 
         log_message(INFO, "Test Name: " + str(test_name))
         
-        return common_v2_pb2.TestResponse(success=True)
+        return common_pb2.TestResponse(success=True)
 
     def Schema(self, request, context):
-        table_list = common_v2_pb2.TableList()
+        table_list = common_pb2.TableList()
         t1 = table_list.tables.add(name="table1")
-        t1.columns.add(name="a1", type=common_v2_pb2.DataType.UNSPECIFIED, primary_key=True)
-        t1.columns.add(name="a2", type=common_v2_pb2.DataType.DOUBLE)
+        t1.columns.add(name="a1", type=common_pb2.DataType.UNSPECIFIED, primary_key=True)
+        t1.columns.add(name="a2", type=common_pb2.DataType.DOUBLE)
 
         t2 = table_list.tables.add(name="table2")
-        t2.columns.add(name="b1", type=common_v2_pb2.DataType.UNSPECIFIED, primary_key=True)
-        t2.columns.add(name="b2", type=common_v2_pb2.DataType.UNSPECIFIED)
+        t2.columns.add(name="b1", type=common_pb2.DataType.UNSPECIFIED, primary_key=True)
+        t2.columns.add(name="b2", type=common_pb2.DataType.UNSPECIFIED)
 
-        return connector_sdk_v2_pb2.SchemaResponse(without_schema=table_list)
+        return connector_sdk_pb2.SchemaResponse(without_schema=table_list)
 
     def Update(self, request, context):
 
@@ -198,68 +198,68 @@ class ConnectorService(connector_sdk_v2_pb2_grpc.SourceConnectorServicer):
 
         # -- Send UPSERT records
         for t in range(0, 3):
-            val1 = common_v2_pb2.ValueType()
+            val1 = common_pb2.ValueType()
             val1.string = "a-" + str(t)
 
-            val2 = common_v2_pb2.ValueType()
+            val2 = common_pb2.ValueType()
             val2.double = t * 0.234
 
-            record = connector_sdk_v2_pb2.Record()
-            record.type = common_v2_pb2.RecordType.UPSERT
+            record = connector_sdk_pb2.Record()
+            record.type = common_pb2.RecordType.UPSERT
             record.table_name = "table1"
             record.data["a1"].CopyFrom(val1)
             record.data["a2"].CopyFrom(val2)
             state["cursor"] += 1
 
-            yield connector_sdk_v2_pb2.UpdateResponse(record=record)
+            yield connector_sdk_pb2.UpdateResponse(record=record)
 
         # -- Send UPSERT record for table2
-        val1 = common_v2_pb2.ValueType()
+        val1 = common_pb2.ValueType()
         val1.string = "b1"
-        val2 = common_v2_pb2.ValueType()
+        val2 = common_pb2.ValueType()
         val2.string = "ben"
-        record = connector_sdk_v2_pb2.Record()
-        record.type = common_v2_pb2.RecordType.UPSERT
+        record = connector_sdk_pb2.Record()
+        record.type = common_pb2.RecordType.UPSERT
         record.table_name = "table2"
         record.data["b1"].CopyFrom(val1)
         record.data["b2"].CopyFrom(val2)
         state["cursor"] += 1
 
-        yield connector_sdk_v2_pb2.UpdateResponse(record=record)
+        yield connector_sdk_pb2.UpdateResponse(record=record)
 
         # -- Send UPDATE record
-        val1 = common_v2_pb2.ValueType()
+        val1 = common_pb2.ValueType()
         val1.string = "a-0"
 
-        val2 = common_v2_pb2.ValueType()
+        val2 = common_pb2.ValueType()
         val2.double = 110.234
 
-        record = connector_sdk_v2_pb2.Record()
-        record.type = common_v2_pb2.RecordType.UPDATE
+        record = connector_sdk_pb2.Record()
+        record.type = common_pb2.RecordType.UPDATE
         record.table_name = "table1"
         record.data["a1"].CopyFrom(val1)
         record.data["a2"].CopyFrom(val2)
 
-        yield connector_sdk_v2_pb2.UpdateResponse(record=record)
+        yield connector_sdk_pb2.UpdateResponse(record=record)
         state["cursor"] += 1
 
         log_message(WARNING, "Completed sending update records")
 
         # -- Send DELETE record
-        val1 = common_v2_pb2.ValueType()
+        val1 = common_pb2.ValueType()
         val1.string = "a-2"
 
-        record = connector_sdk_v2_pb2.Record()
-        record.type = common_v2_pb2.RecordType.DELETE
+        record = connector_sdk_pb2.Record()
+        record.type = common_pb2.RecordType.DELETE
         record.table_name = "table1"
         record.data["a1"].CopyFrom(val1)
 
-        yield connector_sdk_v2_pb2.UpdateResponse(record=record)
+        yield connector_sdk_pb2.UpdateResponse(record=record)
         state["cursor"] += 1
 
-        checkpoint = connector_sdk_v2_pb2.Checkpoint()
+        checkpoint = connector_sdk_pb2.Checkpoint()
         checkpoint.state_json = json.dumps(state)
-        yield connector_sdk_v2_pb2.UpdateResponse(checkpoint=checkpoint)
+        yield connector_sdk_pb2.UpdateResponse(checkpoint=checkpoint)
 
         log_message(SEVERE, "Sending severe log: Completed Update method")
 
@@ -270,7 +270,7 @@ def log_message(level, message):
 
 def start_server():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
-    connector_sdk_v2_pb2_grpc.add_SourceConnectorServicer_to_server(ConnectorService(), server)
+    connector_sdk_pb2_grpc.add_SourceConnectorServicer_to_server(ConnectorService(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     print("Server started...")
