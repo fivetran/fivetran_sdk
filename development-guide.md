@@ -20,7 +20,7 @@ The executable needs to do the following:
 ### Proto files
 
 * Partners should not add the proto files to their repos. Proto files should be pulled in from this repo at build time and added to `.gitignore` so they are excluded.
-* Always use proto files from latest release and update you're code if necessary. Older releases proto files can be considered deprecated and will be expired at later date.
+* Always use proto files from latest release and update your code if necessary. Older releases proto files can be considered deprecated and will be expired at later date.
 
 ### Logging
 
