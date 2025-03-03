@@ -14,10 +14,12 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
 
     private static final Logger logger = Logger.getLogger(ConnectorServiceImpl.class.getName());
 
+    // Configure logging when the class is loaded
     static{
         configureLogging();
     }
 
+    // Remove existing console handlers
     private static void removeExistingConsoleHandlers() {
         Logger rootLogger = Logger.getLogger("");
         for (Handler handler : rootLogger.getHandlers()) {
@@ -27,6 +29,7 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
         }
     }
 
+    // Create a new console handler and configure it to STDOUT
     private static ConsoleHandler createConsoleHandler() {
         ConsoleHandler stdoutHandler = new ConsoleHandler();
         stdoutHandler.setLevel(Level.ALL);
@@ -35,18 +38,19 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
             public String format(LogRecord record) {
                 String level = record.getLevel().getName();
                 String message = record.getMessage();
+                String jsonMessage = message;
                 ObjectMapper objectMapper = new ObjectMapper();
                 try {
-                    String jsonMessage = objectMapper.writeValueAsString(message);
-                    return String.format("{\"level\":\"%s\", \"message\": %s, \"message-origin\": \"sdk_connector\"}%n",
-                            level, jsonMessage);
+                    jsonMessage = objectMapper.writeValueAsString(message);
                 } catch (JsonProcessingException e) {
-                    return String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_connector\"}%n",
-                            level, message);
+                    System.out.println("Error while converting message to JSON");
                 }
+                return String.format("{\"level\":\"%s\", \"message\": %s, \"message-origin\": \"sdk_connector\"}%n",
+                        level, jsonMessage);
             }
         });
 
+        // Filter log messages to only include INFO, WARNING, and SEVERE
         stdoutHandler.setFilter(record -> {
             Level level = record.getLevel();
             return level == Level.INFO || level == Level.WARNING || level == Level.SEVERE;
