@@ -12,12 +12,15 @@ import java.util.logging.Formatter;
 
 public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImplBase {
 
-    private static final Logger logger = Logger.getLogger(ConnectorServiceImpl.class.getName());
+    private static final Logger logger = getLogger();
 
-    // Configure logging when the class is loaded
-    static{
+    // Get the configured logger
+    private static Logger getLogger() {
+        Logger logger = Logger.getLogger(ConnectorServiceImpl.class.getName());
         configureLogging();
+        return logger;
     }
+
 
     // Remove existing console handlers
     private static void removeExistingConsoleHandlers() {

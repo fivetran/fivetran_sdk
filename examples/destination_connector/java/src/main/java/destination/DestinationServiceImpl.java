@@ -11,11 +11,13 @@ import java.util.logging.*;
 
 public class DestinationServiceImpl extends DestinationConnectorGrpc.DestinationConnectorImplBase {
 
-    private static final Logger logger = Logger.getLogger(DestinationServiceImpl.class.getName());
+    private static final Logger logger = getLogger();
 
-    // Configure logging when the class is loaded
-    static{
+    // Get the configured logger
+    private static Logger getLogger() {
+        Logger logger = Logger.getLogger(DestinationServiceImpl.class.getName());
         configureLogging();
+        return logger;
     }
 
     // Remove existing console handlers
