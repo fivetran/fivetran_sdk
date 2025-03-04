@@ -1,20 +1,76 @@
 package destination;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fivetran_sdk.v2.*;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.logging.*;
 
 public class DestinationServiceImpl extends DestinationConnectorGrpc.DestinationConnectorImplBase {
 
-    private final String INFO = "INFO";
-    private final String WARNING = "WARNING";
-    private final String SEVERE = "SEVERE";
+    private static final Logger logger = getLogger();
+
+    // Get the configured logger
+    private static Logger getLogger() {
+        Logger logger = Logger.getLogger(DestinationServiceImpl.class.getName());
+        configureLogging();
+        return logger;
+    }
+
+    // Remove existing console handlers
+    private static void removeExistingConsoleHandlers() {
+        Logger rootLogger = Logger.getLogger("");
+        for (Handler handler : rootLogger.getHandlers()) {
+            if (handler instanceof ConsoleHandler) {
+                rootLogger.removeHandler(handler);
+            }
+        }
+    }
+
+    // Create a new console handler and configure it to STDOUT
+    private static ConsoleHandler createConsoleHandler() {
+        ConsoleHandler stdoutHandler = new ConsoleHandler();
+        stdoutHandler.setLevel(Level.ALL);
+        stdoutHandler.setFormatter(new Formatter() {
+            @Override
+            public String format(LogRecord record) {
+                String level = record.getLevel().getName();
+                String message = record.getMessage();
+                String jsonMessage = message;
+                ObjectMapper objectMapper = new ObjectMapper();
+                try {
+                    jsonMessage = objectMapper.writeValueAsString(message);
+                } catch (JsonProcessingException e) {
+                    System.out.println("Error while converting message to JSON");
+                }
+                return String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_destination\"}%n",
+                        level, jsonMessage);
+            }
+        });
+
+        // Filter log messages to only include INFO, WARNING, and SEVERE
+        stdoutHandler.setFilter(record -> {
+            Level level = record.getLevel();
+            return level == Level.INFO || level == Level.WARNING || level == Level.SEVERE;
+        });
+
+        return stdoutHandler;
+    }
+
+    private static void configureLogging() {
+        removeExistingConsoleHandlers();
+        ConsoleHandler stdoutHandler = createConsoleHandler();
+        Logger rootLogger = Logger.getLogger("");
+        rootLogger.addHandler(stdoutHandler);
+        rootLogger.setLevel(Level.ALL);
+    }
 
     @Override
     public void configurationForm(ConfigurationFormRequest request, StreamObserver<ConfigurationFormResponse> responseObserver) {
-        logMessage(INFO, "Fetching configuration form");
+        logger.info("Fetching configuration form");
         responseObserver.onNext(getConfigurationForm());
 
         responseObserver.onCompleted();
@@ -170,7 +226,7 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
         Map<String, String> configuration = request.getConfigurationMap();
         String testName = request.getName();
         String message = String.format("Test Name: %s", testName);
-        logMessage(INFO, message);
+        logger.info(message);
 
         responseObserver.onNext(TestResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
@@ -191,7 +247,7 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
                         ).build()).build();
 
         responseObserver.onNext(response);
-        logMessage(SEVERE, "Sample Severe log: Completed describe Table method");
+        logger.severe("Sample Severe log: Completed describe Table method");
         responseObserver.onCompleted();
     }
 
@@ -201,7 +257,7 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
 
         String message = "[CreateTable]: "
                 + request.getSchemaName() + " | " + request.getTable().getName() + " | " + request.getTable().getColumnsList();
-        logMessage(INFO, message);
+        logger.info(message);
         responseObserver.onNext(CreateTableResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
@@ -212,7 +268,7 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
 
         String message = "[AlterTable]: " +
                 request.getSchemaName() + " | " + request.getTable().getName() + " | " + request.getTable().getColumnsList();
-        logMessage(INFO, message);
+        logger.info(message);
         responseObserver.onNext(AlterTableResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
@@ -228,7 +284,7 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
     @Override
     public void writeBatch(WriteBatchRequest request, StreamObserver<WriteBatchResponse> responseObserver) {
         String message = "[WriteBatch]: " + request.getSchemaName() + " | " + request.getTable().getName();
-        logMessage(WARNING, String.format("Sample severe message: %s", message));
+        logger.warning(String.format("Sample severe message: %s", message));
         for (String file : request.getReplaceFilesList()) {
             System.out.println("Replace files: " + file);
         }
@@ -240,9 +296,5 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
         }
         responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
-    }
-
-    private void logMessage(String level, String message){
-        System.out.println(String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_destination\"}", level, message));
     }
 }

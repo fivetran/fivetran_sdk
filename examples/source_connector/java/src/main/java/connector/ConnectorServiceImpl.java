@@ -7,18 +7,76 @@ import fivetran_sdk.v2.Record;
 import io.grpc.stub.StreamObserver;
 
 import java.util.*;
+import java.util.logging.*;
+import java.util.logging.Formatter;
 
 public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImplBase {
-    private final String INFO = "INFO";
-    private final String WARNING = "WARNING";
-    private final String SEVERE = "SEVERE";
+
+    private static final Logger logger = getLogger();
+
+    // Get the configured logger
+    private static Logger getLogger() {
+        Logger logger = Logger.getLogger(ConnectorServiceImpl.class.getName());
+        configureLogging();
+        return logger;
+    }
+
+
+    // Remove existing console handlers
+    private static void removeExistingConsoleHandlers() {
+        Logger rootLogger = Logger.getLogger("");
+        for (Handler handler : rootLogger.getHandlers()) {
+            if (handler instanceof ConsoleHandler) {
+                rootLogger.removeHandler(handler);
+            }
+        }
+    }
+
+    // Create a new console handler and configure it to STDOUT
+    private static ConsoleHandler createConsoleHandler() {
+        ConsoleHandler stdoutHandler = new ConsoleHandler();
+        stdoutHandler.setLevel(Level.ALL);
+        stdoutHandler.setFormatter(new Formatter() {
+            @Override
+            public String format(LogRecord record) {
+                String level = record.getLevel().getName();
+                String message = record.getMessage();
+                String jsonMessage = message;
+                ObjectMapper objectMapper = new ObjectMapper();
+                try {
+                    jsonMessage = objectMapper.writeValueAsString(message);
+                } catch (JsonProcessingException e) {
+                    System.out.println("Error while converting message to JSON");
+                }
+                return String.format("{\"level\":\"%s\", \"message\": %s, \"message-origin\": \"sdk_connector\"}%n",
+                        level, jsonMessage);
+            }
+        });
+
+        // Filter log messages to only include INFO, WARNING, and SEVERE
+        stdoutHandler.setFilter(record -> {
+            Level level = record.getLevel();
+            return level == Level.INFO || level == Level.WARNING || level == Level.SEVERE;
+        });
+
+        return stdoutHandler;
+    }
+
+    private static void configureLogging() {
+        removeExistingConsoleHandlers();
+        ConsoleHandler stdoutHandler = createConsoleHandler();
+        Logger rootLogger = Logger.getLogger("");
+        rootLogger.addHandler(stdoutHandler);
+        rootLogger.setLevel(Level.ALL);
+    }
+
     @Override
     public void configurationForm(ConfigurationFormRequest request, StreamObserver<ConfigurationFormResponse> responseObserver) {
-        logMessage(INFO, "Started fetching configuration form");
+        logger.info("Started fetching configuration form");
         ConfigurationFormResponse formResponse = getConfigurationForm();
         responseObserver.onNext(formResponse);
 
-        logMessage(INFO, "Fetching configuration form completed");
+        logger.info("Fetching configuration form completed");
         responseObserver.onCompleted();
     }
 
@@ -168,7 +226,7 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
         // Name of the test to be run
         String testName = request.getName();
         String message = String.format("test name: %s", testName);
-        logMessage(INFO, message);
+        logger.info(message);
 
         responseObserver.onNext(TestResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
@@ -177,7 +235,7 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
     @Override
     public void schema(SchemaRequest request, StreamObserver<SchemaResponse> responseObserver) {
 
-        logMessage(WARNING, "Sample warning message while fetching schema");
+        logger.warning("Sample warning message while fetching schema");
         Map<String, String> configuration = request.getConfigurationMap();
 
         TableList tableList = TableList.newBuilder()
@@ -211,7 +269,7 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
             State state = mapper.readValue(state_json, State.class);
 
             // -- Send a log message
-            logMessage(WARNING, "Sync STARTING");
+            logger.warning("Sync STARTING");
 
             // -- Send UPSERT records
             Record.Builder recordBuilder = Record.newBuilder();
@@ -270,18 +328,14 @@ public class ConnectorServiceImpl extends SourceConnectorGrpc.SourceConnectorImp
             responseObserver.onNext(responseBuilder.setCheckpoint(checkpoint).build());
 
             // -- Send a log message
-            logMessage(WARNING, "Sync DONE");
+            logger.warning("Sync DONE");
         } catch (JsonProcessingException e) {
             String message = e.getMessage();
-            logMessage(SEVERE, message);
+            logger.severe(message);
             responseObserver.onError(e);
         }
 
         // End the streaming RPC call
         responseObserver.onCompleted();
-    }
-
-    private void logMessage(String level, String message) {
-        System.out.println(String.format("{\"level\":\"%s\", \"message\": \"%s\", \"message-origin\": \"sdk_connector\"}", level, message));
     }
 }
