@@ -221,6 +221,36 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
         res: destination_sdk_pb2.WriteBatchResponse = destination_sdk_pb2.WriteBatchResponse(success=True)
         return res
 
+    def WriteHistoryBatch(self, request, context):
+        for earliest_start_file in request.earliest_start_files:
+            print("earliest_start files: " + str(earliest_start_file))
+        print("EarliestStart files contains a single record for each primary key in the incoming batch, with the earliest `_fivetran_start`.")
+        print("Following operations must be implemented in the exact order as they are listed:");
+        print("1. Removing any overlapping records where existing `_fivetran_start` is greater than the `earliest_fivetran_start` timestamp value in the `earliest_start_files` file:")
+        print("```sql\nDELETE FROM <schema.table> WHERE pk1 = <val> {AND  pk2 = <val>.....} AND _fivetran_start >= val<_earliest_fivetran_start>;\n```")
+        print("3. Updating of the values of the history mode-specific system columns `fivetran_active` and `fivetran_end` in the destination.")
+        print("```sql\nUPDATE <schema.table> SET fivetran_active = FALSE, _fivetran_end = earliest_fivetran_start - 1 msec WHERE _fivetran_active = TRUE AND pk1 = <val> {AND  pk2 = <val>.....}`\n```")
+        for replace_file in request.replace_files:
+            print("replace files: " + str(replace_file))
+        print("Replace files is for upsert operations. For replace files, the column values are inserted in the destination table. This is the case where all column values are modified in the source, as per incoming batch.")
+        for update_file in request.update_files:
+            print("replace files: " + str(update_file))
+        print("Update files contains records where only some column values were modified in the source. The modified column values are provided as they are in the source whereas the columns without changes in the source are assigned the `unmodified_string` value. For such records, all column values must be populated before the records are inserted to the table in the destination. The column values that are not modified in the source, i.e. that are `unmodified_string`, are populated with the corresponding column's value of the the last active record in the destination, i.e., the record that has the same primary key and `_fivetran_active` set to `true`.")
+        for delete_file in request.delete_files:
+            print("delete files: " + str(delete_file))
+        print("Delete Files: For the active record (the one that has `_fivetran_active = TRUE`) with a given primary key in the destination, the `_fivetran_active` column value is set to FALSE, and the `_fivetran_end` column value is set to the `_fivetran_end` column value of the record with the same primary key in the batch file.")
+
+        log_message(WARNING, "Data loading started for table " + request.table.name)
+        for key, value in request.keys.items():
+            print("----------------------------------------------------------------------------")
+            print("Decrypting and printing file :" + str(key))
+            print("----------------------------------------------------------------------------")
+            read_csv.decrypt_file(key, value)
+        log_message(INFO, "\nData loading completed for table " + request.table.name + "\n")
+
+        res: destination_sdk_pb2.WriteBatchResponse = destination_sdk_pb2.WriteBatchResponse(success=True)
+        return res
+
     def DescribeTable(self, request, context):
         column1 = common_pb2.Column(name="a1", type=common_pb2.DataType.UNSPECIFIED, primary_key=True)
         column2 = common_pb2.Column(name="a2", type=common_pb2.DataType.DOUBLE)
