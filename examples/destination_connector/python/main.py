@@ -208,7 +208,7 @@ class DestinationImpl(destination_sdk_pb2_grpc.DestinationConnectorServicer):
         for update_file in request.update_files:
             print("replace files: " + str(update_file))
         for delete_file in request.delete_files:
-            print("replace files: " + str(delete_file))
+            print("delete files: " + str(delete_file))
 
         log_message(WARNING, "Data loading started for table " + request.table.name)
         for key, value in request.keys.items():
