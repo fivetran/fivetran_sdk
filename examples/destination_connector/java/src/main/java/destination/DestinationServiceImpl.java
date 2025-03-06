@@ -297,4 +297,33 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
         responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void writeHistoryBatch(WriteHistoryBatchRequest request, StreamObserver<WriteBatchResponse> responseObserver) {
+        String message = "[WriteHistoryBatch]: " + request.getSchemaName() + " | " + request.getTable().getName();
+        logger.warning(String.format("Sample severe message: %s", message));
+        for (String file : request.getEarliestStartFilesList()) {
+            System.out.println("EarliestStart files: " + file);
+        }
+        System.out.println("EarliestStart files contains a single record for each primary key in the incoming batch, with the earliest `_fivetran_start`.");
+        System.out.println("Following operations must be implemented in the exact order as they are listed:");
+        System.out.println("1. Removing any overlapping records where existing `_fivetran_start` is greater than the `earliest_fivetran_start` timestamp value in the `earliest_start_files` file:");
+        System.out.println("```sql\nDELETE FROM <schema.table> WHERE pk1 = <val> {AND  pk2 = <val>.....} AND _fivetran_start >= val<_earliest_fivetran_start>;\n```");
+        System.out.println("3. Updating of the values of the history mode-specific system columns `fivetran_active` and `fivetran_end` in the destination.");
+        System.out.println("```sql\nUPDATE <schema.table> SET fivetran_active = FALSE, _fivetran_end = earliest_fivetran_start - 1 msec WHERE _fivetran_active = TRUE AND pk1 = <val> {AND  pk2 = <val>.....}`\n```");
+        for (String file : request.getReplaceFilesList()) {
+            System.out.println("Replace files: " + file);
+        }
+        System.out.println("Replace files is for upsert operations. For replace files, the column values are inserted in the destination table. This is the case where all column values are modified in the source, as per incoming batch.");
+        for (String file : request.getUpdateFilesList()) {
+            System.out.println("Update files: " + file);
+        }
+        System.out.println("Update files contains records where only some column values were modified in the source. The modified column values are provided as they are in the source whereas the columns without changes in the source are assigned the `unmodified_string` value. For such records, all column values must be populated before the records are inserted to the table in the destination. The column values that are not modified in the source, i.e. that are `unmodified_string`, are populated with the corresponding column's value of the the last active record in the destination, i.e., the record that has the same primary key and `_fivetran_active` set to `true`.");
+        for (String file : request.getDeleteFilesList()) {
+            System.out.println("Delete files: " + file);
+        }
+        System.out.println("Delete Files: For the active record (the one that has `_fivetran_active = TRUE`) with a given primary key in the destination, the `_fivetran_active` column value is set to FALSE, and the `_fivetran_end` column value is set to the `_fivetran_end` column value of the record with the same primary key in the batch file.");
+        responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(true).build());
+        responseObserver.onCompleted();
+    }
 }
