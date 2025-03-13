@@ -25,7 +25,7 @@ For this file, the following operations must be implemented in the exact order a
    ```sql
    DELETE FROM <schema.table> WHERE pk1 = <val> {AND  pk2 = <val>.....} AND _fivetran_start >= val<_fivetran_start>;
    ```
-   > The `_fivetran_start` column should NOT be included as part of the primary key filters (`pk1`, `pk2`, etc.) in the WHERE clause or joins. Primary key filters or joins should only include the actual table primary keys (`pk1`, `pk2`, etc.).
+   > IMPORTANT: The `_fivetran_start` column should NOT be included as part of the primary key filters (`pk1`, `pk2`, etc.) in the WHERE clause or joins. Primary key filters or joins should only include the actual table primary keys (`pk1`, `pk2`, etc.).
    
 2. Updating of the values of the history mode-specific system columns `fivetran_active` and `fivetran_end` in the destination. The `fivetran_end` column is set to exactly 1 millisecond earlier than the earliest `_fivetran_start` timestamp value in the `earliest_start_files` file.
     
