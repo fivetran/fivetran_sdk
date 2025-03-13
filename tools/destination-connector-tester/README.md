@@ -110,7 +110,7 @@ Here is an example input file named `input_1.json`:
       {
          "update": {
             "transaction": [
-               {"id":1, "amount": 200 ,"op_time":"2005-05-24T20:57:00Z"},
+               {"id":1, "amount": 200 ,"op_time":"2005-05-24T20:58:00Z"},
                {"id":5, "amount": 200 ,"op_time":"2005-05-24T20:57:00Z"}
             ]
          }
@@ -124,7 +124,7 @@ Here is an example input file named `input_1.json`:
          "upsert": {
             "transaction": [
                {"id":10, "amount": 200, "desc": "three", "op_time":"2005-05-26T20:57:00Z"},
-               {"id":10, "amount": 100, "desc": "thee", "op_time":"2005-05-26T20:57:00Z"},
+               {"id":10, "amount": 100, "desc": "thee", "op_time":"2005-05-26T20:58:00Z"},
                {"id":20, "amount": 50, "desc": "mone", "op_time":"2005-05-26T21:57:00Z"}
             ],
             "campaign": [
