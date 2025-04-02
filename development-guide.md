@@ -115,7 +115,7 @@ The `Update` RPC call should retrieve data from the source. We send a request us
 
 ## Destination Connector guidelines
 
-The destination connector should read the batch files sent by Fivetran and write the data to the destination system. 
+- The destination connector should implement the listed rpc calls to load the data sent by Fivetran.
 
 ### System Columns
 - In addition to source columns, Fivetran sends the following additional system columns if and when required:
@@ -148,7 +148,8 @@ Batch files are compressed using [ZSTD](https://en.wikipedia.org/wiki/Zstd).
 
 ### RPC Calls
 #### CreateTable
-The `CreateTable` RPC call should create table, and should fail if it is asked to create a table that already exists. However, it should not fail if the target schema is missing. The destination should create the missing schema.
+The `CreateTable` RPC call should create the table. If you attempt to create a table that already exists, the call should fail.
+If the target schema is missing, the `CreateTable` RPC call should not fail. The destination should create the missing schema.
 
 #### Capabilities
 The `Capabilities` RPC call should return the destination's capabilities, such as reading batch files in CSV or PARQUET.
