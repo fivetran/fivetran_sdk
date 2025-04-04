@@ -2,6 +2,7 @@ import grpc
 from concurrent import futures
 import json
 import sys
+import argparse
 sys.path.append('sdk_pb2')
 
 from sdk_pb2 import connector_sdk_pb2_grpc
@@ -269,11 +270,15 @@ def log_message(level, message):
 
 
 def start_server():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", type=int, default=50051,
+                        help="The server port")
+    args = parser.parse_args()
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
     connector_sdk_pb2_grpc.add_SourceConnectorServicer_to_server(ConnectorService(), server)
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port(f'[::]:{args.port}')
     server.start()
-    print("Server started...")
+    print(f"Server started on port {args.port}...")
     server.wait_for_termination()
     print("Server terminated.")
 
