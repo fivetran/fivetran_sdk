@@ -322,7 +322,7 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
      *      - Unmodified columns are populated with values from the last active record in the destination.
      *      - New records are inserted while maintaining history tracking.
      *
-     * 3. **`upsert_files`**
+     * 3. **`replace_files`**
      *    - Contains records where all column values are modified.
      *    - Process:
      *      - Insert new records directly into the destination table.
