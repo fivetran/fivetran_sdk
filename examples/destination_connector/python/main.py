@@ -2,6 +2,7 @@ from concurrent import futures
 import grpc
 import read_csv
 import sys
+import argparse
 sys.path.append('sdk_pb2')
 
 from sdk_pb2 import destination_sdk_pb2
@@ -232,10 +233,14 @@ def log_message(level, message):
     print(f'{{"level":"{level}", "message": "{message}", "message-origin": "sdk_destination"}}')
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", type=int, default=50052,
+                        help="The server port")
+    args = parser.parse_args()
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
-    server.add_insecure_port('[::]:50052')
+    server.add_insecure_port(f'[::]:{args.port}')
     destination_sdk_pb2_grpc.add_DestinationConnectorServicer_to_server(DestinationImpl(), server)
     server.start()
-    print("Destination gRPC server started...")
+    print(f"Destination gRPC server started on port {args.port}...")
     server.wait_for_termination()
     print("Destination gRPC server terminated...")
