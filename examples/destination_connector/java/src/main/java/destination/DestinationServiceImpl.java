@@ -297,4 +297,61 @@ public class DestinationServiceImpl extends DestinationConnectorGrpc.Destination
         responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
+
+    /*
+     *
+     * Reference: https://github.com/fivetran/fivetran_sdk/blob/main/how-to-handle-history-mode-batch-files.md
+     *
+     * The `WriteHistoryBatch` method is used to write history mode-specific batch files to the destination.
+     * The incoming batch files are processed in the exact following order:
+     * 1. `earliest_start_files`
+     * 2. `replace_files`
+     * 3. `update_files`
+     * 4. `delete_files`
+     *
+     * 1. **`earliest_start_files`**
+     *    - Contains a single record per primary key with the earliest `_fivetran_start`.
+     *    - Operations:
+     *      - Delete overlapping records where `_fivetran_start` is greater than `earliest_fivetran_start`.
+     *      - Update history mode-specific system columns (`fivetran_active` and `_fivetran_end`).
+     *
+     * 2. **`update_files`**
+     *    - Contains records with modified column values.
+     *    - Process:
+     *      - Modified columns are updated with new values.
+     *      - Unmodified columns are populated with values from the last active record in the destination.
+     *      - New records are inserted while maintaining history tracking.
+     *
+     * 3. **`replace_files`**
+     *    - Contains records where all column values are modified.
+     *    - Process:
+     *      - Insert new records directly into the destination table.
+     *
+     * 4. **`delete_files`**
+     *    - Deactivates records in the destination table.
+     *    - Process:
+     *      - Set `_fivetran_active` to `FALSE`.
+     *      - Update `_fivetran_end` to match the corresponding record’s end timestamp from the batch file.
+     *
+     * This structured processing ensures data consistency and historical tracking in the destination table.
+     */
+    @Override
+    public void writeHistoryBatch(WriteHistoryBatchRequest request, StreamObserver<WriteBatchResponse> responseObserver) {
+        String message = "[WriteHistoryBatch]: " + request.getSchemaName() + " | " + request.getTable().getName();
+        logger.warning(String.format("Sample severe message: %s", message));
+        for (String file : request.getEarliestStartFilesList()) {
+            System.out.println("EarliestStart files: " + file);
+        }
+        for (String file : request.getReplaceFilesList()) {
+            System.out.println("Replace files: " + file);
+        }
+        for (String file : request.getUpdateFilesList()) {
+            System.out.println("Update files: " + file);
+        }
+        for (String file : request.getDeleteFilesList()) {
+            System.out.println("Delete files: " + file);
+        }
+        responseObserver.onNext(WriteBatchResponse.newBuilder().setSuccess(true).build());
+        responseObserver.onCompleted();
+    }
 }

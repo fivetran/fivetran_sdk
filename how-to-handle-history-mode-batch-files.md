@@ -35,7 +35,7 @@ For this file, the following operations must be implemented in the exact order a
 
 #### `update_files`
 
-This file contains records where only some column values where modified in the source. The modified column values are provided as they are in the source whereas the columns without changes in the source are assigned the `unmodified_string` value. For such records, all column values must be populated before the records are inserted to the table in the destination. The column values that are not modified in the source, i.e. that are `unmodified_string`, are populated with the corresponding column's value of the the last active record in the destination, i.e., the record that has the same primary key and `_fivetran_active` set to `true`.
+This file contains records where only some column values were modified in the source. The modified column values are provided as they are in the source whereas the columns without changes in the source are assigned the `unmodified_string` value. For such records, all column values must be populated before the records are inserted to the table in the destination. The column values that are not modified in the source, i.e. that are `unmodified_string`, are populated with the corresponding column's value of the the last active record in the destination, i.e., the record that has the same primary key and `_fivetran_active` set to `true`.
 
 Suppose the existing table in destination is as follows:
 
@@ -90,8 +90,8 @@ ID(PK) |  COL1  | COL2 | _fivetran_start(PK) | _fivetran_end | _fivetran_active 
 
 The column values that were not modified in the source are set to the values of the active records. In this example, for ID = 2, we didn’t get COL1 value from the source, so we set COL1 to “mno” (COL1 value of the active record in the destination).
 
-#### `upsert_files`
-For upsert files, the column values are inserted in the destiation table. This is the case where all column values are modified in the source, as per incoming batch.  
+#### `replace_files`
+Replace files is for upsert operations. For replace files, the column values are inserted in the destination table. This is the case where all column values are modified in the source, as per incoming batch.
 
 
 #### `delete_files`
