@@ -243,11 +243,13 @@ const configurationForm = (call, callback) => {
 
   server.addService(connectorSdkProtoV2.SourceConnector.service, {configurationForm, test, schema, update})
 
+  var args = process.argv.slice(2);
+  var port = args.find(arg => arg === "--port") ? parseInt(args[args.indexOf("--port") + 1]) : 50051;
   server.bindAsync(
-    '0.0.0.0'.concat(':').concat(50051),
+    '0.0.0.0'.concat(':').concat(port),
     grpc.ServerCredentials.createInsecure(),
     (error, port) => {
-      console.log("Server running at http://127.0.0.1:50051");
+      console.log(`Server running at http://127.0.0.1:${port}`);
       !error ? server.start() : console.log("Server failed with error: " + error)
     }
   );

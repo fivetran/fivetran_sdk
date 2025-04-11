@@ -61,8 +61,8 @@ All Fivetran connectors have public documentation. For partner-built connectors,
 To help you produce the documentation, we provide helpful resources:
 * [Source connector templates](doc-templates/source-connector-templates/)
 * [Destination connector templates](doc-templates/destination-connector-templates/)
-* [Fivetran's documentation style guide](https://github.com/fivetran/fivetran_sdk/tree/main/style-guide/style-guide.md)
-* [Fivetran-approved glossary of common terms](https://github.com/fivetran/fivetran_sdk/tree/main/style-guide/common-terms-glossary.md)
+* [Fivetran's documentation style guide](https://github.com/fivetran/fivetran_sdk/tree/main/doc-templates/style-guide/style-guide.md)
+* [Fivetran-approved glossary of common terms](https://github.com/fivetran/fivetran_sdk/tree/main/doc-templates/style-guide/common-terms-glossary.md)
 
 We’ll review these docs and our Tech Writing team will edit for grammar and style, sending back to your team (TBD on automation) to keep in sync. The documentation is to be hosted in [Fivetran's documentation site](https://fivetran.com/docs/getting-started).
 
